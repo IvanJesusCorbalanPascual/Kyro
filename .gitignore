@@ -25,3 +25,17 @@ replay_pid*
 
 # Kotlin Gradle plugin data, see https://kotlinlang.org/docs/whatsnew20.html#new-directory-for-kotlin-data-in-gradle-projects
 .kotlin/
+.gradle/8.13/checksums/checksums.lock
+.gradle/8.13/checksums/checksums.lock
+.gradle/8.13/checksums/checksums.lock
+.gradle/8.13/checksums/md5-checksums.bin
+.gradle/8.13/checksums/sha1-checksums.bin
+.gradle/8.13/fileHashes/fileHashes.bin
+.gradle/8.13/fileHashes/fileHashes.lock
+.idea/caches/deviceStreaming.xml
+.idea/codeStyles/codeStyleConfig.xml
+.idea/codeStyles/Project.xml
+.idea/gradle.xml
+.idea/markdown.xml
+.idea/misc.xml
+local.properties
