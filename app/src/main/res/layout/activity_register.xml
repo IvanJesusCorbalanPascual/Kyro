@@ -156,7 +156,7 @@ android:fillViewport="true">
                 android:text="Inicia sesión"
                 android:textStyle="bold"
                 android:fontFamily="@font/poppins"
-                android:textColor="#00A8E8"/>
+                android:textColor="@color/b400"/>
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
