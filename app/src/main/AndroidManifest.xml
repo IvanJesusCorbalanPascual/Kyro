@@ -35,6 +35,10 @@
             android:name=".ModificarTemarioActivity"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
 
+        <activity
+            android:name=".AjustesActivity"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
+
     </application>
 
 </manifest>
