@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_home"
+        android:icon="@drawable/ic_flecha_derecha"
+        android:title="Inicio" />
+
+    <item
+        android:id="@+id/nav_calendar"
+        android:icon="@drawable/dot"
+        android:title="Agenda" />
+
+    <item
+        android:id="@+id/nav_ai_chat"
+        android:icon="@drawable/primal_1"
+        android:title="Kyro IA" />
+
+    <item
+        android:id="@+id/nav_syllabus"
+        android:icon="@drawable/ic_flecha_derecha"
+        android:title="Temario" />
+
+    <item
+        android:id="@+id/nav_profile"
+        android:icon="@drawable/dot"
+        android:title="Perfil" />
+
+</menu>

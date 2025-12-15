@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.button.MaterialButton xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:backgroundTint="@color/b900"
+    android:id="@+id/btnAction"
+    android:insetBottom="0dp"
+    android:insetLeft="0dp"
+
+    android:insetRight="0dp"
+    android:insetTop="0dp"
+    android:layout_height="100dp"
+    android:layout_margin="24dp"
+    android:layout_width="100dp"
+
+    android:stateListAnimator="@drawable/scale_press"
+    app:cornerRadius="50dp"
+    app:elevation="8dp"
+    app:icon="@android:drawable/ic_media_next"
+
+    app:iconGravity="textStart"
+    app:iconSize="48dp"
+    app:iconTint="@color/black"
+
+    app:layout_constraintBottom_toBottomOf="parent"
+
+    app:layout_constraintEnd_toEndOf="parent"
+
+    app:layout_constraintStart_toStartOf="parent"
+    app:pressedTranslationZ="12dp"
+    app:rippleColor="@color/black" />
