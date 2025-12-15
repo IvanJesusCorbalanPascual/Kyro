@@ -235,7 +235,7 @@
                         android:layout_height="match_parent"
                         android:gravity="center"
                         android:background="@drawable/fondo_blanco_redondeado"
-                        android:text="Arrastra y suelta archivos o haga clic para buscarlos"
+                        android:text="Pulse aquí para adjuntar archivos"
                         android:textColor="#1A1A1A"
                         android:textSize="13sp"
                         android:textStyle="bold"

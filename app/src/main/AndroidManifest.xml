@@ -11,6 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Kyro">
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -18,10 +19,22 @@
             android:theme="@style/Theme.Kyro">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".TemarioActivity"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
+
+        <activity
+            android:name=".TemarioSeleccionadoActivity"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
+
+        <activity
+            android:name=".ModificarTemarioActivity"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
+
     </application>
 
 </manifest>
