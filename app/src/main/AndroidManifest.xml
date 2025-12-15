@@ -33,6 +33,10 @@
             android:name=".TemarioSeleccionadoActivity"
             android:exported="false" />
 
+        <activity
+            android:name=".AjustesActivity"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
+
     </application>
 
 </manifest>
