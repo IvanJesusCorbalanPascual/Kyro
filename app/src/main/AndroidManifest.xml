@@ -10,30 +10,28 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Kyro">
+        android:theme="@style/Theme.Kyro"
+        tools:targetApi="31">
 
+        <!-- Tu actividad de Temario -->
         <activity
-            android:name=".MainActivity"
-            android:exported="true"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.Kyro">
+            android:name=".TemarioActivity"
+            android:exported="true"> <!-- Exported true si es la launcher, false si no -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
+        <!-- Tu actividad de Calendario -->
         <activity
-            android:name=".TemarioActivity"
-            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
+            android:name=".CalendarioActivity"
+            android:exported="false" />
 
+        <!-- Tu actividad de Temario Seleccionado -->
         <activity
             android:name=".TemarioSeleccionadoActivity"
-            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
-
-        <activity
-            android:name=".ModificarTemarioActivity"
-            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
+            android:exported="false" />
 
     </application>
 
