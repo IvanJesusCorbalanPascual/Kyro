@@ -51,12 +51,12 @@ class TemarioActivity : AppCompatActivity() {
         }
 
         // Marcar "Temario" como seleccionado
-        bottomNav.selectedItemId = R.id.nav_temario
+        bottomNav.selectedItemId = R.id.nav_syllabus
 
         bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 // Navegación a Calendario
-                R.id.nav_calendario -> {
+                R.id.nav_calendar -> {
                     try {
                         val intent = Intent(this, CalendarioActivity::class.java)
                         // FLAGS: Reordenan el historial para que no se acumulen actividades
@@ -72,9 +72,7 @@ class TemarioActivity : AppCompatActivity() {
                     }
                 }
                 // Ya estamos en Temario
-                R.id.nav_temario -> true
-
-                // TODO: Aquí puedes añadir los casos para Inicio, IA y Ajustes
+                R.id.nav_syllabus -> true
 
                 else -> false
             }

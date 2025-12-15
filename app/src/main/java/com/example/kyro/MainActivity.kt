@@ -9,9 +9,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         // Crea un intento temporal para ir a mi actividad principal
-        val intent = Intent(this, TemarioActivity::class.java)
+        val intent = Intent(this, Primal1Activity::class.java)
 
-        // Inicia
+        // Inicia la aplicacion
         startActivity(intent)
 
         // Cierra esta pantalla para que no moleste

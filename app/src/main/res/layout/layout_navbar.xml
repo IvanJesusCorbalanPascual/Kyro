@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:background="#FFFFFF"
 
-        app:menu="@menu/menu_bottom_navbar"
+        app:menu="@menu/bottom_nav_menu"
 
         app:labelVisibilityMode="labeled"
         app:itemIconTint="#000000"

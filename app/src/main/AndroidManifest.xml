@@ -10,28 +10,58 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Kyro"
-        tools:targetApi="31">
+        android:theme="@style/Theme.Kyro">
 
-        <!-- Tu actividad de Temario -->
         <activity
-            android:name=".TemarioActivity"
-            android:exported="true"> <!-- Exported true si es la launcher, false si no -->
+            android:name=".MainActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.Kyro">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <!-- Tu actividad de Calendario -->
         <activity
-            android:name=".CalendarioActivity"
-            android:exported="false" />
+            android:name=".Primal1Activity"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
 
-        <!-- Tu actividad de Temario Seleccionado -->
+        <activity
+            android:name=".Primal2Activity"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
+
+        <activity
+            android:name=".Primal3Activity"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
+
+        <activity
+            android:name=".RegisterActivity"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
+
+        <activity
+            android:name=".LoginActivity"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
+
+        <activity
+            android:name=".HomeActivity"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
+
+        <activity
+            android:name=".TemarioActivity"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
+
         <activity
             android:name=".TemarioSeleccionadoActivity"
-            android:exported="false" />
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
+
+        <activity
+            android:name=".ModificarTemarioActivity"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
+
+        <activity
+            android:name=".CalendarioActivity"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
 
         <activity
             android:name=".AjustesActivity"

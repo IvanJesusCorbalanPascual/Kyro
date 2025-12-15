@@ -2,28 +2,28 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/nav_inicio"
-        android:icon="@android:drawable/ic_menu_rotate"
+        android:id="@+id/nav_home"
+        android:icon="@drawable/ic_home"
         android:title="Inicio" />
 
-    <!-- AQUÍ ESTÁ EL CAMBIO: ID nav_calendario y Título Calendario -->
     <item
-        android:id="@+id/nav_calendario"
-        android:icon="@android:drawable/ic_menu_my_calendar"
-        android:title="Calendario" />
+        android:id="@+id/nav_calendar"
+        android:icon="@drawable/ic_calendar"
+        android:title="Agenda" />
 
     <item
-        android:id="@+id/nav_ia"
-        android:icon="@android:drawable/btn_star_big_on"
-        android:title="IA" />
+        android:id="@+id/nav_ai_chat"
+        android:icon="@drawable/ic_star"
+        android:title="Kyro IA" />
 
     <item
-        android:id="@+id/nav_temario"
-        android:icon="@android:drawable/ic_menu_sort_by_size"
+        android:id="@+id/nav_syllabus"
+        android:icon="@drawable/ic_book"
         android:title="Temario" />
 
     <item
-        android:id="@+id/nav_ajustes"
-        android:icon="@android:drawable/ic_menu_preferences"
+        android:id="@+id/nav_settings"
+        android:icon="@drawable/ic_stats"
         android:title="Ajustes" />
+
 </menu>
