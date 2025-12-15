@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_inicio"
+        android:icon="@android:drawable/ic_menu_rotate"
+        android:title="Inicio" />
+
+    <!-- AQUÍ ESTÁ EL CAMBIO: ID nav_calendario y Título Calendario -->
+    <item
+        android:id="@+id/nav_calendario"
+        android:icon="@android:drawable/ic_menu_my_calendar"
+        android:title="Calendario" />
+
+    <item
+        android:id="@+id/nav_ia"
+        android:icon="@android:drawable/btn_star_big_on"
+        android:title="IA" />
+
+    <item
+        android:id="@+id/nav_temario"
+        android:icon="@android:drawable/ic_menu_sort_by_size"
+        android:title="Temario" />
+
+    <item
+        android:id="@+id/nav_ajustes"
+        android:icon="@android:drawable/ic_menu_preferences"
+        android:title="Ajustes" />
+</menu>

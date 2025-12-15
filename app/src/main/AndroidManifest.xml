@@ -24,26 +24,6 @@
         </activity>
 
         <activity
-            android:name=".Primal1Activity"
-            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
-
-        <activity
-            android:name=".Primal2Activity"
-            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
-
-        <activity
-            android:name=".Primal3Activity"
-            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
-
-        <activity
-            android:name=".RegisterActivity"
-            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
-
-        <activity
-            android:name=".LoginActivity"
-            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
-
-        <activity
             android:name=".TemarioActivity"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
 
