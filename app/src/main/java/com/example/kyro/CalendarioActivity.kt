@@ -33,15 +33,15 @@ class CalendarioActivity : AppCompatActivity() {
         }
 
         // Marcamos el botón de calendario como seleccionado
-        bottomNav.selectedItemId = R.id.nav_calendario
+        bottomNav.selectedItemId = R.id.nav_calendar
 
         bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 // Si pulsan Calendario, no hacemos nada (ya estamos aquí)
-                R.id.nav_calendario -> true
+                R.id.nav_calendar -> true
 
                 // Si pulsan Temario, volvemos
-                R.id.nav_temario -> {
+                R.id.nav_syllabus -> {
                     val intent = Intent(this, TemarioActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
                     startActivity(intent)

@@ -17,7 +17,7 @@ class LoginActivity : AppCompatActivity() {
 
         // El boton de "Iniciar Sesión" lleva al usuario a la pantalla principal
         btnLogin.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
+            val intent = Intent(this, HomeActivity::class.java)
             startActivity(intent)
             finish()
         }
