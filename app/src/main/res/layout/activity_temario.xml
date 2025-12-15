@@ -7,7 +7,6 @@
     android:layout_height="match_parent"
     android:background="#F5F5F5">
 
-    <!-- ZONA DE SCROLL -->
     <androidx.core.widget.NestedScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -34,7 +33,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"/>
 
-            <!-- TARJETA 1 -->
+            <!-- Contenedor superior con los temarios -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/contenedorTemarios"
                 android:layout_width="match_parent"
@@ -61,7 +60,7 @@
                         android:textStyle="bold"
                         android:layout_marginBottom="12dp"/>
 
-                    <!-- ITEM 1 -->
+                    <!-- Temario 1 -->
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -74,7 +73,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:minHeight="70dp"
-                            android:background="#D8F1FD"> <!-- COLOR PLANO, NO DRAWABLE -->
+                            android:background="#D8F1FD">
 
                             <View
                                 android:layout_width="6dp"
@@ -127,7 +126,7 @@
                         </androidx.constraintlayout.widget.ConstraintLayout>
                     </com.google.android.material.card.MaterialCardView>
 
-                    <!-- ITEM 2 -->
+                    <!-- Temario 2 -->
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -195,7 +194,7 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- TARJETA 2: CARGAR NUEVO TEMARIO -->
+            <!-- Contenedor inferior para cargar nuevos temarios -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardContainerCargarTemario"
                 android:layout_width="match_parent"
@@ -242,6 +241,7 @@
                         app:strokeWidth="0dp"
                         app:cardBackgroundColor="#FFFFFF">
 
+                        <!-- Aquí el usuario podra adjuntar archivos en el futuro -->
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
@@ -251,9 +251,23 @@
                             android:textSize="13sp"
                             android:textStyle="bold"
                             android:padding="8dp"/>
+
                     </com.google.android.material.card.MaterialCardView>
 
-                    <!-- Botón Generar -->
+                    <!-- EditText para que el usuario pueda escribir -->
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
+                        android:layout_marginTop="12dp"
+                        android:background="@drawable/fondo_blanco_redondeado"
+                        android:gravity="top|start"
+                        android:padding="16dp"
+                        android:hint="También puedes pegar el texto del temario aquí..."
+                        android:textColorHint="#808080"
+                        android:textColor="#1A1A1A"
+                        android:textSize="13sp" />
+
+                    <!-- Botón para generar ejercicios -->
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnGenerar"
                         android:layout_width="match_parent"

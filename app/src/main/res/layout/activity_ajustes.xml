@@ -8,6 +8,7 @@
     android:background="#FFFFFF"
     android:padding="24dp">
 
+    <!-- Icono para retroceder a la vista anterior -->
     <ImageView
         android:id="@+id/btnAtras"
         android:layout_width="wrap_content"
@@ -17,6 +18,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/tvTituloAjustes"
         app:layout_constraintBottom_toBottomOf="@id/tvTituloAjustes"/>
+
+    <!-- Título de la página -->
     <TextView
         android:id="@+id/tvTituloAjustes"
         android:layout_width="wrap_content"
@@ -38,6 +41,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/tvTituloAjustes"
         app:layout_constraintBottom_toBottomOf="@id/tvTituloAjustes"/>
+
+    <!-- Contenedor con los botones superiores -->
     <LinearLayout
         android:id="@+id/containerOpciones"
         android:layout_width="match_parent"
@@ -56,6 +61,7 @@
             app:cardBackgroundColor="#F5F5F5"
             android:layout_marginBottom="16dp">
 
+            <!-- Botón de configuración de cuenta, contiene icono y texto -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="98dp"
@@ -99,6 +105,7 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
+        <!-- Botón para cambiar de idioma -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnIdioma"
             android:layout_width="match_parent"
@@ -116,6 +123,7 @@
             android:stateListAnimator="@null"
             android:layout_marginBottom="12dp"/>
 
+        <!-- Botón para cambiar de tema -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnTema"
             android:layout_width="match_parent"
@@ -134,6 +142,7 @@
 
     </LinearLayout>
 
+    <!-- Contenedor con los botones inferiores-->
     <LinearLayout
         android:id="@+id/containerActions"
         android:layout_width="match_parent"
@@ -142,6 +151,7 @@
         android:layout_marginBottom="20dp"
         app:layout_constraintBottom_toTopOf="@id/viewSpacerBottom">
 
+        <!-- Botón para cerrar sesión, contiene su icono y texto-->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/btnCerrarSesion"
             android:layout_width="match_parent"
@@ -175,6 +185,7 @@
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <!-- Botón para eliminar cuenta, contiene su icono y texto-->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/btnEliminarCuenta"
             android:layout_width="match_parent"
@@ -210,6 +221,7 @@
 
     </LinearLayout>
 
+    <!-- Espaciador para evitar que este demasiado junto a la parte inferior -->
     <View
         android:id="@+id/viewSpacerBottom"
         android:layout_width="match_parent"
