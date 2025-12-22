@@ -1,6 +1,5 @@
 package com.example.kyro
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
@@ -14,6 +13,9 @@ class AjustesActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ajustes)
+
+        // Llama al Helper y dile que ilumine "nav_settings"
+        NavigationHelper.setupBottomNavigation(this, R.id.nav_settings)
 
         initListeners()
     }
@@ -96,6 +98,7 @@ class AjustesActivity : AppCompatActivity() {
         // Resalta el botón de Eliminar de color rojo, así indica su riesgo
         val dialog = builder.create()
         dialog.show()
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(resources.getColor(android.R.color.holo_red_dark))
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+            .setTextColor(resources.getColor(android.R.color.holo_red_dark))
     }
 }

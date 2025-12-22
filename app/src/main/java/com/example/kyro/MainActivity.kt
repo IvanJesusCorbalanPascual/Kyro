@@ -8,7 +8,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Crea un intento temporal para ir a mi actividad principal
+        // Al iniciar la aplicación por primera vez, te llevara a la presentación de la app,
+        // todo: logica para que no se vuelva a mostrar
         val intent = Intent(this, Primal1Activity::class.java)
 
         // Inicia la aplicacion

@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF"
-    android:padding="24dp">
+    android:padding="0dp">
 
     <ImageView
         android:id="@+id/btnAtras"
@@ -14,6 +14,7 @@
         android:layout_height="wrap_content"
         android:src="@drawable/ic_back_arrow"
         app:tint="#000000"
+        android:layout_marginLeft="20dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/tvTituloAjustes"
         app:layout_constraintBottom_toBottomOf="@id/tvTituloAjustes"/>
@@ -59,7 +60,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="98dp"
-                android:background="@drawable/fondo_blanco_kyro"
+                android:background="@drawable/bg_blanco_kyro"
                 android:backgroundTint="#F5F5F5"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
@@ -69,7 +70,7 @@
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_marginEnd="16dp"
-                    android:background="@drawable/fondo_blanco_redondeado"
+                    android:background="@drawable/bg_blanco_redondeado"
                     android:padding="1dp"
                     android:src="@drawable/ic_person"
                     app:tint="#000000" />
@@ -103,7 +104,7 @@
             android:id="@+id/btnIdioma"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:background="@drawable/fondo_blanco_kyro"
+            android:background="@drawable/bg_blanco_kyro"
             app:backgroundTint="@null"
             android:text="Cambiar Idioma"
             android:textColor="#000000"
@@ -120,7 +121,7 @@
             android:id="@+id/btnTema"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:background="@drawable/fondo_blanco_kyro"
+            android:background="@drawable/bg_blanco_kyro"
             app:backgroundTint="@null"
             android:text="Tema"
             android:textColor="#000000"
@@ -146,7 +147,7 @@
             android:id="@+id/btnCerrarSesion"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:background="@drawable/fondo_blanco_kyro"
+            android:background="@drawable/bg_blanco_kyro"
             android:backgroundTint="#F5F5F5"
             android:layout_marginBottom="12dp">
             <LinearLayout
@@ -179,7 +180,7 @@
             android:id="@+id/btnEliminarCuenta"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:background="@drawable/fondo_blanco_kyro"
+            android:background="@drawable/bg_blanco_kyro"
             android:backgroundTint="#F5F5F5">
 
             <LinearLayout
@@ -215,5 +216,18 @@
         android:layout_width="match_parent"
         android:layout_height="80dp"
         app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <!-- Barra de navegación-->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigation"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        app:elevation="8dp"
+        app:labelVisibilityMode="labeled"
+        app:menu="@menu/bottom_nav_menu"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

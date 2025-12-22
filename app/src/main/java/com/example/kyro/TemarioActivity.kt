@@ -14,11 +14,12 @@ class TemarioActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_temario)
 
-        // 1. Configurar botones de "Estudiar"
+        // Configurar botones de "Estudiar"
         setupStudyButtons()
 
-        // 2. Configurar menú inferior
+        // Configurar menú inferior
         setupBottomNavigation()
+        NavigationHelper.setupBottomNavigation(this, R.id.nav_syllabus)
     }
 
     private fun setupStudyButtons() {
@@ -59,11 +60,9 @@ class TemarioActivity : AppCompatActivity() {
                 R.id.nav_calendar -> {
                     try {
                         val intent = Intent(this, CalendarioActivity::class.java)
-                        // FLAGS: Reordenan el historial para que no se acumulen actividades
                         intent.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
                         startActivity(intent)
                         overridePendingTransition(0, 0) // Quita animación brusca
-                        // finish() // Comentado: A veces es mejor no matar la actividad actual si quieres volver atrás rápido
                         true
                     } catch (e: Exception) {
                         Log.e("TemarioActivity", "Error al abrir CalendarioActivity", e)

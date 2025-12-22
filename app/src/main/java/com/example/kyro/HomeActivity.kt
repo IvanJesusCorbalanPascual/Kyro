@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.card.MaterialCardView
 
 class HomeActivity : AppCompatActivity() {
@@ -12,46 +11,10 @@ class HomeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
 
-        setupBottomNavigation()
+        // Llama al Helper y dile que ilumine "nav_home"
+        NavigationHelper.setupBottomNavigation(this, R.id.nav_home)
+
         setupQuickActions()
-    }
-
-    private fun setupBottomNavigation() {
-        val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNavigation)
-
-        // Marcando "Inicio" como seleccionado por defecto
-        bottomNav.selectedItemId = R.id.nav_home
-
-        bottomNav.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.nav_home -> true
-
-                R.id.nav_calendar -> {
-                    startActivity(Intent(this, CalendarioActivity::class.java))
-                    overridePendingTransition(0, 0)
-                    true
-                }
-
-                R.id.nav_ai_chat -> {
-                    Toast.makeText(this, "Próximamente: Chat IA", Toast.LENGTH_SHORT).show()
-                    true
-                }
-
-                R.id.nav_syllabus -> {
-                    startActivity(Intent(this, TemarioActivity::class.java))
-                    overridePendingTransition(0, 0)
-                    true
-                }
-
-                R.id.nav_settings -> {
-                    startActivity(Intent(this, AjustesActivity::class.java))
-                    overridePendingTransition(0, 0)
-                    true
-                }
-
-                else -> false
-            }
-        }
     }
 
     private fun setupQuickActions() {
@@ -64,7 +27,5 @@ class HomeActivity : AppCompatActivity() {
         btnQuickSyllabus.setOnClickListener {
             startActivity(Intent(this, TemarioActivity::class.java))
         }
-
-
     }
 }

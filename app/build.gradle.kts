@@ -60,4 +60,16 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+
+    // Supabase
+    implementation("io.github.jan-tennert.supabase:gotrue-kt:2.5.0") // Auth
+    implementation("io.github.jan-tennert.supabase:postgrest-kt:2.5.0") // Base de Datos
+    implementation("io.ktor:ktor-client-android:2.3.12") // Cliente HTTP
+
+    // Corrutinas (Para no congelar la pantalla al cargar)
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
+
+    // Serialización JSON (Importante para enviar datos a la BBDD)
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
 }

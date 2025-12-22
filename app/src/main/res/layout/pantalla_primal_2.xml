@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="24dp"
-    android:background="@drawable/fondo_primal">
+    android:background="@drawable/img_fondo_primal">
 
     <ImageView
         android:id="@+id/imgKyroLogo"
@@ -87,26 +87,26 @@
             android:layout_width="12dp"
             android:layout_height="12dp"
             android:layout_marginEnd="8dp"
-            android:src="@drawable/dot"
+            android:src="@drawable/ic_dot"
             android:state_selected="true" />
 
         <ImageView
             android:layout_width="12dp"
             android:layout_height="12dp"
             android:layout_marginEnd="8dp"
-            android:src="@drawable/dot" />
+            android:src="@drawable/ic_dot" />
 
         <ImageView
             android:layout_width="12dp"
             android:layout_height="12dp"
-            android:src="@drawable/dot" />
+            android:src="@drawable/ic_dot" />
     </LinearLayout>
 
     <ImageButton
         android:id="@+id/btnNext"
         android:layout_width="80dp"
         android:layout_height="40dp"
-        android:background="@drawable/fondo_azul_oscuro_kyro"
+        android:background="@drawable/bg_azul_oscuro_kyro"
         android:src="@drawable/right_arrow"
         android:scaleType="centerInside"
         android:padding="12dp"

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
@@ -38,7 +37,7 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/fondo_azul_claro_kyro"
+                android:background="@drawable/bg_azul_claro_kyro"
                 android:minHeight="80dp">
 
                 <View
@@ -101,7 +100,7 @@
             android:layout_marginTop="24dp"
             android:orientation="vertical"
             android:padding="20dp"
-            android:background="@drawable/fondo_azul_kyro"
+            android:background="@drawable/bg_azul_kyro"
             app:layout_constraintTop_toBottomOf="@id/cardInfoTemario">
 
             <TextView
@@ -125,7 +124,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/fondo_azul_claro_kyro"
+                    android:background="@drawable/bg_azul_claro_kyro"
                     android:orientation="vertical"
                     android:padding="16dp">
 
@@ -159,7 +158,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/fondo_azul_claro_kyro"
+                    android:background="@drawable/bg_azul_claro_kyro"
                     android:orientation="vertical"
                     android:padding="16dp">
 
@@ -193,7 +192,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/fondo_azul_claro_kyro"
+                    android:background="@drawable/bg_azul_claro_kyro"
                     android:orientation="vertical"
                     android:padding="16dp">
 
@@ -227,7 +226,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/fondo_azul_claro_kyro"
+                    android:background="@drawable/bg_azul_claro_kyro"
                     android:orientation="vertical"
                     android:padding="16dp">
 
@@ -260,7 +259,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/fondo_azul_claro_kyro"
+                    android:background="@drawable/bg_azul_claro_kyro"
                     android:orientation="vertical"
                     android:padding="16dp">
 
@@ -289,6 +288,19 @@
             android:layout_width="match_parent"
             android:layout_height="80dp"
             app:layout_constraintTop_toBottomOf="@id/containerEjercicios"/>
+
+        <!-- MENÚ INFERIOR -->
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottomNavigation"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            app:elevation="8dp"
+            app:labelVisibilityMode="labeled"
+            app:menu="@menu/bottom_nav_menu"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
