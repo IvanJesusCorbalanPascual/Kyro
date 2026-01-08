@@ -259,7 +259,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="80dp"
                         android:layout_marginTop="12dp"
-                        android:background="@drawable/fondo_blanco_redondeado"
+                        android:background="@drawable/bg_blanco_redondeado"
                         android:gravity="top|start"
                         android:padding="16dp"
                         android:hint="También puedes pegar el texto del temario aquí..."
