@@ -45,21 +45,38 @@
                 android:layout_height="1dp"
                 android:background="#E0E0E0" />
 
-            <!-- 3. BOTÓN AÑADIR -->
+            <!-- 3. BOTONES PARA AÑADIR (MODIFICADO) -->
+            <!-- Botón para Añadir Examen -->
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnAddEvent"
+                android:id="@+id/btnAddExam"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="+ Añadir Examen/Tarea"
+                android:text="+ Añadir Examen"
                 android:textColor="@android:color/white"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="16dp"
+                app:backgroundTint="#0085FF"
+                app:cornerRadius="20dp"
+                android:paddingStart="24dp"
+                android:paddingEnd="24dp"
+                android:textAllCaps="false" />
+
+            <!-- Botón para Añadir Tarea -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnAddTask"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="+ Añadir Tarea"
+                android:textColor="@android:color/white"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="8dp"
                 android:layout_marginBottom="16dp"
                 app:backgroundTint="#0085FF"
                 app:cornerRadius="20dp"
                 android:paddingStart="24dp"
                 android:paddingEnd="24dp"
                 android:textAllCaps="false" />
+
 
             <!-- 4. LISTA DE TAREAS -->
             <LinearLayout
