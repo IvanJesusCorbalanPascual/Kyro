@@ -29,3 +29,9 @@ data class Ejercicio(
     // Guarda la respuesta correcta por si fuera necesario
     val respuestaCorrecta: String = ""
 ) : Serializable
+
+// Clase para poder enviar datos, contiene una etiqueta para no chocar con Serializable
+@kotlinx.serialization.Serializable
+data class ApunteUsuario(
+    val contenido: String
+)
