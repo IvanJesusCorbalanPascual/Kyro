@@ -61,3 +61,4 @@ Thumbs.db
 local.properties
 *.lock
 *.bin
+.idea/caches/deviceStreaming.xml

@@ -3,6 +3,7 @@ package com.example.kyro
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
@@ -12,7 +13,17 @@ class Primal3Activity : AppCompatActivity() {
         setContentView(R.layout.pantalla_primal_3)
 
         val btnNext = findViewById<Button>(R.id.btnNext)
+        val layoutDots = findViewById<LinearLayout>(R.id.layoutDots)
         val tvGoToLogin = findViewById<TextView>(R.id.tvGoToLogin)
+
+        val punto1 = layoutDots.getChildAt(0)
+        val punto2 = layoutDots.getChildAt(1)
+        val punto3 = layoutDots.getChildAt(2)
+
+        // Lógica de Puntos
+        punto1.isSelected = false
+        punto2.isSelected = false
+        punto3.isSelected = true
 
         // El boton de "Empezar Ahora" lleva al usuario al registro
         btnNext.setOnClickListener {

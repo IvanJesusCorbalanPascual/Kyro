@@ -3,6 +3,7 @@ package com.example.kyro
 import android.content.Intent
 import android.os.Bundle
 import android.widget.ImageButton
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 
 class Primal2Activity : AppCompatActivity() {
@@ -11,13 +12,26 @@ class Primal2Activity : AppCompatActivity() {
         setContentView(R.layout.pantalla_primal_2)
 
         val btnNext = findViewById<ImageButton>(R.id.btnNext)
+        val layoutDots = findViewById<LinearLayout>(R.id.layoutDots)
 
-        btnNext.setOnClickListener { // Avanza de pantalla
+        val punto1 = layoutDots.getChildAt(0)
+        val punto2 = layoutDots.getChildAt(1)
+        val punto3 = layoutDots.getChildAt(2)
+
+        // Lógica de Puntos
+        punto1.isSelected = false
+        punto2.isSelected = true
+        punto3.isSelected = false
+
+        btnNext.setOnClickListener {
+            // Ahora vamos a la Primal3Activity
             val intent = Intent(this, Primal3Activity::class.java)
             startActivity(intent)
 
-            // Animación de transición suave
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
+
+            // Para que el usuario no pueda voler atrás con el botón 'back' del móvil
+            finish()
         }
     }
 }
