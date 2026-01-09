@@ -8,7 +8,7 @@ import io.github.jan.supabase.serializer.KotlinXSerializer
 object SupabaseClient {
     val client = createSupabaseClient(
         supabaseUrl = "https://ixrjuqrwybkgububbdia.supabase.co",
-        supabaseKey = "sb_secret_j2P96Sih-CojS4A9IxLKrw_huNPNogi"
+        supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml4cmp1cXJ3eWJrZ3VidWJiZGlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYzMDY0ODcsImV4cCI6MjA4MTg4MjQ4N30.2JHiF5Mztko2NKHdJPEoot7BzJ_fr3fJMbfadIrKQqM"
     ) {
         install(Auth)
         install(Postgrest)
