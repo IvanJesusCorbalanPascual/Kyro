@@ -1,7 +1,10 @@
+import java.util.Properties
+import java.io.FileInputStream
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    kotlin("plugin.serialization") version "1.9.0"
 }
 
 android {
@@ -10,6 +13,12 @@ android {
         version = release(36)
     }
 
+    val localProperties = Properties()
+    val localPropertiesFile = rootProject.file("local.properties")
+    if (localPropertiesFile.exists()) {
+        localProperties.load(FileInputStream(localPropertiesFile))
+    }
+    val apiKey = localProperties.getProperty("GEMINI_API_KEY") ?: ""
     defaultConfig {
         applicationId = "com.example.kyro"
         minSdk = 31
@@ -18,6 +27,9 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        // Para utilizar la ApiKey en el programa
+        buildConfigField("String", "API_KEY", "\"$apiKey\"")
     }
 
     buildTypes {
@@ -38,6 +50,8 @@ android {
     }
     buildFeatures {
         compose = true
+
+        buildConfig = true
     }
 }
 
@@ -72,4 +86,10 @@ dependencies {
 
     // Serialización JSON (Importante para enviar datos a la BBDD)
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+
+    // SDK de Google AI para Android
+    implementation("com.google.ai.client.generativeai:generativeai:0.9.0")
+
+    // Gson (para convertir el texto de la IA a Objetos Kotlin)
+    implementation("com.google.code.gson:gson:2.10.1")
 }
