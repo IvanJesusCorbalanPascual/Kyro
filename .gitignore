@@ -1,89 +1,30 @@
-# --- Android / Build ---
-/build
-*/build
-*.apk
-*.ap_
-*.aab
-*.dex
-*.class
-
-# --- Gradle ---
-.gradle/
-build/
-!gradle-wrapper.jar
-
-# --- Local Configuration (NUNCA subir esto) ---
-local.properties
-
-# --- Android Studio / IntelliJ IDEA ---
+# --- Android ---
 *.iml
+.gradle/
+local.properties
+.idea/caches
+.idea/libraries
+.idea/modules.xml
 .idea/workspace.xml
-.idea/tasks.xml
-.idea/gradle.xml
+.idea/navEditor.xml
 .idea/assetWizardSettings.xml
 .idea/dictionaries
-.idea/libraries
-.idea/caches
-.idea/navEditor.xml
-.idea/compiler.xml
-.idea/modules.xml
+# NOTA: misc.xml a veces se comparte, pero por si da problemas lo dejámos aquí
 .idea/misc.xml
-# Mantener codeStyles si quieres compartir reglas de formato
-# .idea/codeStyles/
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+
+# --- Android Studio ---
+*.apk
+*.ap_
+*.dex
+*.class
 
 # --- Kotlin ---
 .kotlin/
 
-# --- Android Specific ---
-# Logcat logs
+# --- Otros ---
 *.log
-
-# Generated files
-bin/
-gen/
-
-# Android Studio Navigation Editor temp files
-.navigation/
-
-# Android Studio captures folder
-captures/
-
-# Google Services (si usas Firebase, el json suele ser privado en repos públicos)
-# google-services.json
-
-# --- OS Specific (Basura del sistema operativo) ---
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-Thumbs.db
-local.properties
-*.lock
-*.bin
-.gradle/8.13/checksums/checksums.lock
-.gradle/8.13/checksums/md5-checksums.bin
-.gradle/8.13/checksums/sha1-checksums.bin
-.gradle/8.13/executionHistory/executionHistory.lock
-.gradle/8.13/fileHashes/fileHashes.bin
-.gradle/8.13/fileHashes/fileHashes.lock
-.gradle/8.13/fileHashes/resourceHashesCache.bin
-.gradle/buildOutputCleanup/buildOutputCleanup.lock
-.idea/caches/deviceStreaming.xml
-.idea/codeStyles/codeStyleConfig.xml
-.idea/codeStyles/Project.xml
-.idea/misc.xml
-local.properties
-.gradle/8.13/checksums/checksums.lock
-.gradle/8.13/checksums/md5-checksums.bin
-.gradle/8.13/checksums/sha1-checksums.bin
-.gradle/8.13/executionHistory/executionHistory.lock
-.gradle/8.13/fileHashes/fileHashes.bin
-.gradle/8.13/fileHashes/fileHashes.lock
-.gradle/8.13/fileHashes/resourceHashesCache.bin
-.gradle/buildOutputCleanup/buildOutputCleanup.lock
-.idea/caches/deviceStreaming.xml
-.idea/codeStyles/codeStyleConfig.xml
-.idea/codeStyles/Project.xml
-.idea/misc.xml
-local.properties
