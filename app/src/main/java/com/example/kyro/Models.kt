@@ -33,5 +33,6 @@ data class Ejercicio(
 // Clase para poder enviar datos, contiene una etiqueta para no chocar con Serializable
 @kotlinx.serialization.Serializable
 data class ApunteUsuario(
+    val id: Long = 0,
     val contenido: String
 )
