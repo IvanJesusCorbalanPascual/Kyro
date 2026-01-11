@@ -20,10 +20,13 @@ class AjustesActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ajustes)
 
+        initListeners()
+    }
+
+    override fun onResume() {
+        super.onResume()
         // Llama al Helper y dile que ilumine "nav_settings"
         NavigationHelper.setupBottomNavigation(this, R.id.nav_settings)
-
-        initListeners()
     }
 
     private fun initListeners() {

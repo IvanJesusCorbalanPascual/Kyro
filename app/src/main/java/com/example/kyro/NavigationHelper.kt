@@ -21,6 +21,10 @@ object NavigationHelper {
         bottomNav.setOnItemSelectedListener { item ->
             // Si pulsamos el mismo botón donde ya estamos, no hacemos nada y mantenemos la selección
             if (item.itemId == selectedItemId) {
+                if (item.itemId == R.id.nav_syllabus && activity !is TemarioActivity) {
+                    startActivityWithAnimation(activity, TemarioActivity::class.java)
+                    return@setOnItemSelectedListener true
+                }
                 return@setOnItemSelectedListener true
             }
 

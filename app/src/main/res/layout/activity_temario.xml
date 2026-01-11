@@ -60,136 +60,29 @@
                         android:textStyle="bold"
                         android:layout_marginBottom="12dp"/>
 
-                    <!-- Temario 1 -->
-                    <com.google.android.material.card.MaterialCardView
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rvTemarios"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:cardCornerRadius="12dp"
-                        app:cardElevation="0dp"
-                        app:strokeWidth="0dp"
-                        android:layout_marginBottom="12dp">
+                        android:nestedScrollingEnabled="false" />
 
-                        <androidx.constraintlayout.widget.ConstraintLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:minHeight="70dp"
-                            android:background="#D8F1FD">
+                    <ProgressBar
+                        android:id="@+id/barraProgreso"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:visibility="visible" />
 
-                            <View
-                                android:layout_width="6dp"
-                                android:layout_height="0dp"
-                                android:background="#00A8E8"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent"/>
-
-                            <TextView
-                                android:id="@+id/tvItem1Titulo"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="20dp"
-                                android:layout_marginTop="12dp"
-                                android:layout_marginEnd="8dp"
-                                android:text="Java POO Avanzado"
-                                android:textColor="#000000"
-                                android:textStyle="bold"
-                                android:textSize="14sp"
-                                app:layout_constraintEnd_toStartOf="@+id/btnEstudiar1"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="20dp"
-                                android:layout_marginTop="4dp"
-                                android:layout_marginBottom="12dp"
-                                android:text="12 ejercicios"
-                                android:textColor="#000000"
-                                android:textSize="12sp"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@id/tvItem1Titulo"/>
-
-                            <TextView
-                                android:id="@+id/btnEstudiar1"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginEnd="16dp"
-                                android:text="Estudiar"
-                                android:textColor="#00A8E8"
-                                android:textStyle="bold"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
-
-                        </androidx.constraintlayout.widget.ConstraintLayout>
-                    </com.google.android.material.card.MaterialCardView>
-
-                    <!-- Temario 2 -->
-                    <com.google.android.material.card.MaterialCardView
+                    <TextView
+                        android:id="@+id/tvVacio"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:cardCornerRadius="12dp"
-                        app:cardElevation="0dp"
-                        app:strokeWidth="0dp"
-                        app:cardBackgroundColor="#D8F1FD">
-
-                        <androidx.constraintlayout.widget.ConstraintLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:minHeight="70dp">
-
-                            <View
-                                android:layout_width="6dp"
-                                android:layout_height="0dp"
-                                android:background="#00A8E8"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent"/>
-
-                            <TextView
-                                android:id="@+id/tvItem2Titulo"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="20dp"
-                                android:layout_marginTop="12dp"
-                                android:layout_marginEnd="8dp"
-                                android:text="Base de datos"
-                                android:textColor="#1A1A1A"
-                                android:textStyle="bold"
-                                android:textSize="14sp"
-                                app:layout_constraintEnd_toStartOf="@+id/btnEstudiar2"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent"/>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="20dp"
-                                android:layout_marginTop="4dp"
-                                android:layout_marginBottom="12dp"
-                                android:text="12 ejercicios"
-                                android:textColor="#404040"
-                                android:textSize="12sp"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@id/tvItem2Titulo"/>
-
-                            <TextView
-                                android:id="@+id/btnEstudiar2"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginEnd="16dp"
-                                android:text="Estudiar"
-                                android:textColor="#00A8E8"
-                                android:textStyle="bold"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toTopOf="parent"/>
-
-                        </androidx.constraintlayout.widget.ConstraintLayout>
-                    </com.google.android.material.card.MaterialCardView>
+                        android:text="No hay temarios guardados."
+                        android:gravity="center"
+                        android:textColor="#555555"
+                        android:padding="20dp"
+                        android:visibility="gone" />
 
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -231,6 +124,20 @@
                         android:textSize="13sp"
                         android:lineSpacingExtra="2dp"/>
 
+                    <EditText
+                        android:id="@+id/etTituloNuevoTemario"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:background="@drawable/bg_blanco_redondeado"
+                        android:padding="12dp"
+                        android:hint="Título (Ej: Java POO Tema 1)"
+                        android:inputType="textCapSentences"
+                        android:maxLines="1"
+                        android:textColorHint="#808080"
+                        android:textColor="#1A1A1A"
+                        android:textSize="14sp" />
+
 
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="match_parent"
@@ -243,6 +150,7 @@
 
                         <!-- Aquí el usuario podra adjuntar archivos en el futuro -->
                         <TextView
+                            android:id="@+id/btnAdjuntarArchivo"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:gravity="center"
@@ -256,6 +164,7 @@
 
                     <!-- EditText para que el usuario pueda escribir -->
                     <EditText
+                        android:id="@+id/etContenidoNuevoTemario"
                         android:layout_width="match_parent"
                         android:layout_height="80dp"
                         android:layout_marginTop="12dp"
