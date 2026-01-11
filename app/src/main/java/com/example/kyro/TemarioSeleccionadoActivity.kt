@@ -17,53 +17,26 @@ class TemarioSeleccionadoActivity: AppCompatActivity() {
         val tvTituloTema = findViewById<TextView>(R.id.tvNombreAsignatura)
         // Al pulsar "Modificar", desplaza a la siguiente pantalla
         val btnModificar = findViewById<TextView>(R.id.btnModificar)
-        val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNavigation)
 
         // Recibe los datos de la pantalla anterior
-        val contenidoRecibido = intent.getStringExtra("EXTRA_CONTENIDO") ?: "Sin Contenido"
+        val tituloRecibido = intent.getStringExtra("EXTRA_TITULO") ?: "Sin Título"
+        val contenidoRecibido = intent.getStringExtra("EXTRA_CONTENIDO") ?: ""
         val idRecibido = intent.getLongExtra("EXTRA_ID", -1)
 
         // Sustituye el texto por defecto por el real de la BD
-        tvTituloTema.text = contenidoRecibido
+        tvTituloTema.text = tituloRecibido
 
         // Lógica al pulsar el botón modificar
         btnModificar.setOnClickListener {
             val intent = Intent(this, ModificarTemarioActivity::class.java)
 
             // Le pasa también el contenido a la pantalla de modificar
+            intent.putExtra("EXTRA_TITULO", tituloRecibido)
             intent.putExtra("EXTRA_CONTENIDO", contenidoRecibido)
             intent.putExtra("EXTRA_ID", idRecibido)
 
             startActivity(intent)
         }
-
-        // Configura el menú inferior de navegación
-        setupBottomNavigation(bottomNav)
-    }
-
-    // Configuración de la barra de navegación
-    private fun setupBottomNavigation(bottomNav: BottomNavigationView) {
-
-        // Mantiene seleccionado temario en la barra de navegación
-        bottomNav.selectedItemId = R.id.nav_syllabus
-
-        bottomNav.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.nav_home -> {
-                    startActivity(Intent(this, MainActivity::class.java))
-                    true
-                }
-                R.id.nav_syllabus -> true
-                R.id.nav_calendar -> {
-                    startActivity(Intent(this, CalendarioActivity::class.java))
-                    true
-                }
-                R.id.nav_settings -> {
-                    startActivity(Intent(this, AjustesActivity::class.java))
-                    true
-                }
-                else -> false
-            }
-        }
+        NavigationHelper.setupBottomNavigation(this, R.id.nav_syllabus)
     }
 }

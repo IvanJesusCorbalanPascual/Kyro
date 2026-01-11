@@ -32,7 +32,7 @@ class ApuntesAdapter(
         val apunte = lista[position]
 
         // Pone el texto del temario en la tarjeta
-        holder.tvTitulo.text = apunte.contenido
+        holder.tvTitulo.text = if (apunte.titulo.isNotEmpty()) apunte.titulo else "Sin Título"
 
         // Avisa a la Activity principal si el usuario toca la tarjeta
         holder.itemView.setOnClickListener { onClick(apunte) }

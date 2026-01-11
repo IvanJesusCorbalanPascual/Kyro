@@ -9,7 +9,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.button.MaterialButton
 import io.github.jan.supabase.postgrest.from
 import kotlinx.coroutines.launch
@@ -23,23 +22,28 @@ class ModificarTemarioActivity : AppCompatActivity() {
 
         // Conenexiones de elementos, los busca en el XML por id para usarlos en la lógica
         val etContenido = findViewById<EditText>(R.id.etContenidoApuntes)
+        val etTitulo = findViewById<EditText>(R.id.etTituloModificar)
         val btnAnalizar = findViewById<MaterialButton>(R.id.btnAnalizar)
         val btnEliminar = findViewById<MaterialButton>(R.id.btnEliminar)
         val btnAdjuntar = findViewById<TextView>(R.id.btnAdjuntar)
-        val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottomNavigation)
 
         // Vincula el título de la tarjeta
         val tvTituloTarjeta = findViewById<TextView>(R.id.tvNombreAsignatura)
 
         // Recibe los datos de la pantalla anterior
         val contenidoOriginal = intent.getStringExtra("EXTRA_CONTENIDO") ?: ""
+        val tituloOriginal = intent.getStringExtra("EXTRA_TITULO") ?: ""
         val idRecibido = intent.getLongExtra("EXTRA_ID", -1)
 
         // Rellena la caja de texto con lo que hay en la BD
         etContenido.setText(contenidoOriginal)
 
+        // Pone el título en su sitio
+        etTitulo.setText(tituloOriginal)
+
+
         // Actualiza el título visual de la tarjeta en la parte superior
-        tvTituloTarjeta.text = contenidoOriginal
+        tvTituloTarjeta.text = tituloOriginal
 
         // Lógica de los botones
         btnAdjuntar.setOnClickListener {
@@ -49,13 +53,16 @@ class ModificarTemarioActivity : AppCompatActivity() {
         btnAnalizar.setOnClickListener {
             // Coge el texto y lo almacena quitando espacios sobrantes
             val contenidoTexto = etContenido.text.toString().trim()
+            val tituloTexto = etTitulo.text.toString().trim()
 
-            // Comprueba si esta vacio el edit text de los apuntes
-            if (contenidoTexto.isEmpty()) {
+            // Comprueba si esta vacio el edit text de los apuntes, título y contenido
+            if (tituloTexto.isEmpty()) {
+                etTitulo.error = "El título es obligatorio"
+                mostrarMensaje("Falta el título")
+            } else if (contenidoTexto.isEmpty()) {
                 // Marca un error visual en la caja si no hay texto y avisa al usuario
                 etContenido.error = "Debes pegar el texto del temario aquí"
                 mostrarMensaje("El campo de texto está vacío")
-
             // Ha funcionado correctamente habiendo detectado que había texto
             } else {
                 mostrarMensaje("Actualizando apuntes en la nube...")
@@ -74,6 +81,7 @@ class ModificarTemarioActivity : AppCompatActivity() {
                                 {
                                     // Que columna cambia y con que valor
                                     set("contenido", contenidoTexto)
+                                    set("titulo", tituloTexto)
                                 }
                             ) {
                                 // Filtra para cambiar solo el que tenga este ID
@@ -84,14 +92,7 @@ class ModificarTemarioActivity : AppCompatActivity() {
 
                         mostrarMensaje("¡Temario actualizado!")
 
-                        // Vuelve a la pantalla general de temario cuando ha terminado de guardar para que se recarguen los datos
-                        val intent = Intent(this@ModificarTemarioActivity, TemarioActivity::class.java)
-
-                        // Limpian la navegación y evita problemas al volver atrás
-                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
-                        startActivity(intent)
-                        // Cierra la pantalla
-                        finish()
+                        volverALaLista()
 
                     } catch (e: Exception) {
                         // Si falla el internet, muestra el error y permite al usuario reintentarlo
@@ -112,35 +113,9 @@ class ModificarTemarioActivity : AppCompatActivity() {
             confirmarEliminacion(idRecibido)
         }
 
-        // Mantiene seleccionado temario en la barra de navegación
-        bottomNavigation.selectedItemId = R.id.nav_syllabus
+        // Ilumina el icono de "Temario" indicando que estamos aquí
+        NavigationHelper.setupBottomNavigation(this, R.id.nav_syllabus)
 
-        // Configuración de la barra de navegación
-        bottomNavigation.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.nav_home -> {
-                    startActivity(Intent(this, MainActivity::class.java))
-                    true
-                }
-                R.id.nav_syllabus -> {
-                    startActivity(Intent(this, TemarioActivity::class.java))
-                    true
-                }
-                R.id.nav_calendar -> {
-                    startActivity(Intent(this, CalendarioActivity::class.java))
-                    true
-                }
-                R.id.nav_settings -> {
-                    startActivity(Intent(this, AjustesActivity::class.java))
-                    true
-                }
-                R.id.nav_ai_chat -> {
-                    mostrarMensaje("IA: Próximamente ")
-                    true
-                }
-                else -> false
-            }
-        }
     }
 
     // Abre una ventana de confirmación para que el usuario afirme si esta seguro
@@ -207,6 +182,10 @@ class ModificarTemarioActivity : AppCompatActivity() {
 
         // Inicia la actividad, recargando los datos
         startActivity(intent)
+
+        // Elimina la animación para que sea más fluido
+        overridePendingTransition(0, 0)
+
         // Termina la actividad actual para ahorrar memoria
         finish()
     }

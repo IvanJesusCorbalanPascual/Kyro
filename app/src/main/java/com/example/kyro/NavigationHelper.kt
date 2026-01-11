@@ -27,6 +27,10 @@ object NavigationHelper {
         bottomNav.setOnItemSelectedListener { item ->
             // Si pulsamos el botón de la pantalla en la que YA estamos, no hacemos nada
             if (item.itemId == selectedItemId) {
+                if (item.itemId == R.id.nav_syllabus && activity !is TemarioActivity) {
+                    startActivityWithAnimation(activity, TemarioActivity::class.java)
+                    return@setOnItemSelectedListener true
+                }
                 return@setOnItemSelectedListener true
             }
 

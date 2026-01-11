@@ -1,10 +1,11 @@
 package com.example.kyro
 
-import android.content.Intent // ¡No olvides importar Intent!
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.button.MaterialButton
+
 
 class CalendarioActivity : AppCompatActivity() {
 
@@ -12,7 +13,7 @@ class CalendarioActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_calendario_tareas)
 
-        NavigationHelper.setupBottomNavigation(this, R.id.nav_calendar)
+
 
         val botonAnadirTarea: MaterialButton = findViewById(R.id.btnAddTask)
         val botonAnadirExamen: MaterialButton = findViewById(R.id.btnAddExam)
@@ -33,5 +34,11 @@ class CalendarioActivity : AppCompatActivity() {
             // val intent = Intent(this, AddExamActivity::class.java)
             // startActivity(intent)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Llama al Helper y le dice que ilumine Agenda
+        NavigationHelper.setupBottomNavigation(this, R.id.nav_calendar)
     }
 }

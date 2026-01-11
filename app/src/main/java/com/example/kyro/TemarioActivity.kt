@@ -21,31 +21,43 @@ import kotlinx.coroutines.launch
 class TemarioActivity : AppCompatActivity() {
 
     // Variables globales, todas las funciones pueden acceder a ellas
-    private lateinit var etNuevoTemario: EditText
+    private lateinit var etTituloNuevo: EditText
+    private lateinit var etContenidoNuevo: EditText
     private lateinit var btnGenerar: MaterialButton
     private lateinit var rvTemarios: RecyclerView
     private lateinit var barraProgreso: ProgressBar
     private lateinit var tvVacio: TextView
+    private lateinit var btnAdjuntar: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_temario)
 
         // Variables vinculadas con los IDs del XML
-        etNuevoTemario = findViewById(R.id.etNuevoTemario)
+        etTituloNuevo = findViewById(R.id.etTituloNuevoTemario)
+        etContenidoNuevo = findViewById(R.id.etContenidoNuevoTemario)
         btnGenerar = findViewById(R.id.btnGenerar)
         rvTemarios = findViewById(R.id.rvTemarios)
         tvVacio = findViewById(R.id.tvVacio)
         barraProgreso = findViewById(R.id.barraProgreso)
 
-        // Configurar menú inferior
-        setupBottomNavigation()
+        val btnAdjuntarClick = findViewById<View>(R.id.btnAdjuntarArchivo)
+
+        btnAdjuntarClick.setOnClickListener {
+            Toast.makeText(this, "Funcionalidad de adjuntar PDF esta en desarrollo", Toast.LENGTH_SHORT).show()
+        }
 
         // Carga la lista al entrar
         cargarTemarios()
 
         // Configura el botón que permite cargar nuevos temas
         setupGenerarButton()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Llama al Helper y le dice que ilumine temario
+        NavigationHelper.setupBottomNavigation(this, R.id.nav_syllabus)
     }
 
     // Carga los datos desde Supabase
@@ -62,6 +74,8 @@ class TemarioActivity : AppCompatActivity() {
                     .select()
                     // Convierte a objetos Kotlin el JSON
                     .decodeList<ApunteUsuario>()
+                    // Lo más nuevo aparece primero
+                    .sortedByDescending { it.id }
 
                 // Oculta la carga al terminar
                 barraProgreso.visibility = View.GONE
@@ -96,20 +110,21 @@ class TemarioActivity : AppCompatActivity() {
     // Configura el botón para generar ejercicios
     private fun setupGenerarButton() {
         btnGenerar.setOnClickListener {
-            val texto = etNuevoTemario.text.toString().trim()
+            val titulo = etTituloNuevo.text.toString().trim()
+            val contenido = etContenidoNuevo.text.toString().trim()
 
             // Si no hay texto, avisa al usuario
-            if (texto.isEmpty()) {
-                etNuevoTemario.error = "Escribe algo primero"
-            } else {
-                // Si hay texto, llama a la función para subirlo
-                subirNuevoTemario(texto)
+            if (titulo.isEmpty()) {
+                etTituloNuevo.error = "Escribe el título, es obligatorio"
+                return@setOnClickListener
+            }
+                // Si están ambos datos, llama a la función para subirlo
+                subirNuevoTemario(titulo, contenido)
             }
         }
-    }
 
     // Función que envia los datos a la nube
-    private fun subirNuevoTemario(contenido: String) {
+    private fun subirNuevoTemario(titulo: String, contenido: String) {
         // Bloquea el botón para no pulsarse más veces
         btnGenerar.isEnabled = false
         btnGenerar.text = "Guardando..."
@@ -117,7 +132,7 @@ class TemarioActivity : AppCompatActivity() {
         lifecycleScope.launch {
             try {
                 // Crea el objeto que se debe subir
-                val nuevoApunte = ApunteUsuario(contenido = contenido)
+                val nuevoApunte = ApunteUsuario(titulo = titulo, contenido = contenido)
 
                 // Lo inserta en Supabase
                 SupabaseClient.client
@@ -126,10 +141,16 @@ class TemarioActivity : AppCompatActivity() {
 
                 // Si no hay problemas, muestra al usuario que se ha guardado correctamente
                 Toast.makeText(this@TemarioActivity, "¡Guardado!", Toast.LENGTH_SHORT).show()
-                // Borra el campo con el texto
-                etNuevoTemario.text.clear()
 
-                // Espera medio segundo para que la BD pueda procesar el dato
+                // Limpia ambos campos
+                etTituloNuevo.text.clear()
+                etContenidoNuevo.text.clear()
+
+                // Quita el foco, hace que baje el teclado
+                etTituloNuevo.clearFocus()
+                etContenidoNuevo.clearFocus()
+
+                // Espera medio segundo para que la BD pueda procesar los datos
                 delay(500)
                 // Recarga la lista para que se actualice sola
                 cargarTemarios()
@@ -150,41 +171,10 @@ class TemarioActivity : AppCompatActivity() {
         val intent = Intent(this, TemarioSeleccionadoActivity::class.java)
 
         // Mete el contenido en el intent
+        intent.putExtra("EXTRA_TITULO", apunte.titulo)
         intent.putExtra("EXTRA_CONTENIDO", apunte.contenido)
         intent.putExtra("EXTRA_ID", apunte.id)
 
         startActivity(intent)
-    }
-
-    // Navegación de la parte inferior de la aplicación
-    private fun setupBottomNavigation() {
-        val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNavigation) ?: return
-        // Marca "Temario" como seleccionado
-        bottomNav.selectedItemId = R.id.nav_syllabus
-
-        bottomNav.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                // Navegación a Home
-                R.id.nav_home -> {
-                        startActivity(Intent(this, MainActivity::class.java))
-                        true
-                }
-                // Ya estamos en Temario
-                R.id.nav_syllabus -> true
-
-                // Navegación a calendario
-                R.id.nav_calendar -> {
-                    startActivity(Intent(this, CalendarioActivity::class.java))
-                    true
-                }
-
-                // Navegación a ajustes
-                R.id.nav_settings -> {
-                startActivity(Intent(this, AjustesActivity::class.java))
-                true
-            }
-                else -> false
-            }
-        }
     }
 }

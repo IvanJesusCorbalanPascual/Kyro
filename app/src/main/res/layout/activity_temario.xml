@@ -60,6 +60,7 @@
                         android:textStyle="bold"
                         android:layout_marginBottom="12dp"/>
 
+
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rvTemarios"
                         android:layout_width="match_parent"
@@ -123,6 +124,20 @@
                         android:textSize="13sp"
                         android:lineSpacingExtra="2dp"/>
 
+                    <EditText
+                        android:id="@+id/etTituloNuevoTemario"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:background="@drawable/bg_blanco_redondeado"
+                        android:padding="12dp"
+                        android:hint="Título (Ej: Java POO Tema 1)"
+                        android:inputType="textCapSentences"
+                        android:maxLines="1"
+                        android:textColorHint="#808080"
+                        android:textColor="#1A1A1A"
+                        android:textSize="14sp" />
+
 
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="match_parent"
@@ -135,6 +150,7 @@
 
                         <!-- Aquí el usuario podra adjuntar archivos en el futuro -->
                         <TextView
+                            android:id="@+id/btnAdjuntarArchivo"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:gravity="center"
@@ -148,7 +164,7 @@
 
                     <!-- EditText para que el usuario pueda escribir -->
                     <EditText
-                        android:id="@+id/etNuevoTemario"
+                        android:id="@+id/etContenidoNuevoTemario"
                         android:layout_width="match_parent"
                         android:layout_height="80dp"
                         android:layout_marginTop="12dp"

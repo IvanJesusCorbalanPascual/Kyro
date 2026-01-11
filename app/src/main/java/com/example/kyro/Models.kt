@@ -34,5 +34,8 @@ data class Ejercicio(
 @kotlinx.serialization.Serializable
 data class ApunteUsuario(
     val id: Long = 0,
-    val contenido: String
+    val created_at: String = "",
+    val contenido: String = "",
+    val titulo: String = "",
+    val user_id: String = ""
 )
