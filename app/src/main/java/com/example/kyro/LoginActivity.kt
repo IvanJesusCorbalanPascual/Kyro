@@ -22,8 +22,8 @@
 
             // Vinculacion de vistas
             // Guardando lo que escribe el usuario en los EditText
-            val etEmail = findViewById<EditText>(R.id.etEmail)
-            val etPassword = findViewById<EditText>(R.id.etPassword)
+            val etEmail = findViewById<EditText>(R.id.etPassword)
+            val etPassword = findViewById<EditText>(R.id.etForgotPassword)
             val btnLogin = findViewById<Button>(R.id.btnLogin)
             val tvGoToRegister = findViewById<TextView>(R.id.tvGoToRegister)
 

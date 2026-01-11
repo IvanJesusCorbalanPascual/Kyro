@@ -49,9 +49,8 @@ android {
         jvmTarget = "11"
     }
     buildFeatures {
-        compose = true
-
         buildConfig = true
+        compose = true
     }
 }
 
@@ -85,7 +84,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
 
     // Serialización JSON (Importante para enviar datos a la BBDD)
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.0")
 
     // SDK de Google AI para Android
     implementation("com.google.ai.client.generativeai:generativeai:0.9.0")
