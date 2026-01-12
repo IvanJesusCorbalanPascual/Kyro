@@ -4,6 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Examen(
+    val id: Long? = null,
     val id_usuario: String,
     val nombre_asignatura: String,
     val descripcion: String,

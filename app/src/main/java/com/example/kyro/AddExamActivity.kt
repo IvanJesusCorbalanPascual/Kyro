@@ -1,6 +1,7 @@
 package com.example.kyro
 
 import android.os.Bundle
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Spinner
@@ -26,6 +27,29 @@ class AddExamActivity : AppCompatActivity() {
         val spinnerNotificacion2: Spinner = findViewById(R.id.spinnerNotificacion2)
         val btnGuardar: Button = findViewById(R.id.btnGuardarExamen)
 
+        val eventId = intent.getLongExtra("id", -1)
+        val isEditMode = eventId != -1L
+
+        if (isEditMode) {
+            // Modo Edición
+            val title = intent.getStringExtra("title")
+            val description = intent.getStringExtra("description")
+            val date = intent.getStringExtra("date")
+            val notif1 = intent.getStringExtra("notif1")
+            val notif2 = intent.getStringExtra("notif2")
+
+            etAsignatura.setText(title)
+            etDescripcion.setText(description)
+            etFecha.setText(date)
+
+            // Asegurarse de que el adapter no es nulo
+            val adapter = spinnerNotificacion1.adapter as? ArrayAdapter<String>
+            if (adapter != null) {
+                spinnerNotificacion1.setSelection(adapter.getPosition(notif1))
+                spinnerNotificacion2.setSelection(adapter.getPosition(notif2))
+            }
+        }
+
         btnGuardar.setOnClickListener {
             val asignatura = etAsignatura.text.toString().trim()
             val descripcion = etDescripcion.text.toString().trim()
@@ -40,31 +64,42 @@ class AddExamActivity : AppCompatActivity() {
 
             val idUsuarioActual = SupabaseClient.client.auth.currentUserOrNull()?.id
             if (idUsuarioActual == null) {
-                Toast.makeText(this, "Error: sesión no válida. Vuelve a iniciar sesión.", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Error: sesión no válida.", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
 
-            val nuevoExamen = Examen(
-                id_usuario = idUsuarioActual,
-                nombre_asignatura = asignatura,
-                descripcion = descripcion,
-                fecha_examen = fecha,
-                notificacion1 = notificacion1,
-                notificacion2 = notificacion2
-            )
-
             lifecycleScope.launch(Dispatchers.IO) {
                 try {
-                    SupabaseClient.client.postgrest["examenes"].insert(nuevoExamen)
-
-                    withContext(Dispatchers.Main) {
-                        Toast.makeText(applicationContext, "¡Examen guardado con éxito!", Toast.LENGTH_SHORT).show()
-                        finish()
+                    if (isEditMode) {
+                        // Actualizar examen existente
+                        SupabaseClient.client.postgrest["examenes"].update({
+                            set("nombre_asignatura", asignatura)
+                            set("descripcion", descripcion)
+                            set("fecha_examen", fecha)
+                            set("notificacion1", notificacion1)
+                            set("notificacion2", notificacion2)
+                        }) { filter { eq("id", eventId) } }
+                    } else {
+                        // Insertar nuevo examen
+                        val nuevoExamen = Examen(
+                            id_usuario = idUsuarioActual,
+                            nombre_asignatura = asignatura,
+                            descripcion = descripcion,
+                            fecha_examen = fecha,
+                            notificacion1 = notificacion1,
+                            notificacion2 = notificacion2
+                        )
+                        SupabaseClient.client.postgrest["examenes"].insert(nuevoExamen)
                     }
 
+                    withContext(Dispatchers.Main) {
+                        val message = if (isEditMode) "¡Examen actualizado!" else "¡Examen guardado!"
+                        Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
+                        finish()
+                    }
                 } catch (e: Exception) {
                     withContext(Dispatchers.Main) {
-                        Toast.makeText(applicationContext, "Error al guardar: ${e.message}", Toast.LENGTH_LONG).show()
+                        Toast.makeText(applicationContext, "Error: ${e.message}", Toast.LENGTH_LONG).show()
                     }
                 }
             }

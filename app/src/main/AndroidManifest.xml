@@ -75,6 +75,9 @@
         <activity
             android:name=".AddExamActivity"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
+        <activity
+            android:name=".EventDetailActivity"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
 
     </application>
 
