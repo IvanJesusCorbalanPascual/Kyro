@@ -20,6 +20,15 @@ class Primal3Activity : AppCompatActivity() {
         val punto2 = layoutDots.getChildAt(1)
         val punto3 = layoutDots.getChildAt(2)
 
+        // Abrimos el fichero de preferencias (como una libreta pequeña)
+        val sharedPref = getSharedPreferences("PreferenciasApp", MODE_PRIVATE)
+
+        // Escribimos que el tutorial ya se ha completado
+        with (sharedPref.edit()) {
+            putBoolean("intro_completada", true) // La clave es "intro_completada"
+            apply() // Guardamos los cambios
+        }
+
         // Lógica de Puntos
         punto1.isSelected = false
         punto2.isSelected = false

@@ -11,6 +11,10 @@ class Primal1Activity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.pantalla_primal_1)
 
+        // Leemos la preferencia antes de cargar el diseño
+        val sharedPref = getSharedPreferences("PreferenciasApp", MODE_PRIVATE)
+        val yaVisto = sharedPref.getBoolean("intro_completada", false) // false es el valor por defecto
+
         // Referenciando los elementos de la UI
         val btnNext = findViewById<ImageButton>(R.id.btnNext)
         val layoutDots = findViewById<LinearLayout>(R.id.layoutDots)
@@ -22,10 +26,18 @@ class Primal1Activity : AppCompatActivity() {
         val punto3 = layoutDots.getChildAt(2)
 
         // Activamos el selector para ESTA pantalla (Pantalla 1)
-        // Al poner 'isSelected = true', Android usa el color @color/b400 definido en tu XML
+        // Al poner 'isSelected = true', Android usa el color @color/b400 definido en el XML
         punto1.isSelected = true
         punto2.isSelected = false
         punto3.isSelected = false
+
+        // Si el usuario ya ha visto las pantallas primales, las salta
+        if (yaVisto) {
+            val intent = Intent(this, LoginActivity::class.java) // A donde quieras ir
+            startActivity(intent)
+            finish() // Cierra esta actividad para que no se vea
+            return // Detiene la ejecución para no cargar el diseño de abajo
+        }
 
         // Lógica del Botón Siguiente
         btnNext.setOnClickListener {

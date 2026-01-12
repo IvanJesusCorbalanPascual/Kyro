@@ -107,7 +107,7 @@
         android:layout_width="120dp"
         android:layout_height="60dp"
         android:background="@drawable/bg_azul_oscuro_kyro"
-        android:src="@drawable/right_arrow"
+        android:src="@drawable/ic_flecha_derecha"
         android:scaleType="centerInside"
         android:padding="12dp"
         android:layout_marginBottom="16dp"
