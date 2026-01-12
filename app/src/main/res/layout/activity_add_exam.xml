@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    tools:context=".AddTaskActivity">
+    tools:context=".AddExamActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,7 +17,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Añadir Nueva Tarea"
+            android:text="Añadir Nuevo Examen"
             android:textSize="24sp"
             android:textStyle="bold"
             android:layout_marginBottom="24dp"/>
@@ -29,7 +29,7 @@
             android:layout_marginBottom="16dp">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etAsignaturaTarea"
+                android:id="@+id/etAsignaturaExamen"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Nombre de la Asignatura"
@@ -43,10 +43,10 @@
             android:layout_marginBottom="16dp">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etDescripcionTarea"
+                android:id="@+id/etDescripcionExamen"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Descripción de la Tarea"
+                android:hint="Descripción del Examen"
                 android:inputType="textMultiLine"
                 android:minLines="3"
                 android:gravity="top" />
@@ -59,10 +59,10 @@
             android:layout_marginBottom="24dp">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etFechaEntrega"
+                android:id="@+id/etFechaExamen"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Fecha de Entrega (YYYY-MM-DD)"
+                android:hint="Fecha del Examen (YYYY-MM-DD)"
                 android:inputType="date" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -93,10 +93,10 @@
             android:entries="@array/notification_options"/>
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnGuardarTarea"
+            android:id="@+id/btnGuardarExamen"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Guardar Tarea"
+            android:text="Guardar Examen"
             app:backgroundTint="#0085FF"
             app:cornerRadius="20dp" />
 

@@ -2,11 +2,12 @@ package com.example.kyro
 
 import kotlinx.serialization.Serializable
 
-@Serializable // Muy importante
+@Serializable
 data class Examen(
-    val id_usuario: String,         // El ID del usuario logueado
+    val id_usuario: String,
     val nombre_asignatura: String,
-    val temario: String,
-    val fecha_examen: String,       // Formato "YYYY-MM-DD"
-    val nota: Double? = null        // Puede ser nulo si aún no se ha calificado
+    val descripcion: String,
+    val fecha_examen: String,
+    val notificacion1: String? = null,
+    val notificacion2: String? = null
 )

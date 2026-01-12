@@ -9,4 +9,11 @@
     <string name="primal7">Empezar Ahora</string>
     <string name="primal8">Inicia Sesion</string>
 
+    <string-array name="notification_options">
+        <item>Una semana antes</item>
+        <item>Dos días antes</item>
+        <item>Un día antes</item>
+        <item>6 horas antes</item>
+        <item>1 hora antes</item>
+    </string-array>
 </resources>
