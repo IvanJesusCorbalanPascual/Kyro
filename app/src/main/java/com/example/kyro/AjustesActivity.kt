@@ -39,8 +39,8 @@ class AjustesActivity : AppCompatActivity() {
         // Lógica de configuración de cuenta (Se profundizara en el futuro)
         val cardCuenta = findViewById<MaterialCardView>(R.id.cardCuenta)
         cardCuenta.setOnClickListener {
-            // Muestra el mensaje ir a perfil de usuario, ya que aun no esta creado.
-            Toast.makeText(this, "Ir a Perfil de Usuario", Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, UsuarioActivity::class.java)
+            startActivity(intent)
         }
 
         // Botón de cambiar idioma, solo muestra "Seleccionar Idioma" se desarrollara proximamente
@@ -118,24 +118,19 @@ class AjustesActivity : AppCompatActivity() {
                     // Borramos al usuario en la nube
                     SupabaseClient.client.postgrest.rpc("delete_user")
 
-                    // 2. Intentamos limpiar la sesión local.
-                    // Lo envolvemos en un try-catch interno porque si el usuario ya no existe,
-                    // signOut() lanzará el error que viste, pero NO queremos que eso detenga la navegación.
+                    // Limpiando la sesión local.
                     try {
                         SupabaseClient.client.auth.signOut()
-                    } catch (e: Exception) {
-                        // Ignoramos el error aquí, porque es normal que falle si el usuario ya no existe.
-                    }
+                    } catch (e: Exception) {}
 
-                    // 3. IMPORTANTE: Limpiar también la preferencia de "Mantener Sesión"
-                    // Si no haces esto, al reiniciar la app intentará entrar sola y fallará.
+                    // Limpiando la preferencia de "Mantener sesión iniciada"
                     val sharedPref = getSharedPreferences("PreferenciasKyro", android.content.Context.MODE_PRIVATE)
                     with(sharedPref.edit()) {
                         clear() // Borra todas las preferencias
                         apply()
                     }
 
-                    // 4. Ahora sí, navegamos al Login pase lo que pase
+                    // Navegamos al Login pase lo que pase
                     val intent = Intent(this@AjustesActivity, LoginActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)

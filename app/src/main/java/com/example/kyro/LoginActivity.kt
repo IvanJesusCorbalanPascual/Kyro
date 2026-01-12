@@ -47,7 +47,7 @@ class LoginActivity : AppCompatActivity() {
 
             // A) Validación Local
             if (email.isEmpty() || password.isEmpty()) {
-                Toast.makeText(this, "Por favor, rellena todos los campos", Toast.LENGTH_SHORT).show()
+                showKyroToast("Porfavor, rellena todos los campos")
                 return@setOnClickListener
             }
 
@@ -71,7 +71,8 @@ class LoginActivity : AppCompatActivity() {
 
                     // C) Éxito: Vamos al Home
                     withContext(Dispatchers.Main) {
-                        Toast.makeText(applicationContext, "¡Bienvenido al Nido!", Toast.LENGTH_SHORT).show()
+                        showKyroToast("Bienvenido al Nido!")
+                        // Toast.makeText(applicationContext, "¡Bienvenido al Nido!", Toast.LENGTH_SHORT).show()
                         irAHome()
                     }
 

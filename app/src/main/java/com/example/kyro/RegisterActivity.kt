@@ -14,6 +14,8 @@ import io.github.jan.supabase.postgrest.from
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
 
 class RegisterActivity : AppCompatActivity() {
 
@@ -39,7 +41,8 @@ class RegisterActivity : AppCompatActivity() {
             // --- Validaciones ---
             // Campos en blanco
             if (name.isEmpty() || email.isEmpty() || password.isEmpty()) {
-                Toast.makeText(this, "Por favor, rellena todos los campos", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(this, "Por favor, rellena todos los campos", Toast.LENGTH_SHORT).show()
+                showKyroToast("Porfavor, rellena todos los campos")
                 return@setOnClickListener
             }
 
@@ -59,11 +62,15 @@ class RegisterActivity : AppCompatActivity() {
             // Usamos lifecycleScope para lanzar una tarea en segundo plano, esto se encarga de evitar errores si el usuario cierra la pantalla
             lifecycleScope.launch(Dispatchers.IO) {
                 try {
-                    // A) Crear el usuario en Auth (Authentication)
+                    // Creando el usuario en Auth (Authentication) y guardando los datos de este en la tabla 'profiles'
                     SupabaseClient.client.auth.signUpWith(Email) {
                         this.email = email
                         this.password = password
+                        this.data = buildJsonObject{
+                            put("username", name)
+                        }
                     }
+
 
                     // B) Obtener el usuario recién creado
                     val user = SupabaseClient.client.auth.currentUserOrNull()
@@ -79,7 +86,11 @@ class RegisterActivity : AppCompatActivity() {
 
                         // D) Volver al hilo principal para cambiar de pantalla
                         withContext(Dispatchers.Main) {
-                            Toast.makeText(applicationContext, "¡Registro exitoso! Por favor confirma tu email.", Toast.LENGTH_LONG).show()
+                            Toast.makeText(
+                                applicationContext,
+                                "¡Registro exitoso! Por favor confirma tu email.",
+                                Toast.LENGTH_LONG
+                            ).show()
 
                             // Navegar al Login o directamente al Home
                             val intent = Intent(this@RegisterActivity, LoginActivity::class.java)
@@ -91,7 +102,8 @@ class RegisterActivity : AppCompatActivity() {
                 } catch (e: Exception) {
                     // Manejo de errores (ej: email ya existe, sin internet)
                     withContext(Dispatchers.Main) {
-                        Toast.makeText(applicationContext, "Error: ${e.message}", Toast.LENGTH_LONG).show()
+                        Toast.makeText(applicationContext, "Error: ${e.message}", Toast.LENGTH_LONG)
+                            .show()
                     }
                 }
             }

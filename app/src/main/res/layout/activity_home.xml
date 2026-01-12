@@ -62,7 +62,7 @@
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:src="@drawable/ic_stats"
+                    android:src="@drawable/ic_person"
                     android:scaleType="centerInside"
                     android:background="#E0F7FA"
                     app:tint="#00A8E8"/>
@@ -292,6 +292,8 @@
         app:menu="@menu/bottom_nav_menu"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:itemIconTint="@color/nav_item_colors"
+        app:itemTextColor="@color/nav_item_colors"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

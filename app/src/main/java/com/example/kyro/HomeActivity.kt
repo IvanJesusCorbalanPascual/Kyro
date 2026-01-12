@@ -2,7 +2,6 @@ package com.example.kyro
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.card.MaterialCardView
 import android.app.AppOpsManager
@@ -34,7 +33,8 @@ class HomeActivity : AppCompatActivity() {
     private fun setupQuickActions() {
         val btnQuickAI = findViewById<MaterialCardView>(R.id.btnQuickAI)
         btnQuickAI.setOnClickListener {
-            Toast.makeText(this, "Abriendo Kyro IA...", Toast.LENGTH_SHORT).show()
+            //Toast.makeText(this, "Abriendo Kyro IA...", Toast.LENGTH_SHORT).show()
+            showKyroToast("Abriendo Kyro IA...")
         }
 
         // Botón para ir a temario
