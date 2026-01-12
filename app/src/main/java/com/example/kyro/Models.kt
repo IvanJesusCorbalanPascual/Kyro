@@ -1,5 +1,6 @@
 package com.example.kyro
 
+import kotlinx.serialization.SerialName
 import java.io.Serializable
 
 // Representa  las asignaturas
@@ -37,5 +38,8 @@ data class ApunteUsuario(
     val created_at: String = "",
     val contenido: String = "",
     val titulo: String = "",
-    val user_id: String = ""
+
+    // Para que coincida con su columna de Supabase
+    @SerialName("user_id")
+    val user_id: String? = null
 )

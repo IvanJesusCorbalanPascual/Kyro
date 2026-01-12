@@ -9,14 +9,16 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 import io.github.jan.supabase.postgrest.from
+import io.github.jan.supabase.gotrue.auth
+import io.github.jan.supabase.gotrue.providers.builtin.Email
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+
 
 class TemarioActivity : AppCompatActivity() {
 
@@ -60,7 +62,7 @@ class TemarioActivity : AppCompatActivity() {
         NavigationHelper.setupBottomNavigation(this, R.id.nav_syllabus)
     }
 
-    // Carga los datos desde Supabase
+    // Carga los datos desde Supabase filtrando por usuario
     private fun cargarTemarios() {
         // Muestra la rueda de carga y oculta el mensaje vacio
         barraProgreso.visibility = View.VISIBLE
@@ -68,14 +70,24 @@ class TemarioActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             try {
-                // Pide los datos de la tabla "apuntes_usuario"
-                val listaApuntes = SupabaseClient.client
-                    .from("apuntes_usuario")
-                    .select()
-                    // Convierte a objetos Kotlin el JSON
-                    .decodeList<ApunteUsuario>()
-                    // Lo más nuevo aparece primero
-                    .sortedByDescending { it.id }
+                // Obtiene el usuario conectado en la sesion actual
+                val usuarioActual = SupabaseClient.client.auth.currentUserOrNull()
+
+                // Pide los datos de la tabla "apuntes_usuario" del usuario actual
+                if (usuarioActual != null) {
+                    // Pide los apuntes aplicando el filtro de usuario
+                    val listaApuntes = SupabaseClient.client
+                        .from("apuntes_usuario")
+                        .select {
+                            // Solo trae el user_id que es igual al id
+                            filter {
+                                eq("user_id", usuarioActual.id)
+                            }
+                        }
+                        // Convierte a objetos Kotlin el JSON
+                        .decodeList<ApunteUsuario>()
+                        // Lo más nuevo aparece primero
+                        .sortedByDescending { it.id }
 
                 // Oculta la carga al terminar
                 barraProgreso.visibility = View.GONE
@@ -98,7 +110,14 @@ class TemarioActivity : AppCompatActivity() {
                         abrirDetalle(apunte)
                     }
                 }
-            } catch (e: Exception) {
+            } else {
+                // En el caso improbable de que no haya usuario logeado, oculta
+                barraProgreso.visibility = View.GONE
+                tvVacio.text = "Error de sesión."
+                tvVacio.visibility = View.VISIBLE
+                }
+
+            }catch (e: Exception) {
                 // Si falla por falta de internet, etc, quita la carga y avisa del error
                 barraProgreso.visibility = View.GONE
                 Log.e("TemarioActivity", "Error al cargar" , e)
@@ -131,8 +150,17 @@ class TemarioActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             try {
-                // Crea el objeto que se debe subir
-                val nuevoApunte = ApunteUsuario(titulo = titulo, contenido = contenido)
+                // Identifica el usuario actual en la sesión
+                val usuarioActual = SupabaseClient.client.auth.currentUserOrNull()
+
+                // Si no hay usuario por alguna razón, corta sesión para evitar errores
+                if (usuarioActual == null) {
+                    Toast.makeText(this@TemarioActivity, "Error, La sesión no es valida", Toast.LENGTH_SHORT).show()
+                    return@launch
+                }
+
+                // Crea el objeto que se debe subir pasandole el id del usuarios
+                val nuevoApunte = ApunteUsuario(titulo = titulo, contenido = contenido, user_id = usuarioActual.id)
 
                 // Lo inserta en Supabase
                 SupabaseClient.client
