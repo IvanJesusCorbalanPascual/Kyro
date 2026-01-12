@@ -1,16 +1,25 @@
 package com.example.kyro
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.card.MaterialCardView
 import android.app.AppOpsManager
 import android.content.Context
 import android.provider.Settings
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import android.os.Process
 import androidx.appcompat.app.AlertDialog
 
 class HomeActivity : AppCompatActivity() {
+
+    // Identifica la respuesta del usuario al pedir notificaciones
+    private val CODIGO_PETICION_NOTIFICACIONES = 101
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
@@ -27,6 +36,12 @@ class HomeActivity : AppCompatActivity() {
 
         // Comprueba y pide los  en un dialogo para el modo de estudio Focus si no los tiene
         verificarYPedirPermisosFocus()
+
+        // Comprueba si ya tiene permiso, si lo tiene activa el servicio en segundo plano
+        if (comprobarPermisoDeUso()) {
+            val intentService = Intent(this, MonitorService::class.java)
+            startService(intentService)
+        }
     }
 
     // Configuracion de los botones de las tarjetas
@@ -64,7 +79,25 @@ class HomeActivity : AppCompatActivity() {
 
     // Muestra el diálogo para pedir los permisos y reedirige al usuario si no los tiene
     private fun verificarYPedirPermisosFocus() {
-        // Si no tiene permiso, entra al if
+
+        // Primero pide permiso de notificaciones
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) !=
+                PackageManager.PERMISSION_GRANTED) {
+
+                // Pido el permiso directamente en un pop-up
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                    CODIGO_PETICION_NOTIFICACIONES
+                )
+                // [IMPORTANTE] Hacemos return aquí para que NO salga el diálogo de "Uso" inmediatamente.
+                // Esperamos a que el usuario acepte las notificaciones y vuelva a entrar.
+                return
+            }
+        }
+
+        // Si ya tiene notificaciones, comprueba los datos de uso
         if (!comprobarPermisoDeUso()) {
             // Crea una alerta visual para avisar al usuario de porque necesita la app dichos permisos, obligatorio por Google Play
             val builder = AlertDialog.Builder(this)

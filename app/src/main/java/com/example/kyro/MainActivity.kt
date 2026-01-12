@@ -48,11 +48,17 @@ class MainActivity : AppCompatActivity() {
         // 👇 CÓDIGO ORIGINAL (COMENTADO TEMPORALMENTE) 👇
         // Mantenemos esto apagado para que la app no se cierre mientras la IA piensa
 
+        // Arranca el servicio de monitoreo (Aun no monitorea hasta que se le cede permiso)
+        val monitorIntent = Intent(this, MonitorService::class.java)
+        startService(monitorIntent)
+
          // Al iniciar la aplicación por primera vez, te llevara a la presentación de la app,
         val intent = Intent(this, Primal1Activity::class.java)
-
         // Inicia la aplicacion
         startActivity(intent)
+
+
+
 
         // Cierra esta pantalla para que no moleste
         finish()
