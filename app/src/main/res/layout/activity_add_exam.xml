@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F4F6F8"
-    tools:context=".AddTaskActivity">
+    tools:context=".AddExamActivity">
 
     <!-- Toolbar -->
     <com.google.android.material.appbar.MaterialToolbar
@@ -16,7 +16,7 @@
         android:elevation="4dp"
         app:layout_constraintTop_toTopOf="parent"
         app:navigationIcon="@drawable/ic_back_arrow"
-        app:title="Añadir Tarea" />
+        app:title="Añadir Examen" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -37,7 +37,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_marginBottom="16dp">
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etAsignaturaTarea"
+                    android:id="@+id/etAsignaturaExamen"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Nombre de la Asignatura" />
@@ -49,12 +49,12 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_marginBottom="16dp">
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etDescripcionTarea"
+                    android:id="@+id/etDescripcionExamen"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:minLines="3"
                     android:gravity="top"
-                    android:hint="Descripción de la Tarea" />
+                    android:hint="Descripción del Examen" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -63,10 +63,10 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_marginBottom="24dp">
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etFechaEntrega"
+                    android:id="@+id/etFechaExamen"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Fecha de Entrega (YYYY-MM-DD)"
+                    android:hint="Fecha del Examen (YYYY-MM-DD)"
                     android:inputType="date" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -95,10 +95,10 @@
 
             <!-- Botón Guardar -->
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnGuardarTarea"
+                android:id="@+id/btnGuardarExamen"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Guardar Tarea"
+                android:text="Guardar Examen"
                 android:padding="12dp"
                 app:cornerRadius="20dp" />
 

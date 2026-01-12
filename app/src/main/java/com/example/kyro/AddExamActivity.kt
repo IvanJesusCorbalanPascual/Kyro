@@ -15,11 +15,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class AddTaskActivity : AppCompatActivity() {
+class AddExamActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_add_task)
+        setContentView(R.layout.activity_add_exam)
 
         // --- Toolbar ---
         val toolbar: MaterialToolbar = findViewById(R.id.topAppBar)
@@ -30,19 +30,19 @@ class AddTaskActivity : AppCompatActivity() {
         }
 
         // --- Vistas ---
-        val etAsignatura: EditText = findViewById(R.id.etAsignaturaTarea)
-        val etDescripcion: EditText = findViewById(R.id.etDescripcionTarea)
-        val etFecha: EditText = findViewById(R.id.etFechaEntrega)
+        val etAsignatura: EditText = findViewById(R.id.etAsignaturaExamen)
+        val etDescripcion: EditText = findViewById(R.id.etDescripcionExamen)
+        val etFecha: EditText = findViewById(R.id.etFechaExamen)
         val spinnerNotificacion1: Spinner = findViewById(R.id.spinnerNotificacion1)
         val spinnerNotificacion2: Spinner = findViewById(R.id.spinnerNotificacion2)
-        val btnGuardar: Button = findViewById(R.id.btnGuardarTarea)
+        val btnGuardar: Button = findViewById(R.id.btnGuardarExamen)
 
         val eventId = intent.getLongExtra("id", -1)
         val isEditMode = eventId != -1L
 
         if (isEditMode) {
             // Modo Edición
-            toolbar.title = "Editar Tarea"
+            toolbar.title = "Editar Examen"
             val title = intent.getStringExtra("title")
             val description = intent.getStringExtra("description")
             val date = intent.getStringExtra("date")
@@ -82,28 +82,28 @@ class AddTaskActivity : AppCompatActivity() {
                 try {
                     if (isEditMode) {
                         // Actualizar
-                        SupabaseClient.client.postgrest["tareas"].update({
+                        SupabaseClient.client.postgrest["examenes"].update({
                             set("nombre_asignatura", asignatura)
                             set("descripcion", descripcion)
-                            set("fecha_entrega", fecha)
+                            set("fecha_examen", fecha)
                             set("notificacion1", notificacion1)
                             set("notificacion2", notificacion2)
                         }) { filter { eq("id", eventId) } }
                     } else {
                         // Insertar
-                        val nuevaTarea = Tarea(
+                        val nuevoExamen = Examen(
                             id_usuario = idUsuarioActual,
                             nombre_asignatura = asignatura,
                             descripcion = descripcion,
-                            fecha_entrega = fecha,
+                            fecha_examen = fecha,
                             notificacion1 = notificacion1,
                             notificacion2 = notificacion2
                         )
-                        SupabaseClient.client.postgrest["tareas"].insert(nuevaTarea)
+                        SupabaseClient.client.postgrest["examenes"].insert(nuevoExamen)
                     }
 
                     withContext(Dispatchers.Main) {
-                        val message = if (isEditMode) "¡Tarea actualizada!" else "¡Tarea guardada!"
+                        val message = if (isEditMode) "¡Examen actualizado!" else "¡Examen guardado!"
                         Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
                         finish()
                     }
