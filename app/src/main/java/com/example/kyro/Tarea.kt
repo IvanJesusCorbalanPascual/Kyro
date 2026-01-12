@@ -8,5 +8,7 @@ data class Tarea(
     val nombre_asignatura: String,
     val descripcion: String,
     val fecha_entrega: String,      // Formato "YYYY-MM-DD" para ser compatible con Supabase
-    val completada: Boolean = false // Valor por defecto
+    val completada: Boolean = false, // Valor por defecto
+    val notificacion1: String? = null,
+    val notificacion2: String? = null
 )

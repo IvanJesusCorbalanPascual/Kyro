@@ -13,18 +13,18 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class AddTaskActivity : AppCompatActivity() {
+class AddExamActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_add_task)
+        setContentView(R.layout.activity_add_exam)
 
-        val etAsignatura: EditText = findViewById(R.id.etAsignaturaTarea)
-        val etDescripcion: EditText = findViewById(R.id.etDescripcionTarea)
-        val etFecha: EditText = findViewById(R.id.etFechaEntrega)
+        val etAsignatura: EditText = findViewById(R.id.etAsignaturaExamen)
+        val etDescripcion: EditText = findViewById(R.id.etDescripcionExamen)
+        val etFecha: EditText = findViewById(R.id.etFechaExamen)
         val spinnerNotificacion1: Spinner = findViewById(R.id.spinnerNotificacion1)
         val spinnerNotificacion2: Spinner = findViewById(R.id.spinnerNotificacion2)
-        val btnGuardar: Button = findViewById(R.id.btnGuardarTarea)
+        val btnGuardar: Button = findViewById(R.id.btnGuardarExamen)
 
         btnGuardar.setOnClickListener {
             val asignatura = etAsignatura.text.toString().trim()
@@ -44,21 +44,21 @@ class AddTaskActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            val nuevaTarea = Tarea(
+            val nuevoExamen = Examen(
                 id_usuario = idUsuarioActual,
                 nombre_asignatura = asignatura,
                 descripcion = descripcion,
-                fecha_entrega = fecha,
+                fecha_examen = fecha,
                 notificacion1 = notificacion1,
                 notificacion2 = notificacion2
             )
 
             lifecycleScope.launch(Dispatchers.IO) {
                 try {
-                    SupabaseClient.client.postgrest["tareas"].insert(nuevaTarea)
+                    SupabaseClient.client.postgrest["examenes"].insert(nuevoExamen)
 
                     withContext(Dispatchers.Main) {
-                        Toast.makeText(applicationContext, "¡Tarea guardada con éxito!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(applicationContext, "¡Examen guardado con éxito!", Toast.LENGTH_SHORT).show()
                         finish()
                     }
 

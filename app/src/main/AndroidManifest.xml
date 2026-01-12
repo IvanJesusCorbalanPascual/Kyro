@@ -69,6 +69,12 @@
         <activity
             android:name=".AjustesActivity"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
+        <activity
+            android:name=".AddTaskActivity"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
+        <activity
+            android:name=".AddExamActivity"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
 
         <service
             android:name=".MonitorService"
