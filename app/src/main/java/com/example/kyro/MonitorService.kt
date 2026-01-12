@@ -48,7 +48,7 @@ class MonitorService: Service() {
     private fun detectarAppEnPrimerPlano() {
         try {
 
-            val usm = getSystemService(Context.USAGE_STATS_SERVICE)
+            val usm = getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
             val time = System.currentTimeMillis()
 
             // Pide las estadisticas en los últimos 10 segundos

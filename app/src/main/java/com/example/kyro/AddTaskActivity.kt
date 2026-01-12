@@ -8,6 +8,7 @@ import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.appbar.MaterialToolbar
 import io.github.jan.supabase.gotrue.auth
 import io.github.jan.supabase.postgrest.postgrest
 import kotlinx.coroutines.Dispatchers
@@ -20,6 +21,15 @@ class AddTaskActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_task)
 
+        // --- Toolbar ---
+        val toolbar: MaterialToolbar = findViewById(R.id.topAppBar)
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        toolbar.setNavigationOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
+
+        // --- Vistas ---
         val etAsignatura: EditText = findViewById(R.id.etAsignaturaTarea)
         val etDescripcion: EditText = findViewById(R.id.etDescripcionTarea)
         val etFecha: EditText = findViewById(R.id.etFechaEntrega)
@@ -32,6 +42,7 @@ class AddTaskActivity : AppCompatActivity() {
 
         if (isEditMode) {
             // Modo Edición
+            toolbar.title = "Editar Tarea"
             val title = intent.getStringExtra("title")
             val description = intent.getStringExtra("description")
             val date = intent.getStringExtra("date")
@@ -42,7 +53,6 @@ class AddTaskActivity : AppCompatActivity() {
             etDescripcion.setText(description)
             etFecha.setText(date)
 
-            // Asegurarse de que el adapter no es nulo
             val adapter = spinnerNotificacion1.adapter as? ArrayAdapter<String>
             if (adapter != null) {
                 spinnerNotificacion1.setSelection(adapter.getPosition(notif1))
@@ -71,7 +81,7 @@ class AddTaskActivity : AppCompatActivity() {
             lifecycleScope.launch(Dispatchers.IO) {
                 try {
                     if (isEditMode) {
-                        // Actualizar tarea existente
+                        // Actualizar
                         SupabaseClient.client.postgrest["tareas"].update({
                             set("nombre_asignatura", asignatura)
                             set("descripcion", descripcion)
@@ -80,7 +90,7 @@ class AddTaskActivity : AppCompatActivity() {
                             set("notificacion2", notificacion2)
                         }) { filter { eq("id", eventId) } }
                     } else {
-                        // Insertar nueva tarea
+                        // Insertar
                         val nuevaTarea = Tarea(
                             id_usuario = idUsuarioActual,
                             nombre_asignatura = asignatura,

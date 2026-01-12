@@ -8,6 +8,7 @@ import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.google.android.material.appbar.MaterialToolbar
 import io.github.jan.supabase.gotrue.auth
 import io.github.jan.supabase.postgrest.postgrest
 import kotlinx.coroutines.Dispatchers
@@ -20,6 +21,15 @@ class AddExamActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_exam)
 
+        // --- Toolbar ---
+        val toolbar: MaterialToolbar = findViewById(R.id.topAppBar)
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        toolbar.setNavigationOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+        }
+
+        // --- Vistas ---
         val etAsignatura: EditText = findViewById(R.id.etAsignaturaExamen)
         val etDescripcion: EditText = findViewById(R.id.etDescripcionExamen)
         val etFecha: EditText = findViewById(R.id.etFechaExamen)
@@ -32,6 +42,7 @@ class AddExamActivity : AppCompatActivity() {
 
         if (isEditMode) {
             // Modo Edición
+            toolbar.title = "Editar Examen"
             val title = intent.getStringExtra("title")
             val description = intent.getStringExtra("description")
             val date = intent.getStringExtra("date")
@@ -42,7 +53,6 @@ class AddExamActivity : AppCompatActivity() {
             etDescripcion.setText(description)
             etFecha.setText(date)
 
-            // Asegurarse de que el adapter no es nulo
             val adapter = spinnerNotificacion1.adapter as? ArrayAdapter<String>
             if (adapter != null) {
                 spinnerNotificacion1.setSelection(adapter.getPosition(notif1))
@@ -71,7 +81,7 @@ class AddExamActivity : AppCompatActivity() {
             lifecycleScope.launch(Dispatchers.IO) {
                 try {
                     if (isEditMode) {
-                        // Actualizar examen existente
+                        // Actualizar
                         SupabaseClient.client.postgrest["examenes"].update({
                             set("nombre_asignatura", asignatura)
                             set("descripcion", descripcion)
@@ -80,7 +90,7 @@ class AddExamActivity : AppCompatActivity() {
                             set("notificacion2", notificacion2)
                         }) { filter { eq("id", eventId) } }
                     } else {
-                        // Insertar nuevo examen
+                        // Insertar
                         val nuevoExamen = Examen(
                             id_usuario = idUsuarioActual,
                             nombre_asignatura = asignatura,
