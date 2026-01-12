@@ -113,17 +113,29 @@ class AjustesActivity : AppCompatActivity() {
         builder.setMessage("Esta acción es permanente y borrará todos tus datos. ¿Estás seguro?")
 
         builder.setPositiveButton("Eliminar") { dialog, _ ->
-            // Usamos una corrutina para la operación de red
             lifecycleScope.launch {
                 try {
-                    // 1. Llamamos a la función SQL que creamos en Supabase
-                    // "delete_user" debe coincidir EXACTAMENTE con el nombre en SQL
+                    // Borramos al usuario en la nube
                     SupabaseClient.client.postgrest.rpc("delete_user")
 
-                    // 2. Limpiamos la sesión local en el móvil
-                    SupabaseClient.client.auth.signOut()
+                    // 2. Intentamos limpiar la sesión local.
+                    // Lo envolvemos en un try-catch interno porque si el usuario ya no existe,
+                    // signOut() lanzará el error que viste, pero NO queremos que eso detenga la navegación.
+                    try {
+                        SupabaseClient.client.auth.signOut()
+                    } catch (e: Exception) {
+                        // Ignoramos el error aquí, porque es normal que falle si el usuario ya no existe.
+                    }
 
-                    // 3. Redirigimos al Login y borramos el historial
+                    // 3. IMPORTANTE: Limpiar también la preferencia de "Mantener Sesión"
+                    // Si no haces esto, al reiniciar la app intentará entrar sola y fallará.
+                    val sharedPref = getSharedPreferences("PreferenciasKyro", android.content.Context.MODE_PRIVATE)
+                    with(sharedPref.edit()) {
+                        clear() // Borra todas las preferencias
+                        apply()
+                    }
+
+                    // 4. Ahora sí, navegamos al Login pase lo que pase
                     val intent = Intent(this@AjustesActivity, LoginActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)
@@ -132,10 +144,11 @@ class AjustesActivity : AppCompatActivity() {
                     Toast.makeText(applicationContext, "Cuenta eliminada correctamente", Toast.LENGTH_LONG).show()
 
                 } catch (e: Exception) {
+                    // Este catch captura si falla el RPC (Paso 1), por ejemplo, por falta de internet.
                     e.printStackTrace()
                     Toast.makeText(
                         this@AjustesActivity,
-                        "Error al eliminar cuenta: ${e.message}",
+                        "Error de conexión: No se pudo eliminar la cuenta",
                         Toast.LENGTH_LONG
                     ).show()
                 }
@@ -148,8 +161,6 @@ class AjustesActivity : AppCompatActivity() {
 
         val dialog = builder.create()
         dialog.show()
-
-        // Poner el botón de eliminar en ROJO para avisar del peligro
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(resources.getColor(android.R.color.holo_red_dark))
     }
 }

@@ -188,6 +188,28 @@
                 android:padding="4dp">
 
                 <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnBorrarDatos"
+                    style="@style/Widget.Material3.Button.TextButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:text="Borrar Datos"
+                    android:textColor="#D32F2F"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textAlignment="viewStart"
+                    app:icon="@drawable/ic_person"
+                    app:iconTint="#D32F2F"
+                    app:iconGravity="textStart"
+                    app:iconPadding="16dp"
+                    android:paddingStart="16dp"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#FADCDCDC"
+                    android:layout_marginHorizontal="16dp"/>
+
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnCerrarSesion"
                     style="@style/Widget.Material3.Button.TextButton"
                     android:layout_width="match_parent"

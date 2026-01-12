@@ -23,8 +23,8 @@ class RegisterActivity : AppCompatActivity() {
 
         // Vinculamos las vistas
         val etName = findViewById<EditText>(R.id.etName)
-        val etEmail = findViewById<EditText>(R.id.etPassword)
-        val etPassword = findViewById<EditText>(R.id.etForgotPassword)
+        val etEmail = findViewById<EditText>(R.id.etEmail)
+        val etPassword = findViewById<EditText>(R.id.etPassword)
         val etConfirmPassword = findViewById<EditText>(R.id.etConfirmPassword)
         val btnRegister = findViewById<Button>(R.id.btnRegister)
         val tvGoToLogin = findViewById<TextView>(R.id.tvGoToLogin)
