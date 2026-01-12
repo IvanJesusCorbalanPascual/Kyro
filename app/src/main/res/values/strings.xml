@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">Kyro</string>
+    <string name="primal1">Tu Asistente de Estudio Inteligente</string>
+    <string name="primal2">Organiza tu tiempo y domina cualquier materia con ayuda de la IA.</string>
+    <string name="primal3">Maximiza tu tiempo</string>
+    <string name="primal4">Organiza tus tareas, vence a la procrastinación.</string>
+    <string name="primal5">Tu Asistente de Estudio Inteligente</string>
+    <string name="primal6">Organiza tu tiempo y domina cualquier materia con ayuda de la IA.</string>
+    <string name="primal7">Empezar Ahora</string>
+    <string name="primal8">Inicia Sesion</string>
+
 </resources>

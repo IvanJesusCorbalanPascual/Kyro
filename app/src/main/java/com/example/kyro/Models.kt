@@ -1,5 +1,6 @@
 package com.example.kyro
 
+import kotlinx.serialization.SerialName
 import java.io.Serializable
 
 // Representa  las asignaturas
@@ -33,5 +34,12 @@ data class Ejercicio(
 // Clase para poder enviar datos, contiene una etiqueta para no chocar con Serializable
 @kotlinx.serialization.Serializable
 data class ApunteUsuario(
-    val contenido: String
+    val id: Long = 0,
+    val created_at: String = "",
+    val contenido: String = "",
+    val titulo: String = "",
+
+    // Para que coincida con su columna de Supabase
+    @SerialName("user_id")
+    val user_id: String? = null
 )

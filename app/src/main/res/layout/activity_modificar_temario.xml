@@ -104,10 +104,23 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Cargar Nuevo Temario"
+                android:text="Editar Contenido"
                 android:textColor="#000000"
                 android:textSize="18sp"
                 android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/etTituloModificar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/bg_blanco_redondeado"
+                android:padding="16dp"
+                android:hint="Título del Tema (Ej. Java POO)"
+                android:textColor="#1A1A1A"
+                android:textStyle="bold"
+                android:inputType="textCapSentences"
+                android:maxLines="1" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -152,13 +165,31 @@
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_marginTop="16dp"
-                android:text="Analizar con IA"
-                android:textColor="#FFFFFF"
+                android:backgroundTint="#00A8E8"
+                android:text="Guardar Cambios"
                 android:textAllCaps="false"
+                android:textColor="#FFFFFF"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:backgroundTint="#00A8E8"
-                app:cornerRadius="12dp"/>
+                app:cornerRadius="12dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnEliminar"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="24dp"
+                android:text="Eliminar Temario"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:backgroundTint="#FF5252"
+                app:cornerRadius="12dp"
+                app:icon="@android:drawable/ic_menu_delete"
+                app:iconGravity="textStart"
+                app:iconTint="#FFFFFF" />
+
 
         </LinearLayout>
 
