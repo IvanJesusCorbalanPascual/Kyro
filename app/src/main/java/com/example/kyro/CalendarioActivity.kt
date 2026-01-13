@@ -45,7 +45,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.button.MaterialButton
@@ -56,6 +55,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.DayOfWeek
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
@@ -123,8 +123,8 @@ class CalendarioActivity : AppCompatActivity() {
                     .decodeList<Examen>()
 
                 val events = mutableListOf<Event>()
-                tareas.forEach { event -> event.id?.let { events.add(Event(it, "tarea", event.nombre_asignatura, event.descripcion, event.fecha_entrega, event.completada, event.notificacion1, event.notificacion2)) } }
-                examenes.forEach { event -> event.id?.let { events.add(Event(it, "examen", event.nombre_asignatura, event.descripcion, event.fecha_examen, event.completada, event.notificacion1, event.notificacion2)) } }
+                tareas.forEach { event -> event.id?.let { events.add(Event(it, "tarea", event.nombre_asignatura, event.descripcion, event.fecha_entrega, event.hora_entrega, event.completada, event.notificacion1, event.notificacion2)) } }
+                examenes.forEach { event -> event.id?.let { events.add(Event(it, "examen", event.nombre_asignatura, event.descripcion, event.fecha_examen, null, event.completada, event.notificacion1, event.notificacion2)) } }
                 allEvents = events
 
                 withContext(Dispatchers.Main) {
@@ -160,8 +160,9 @@ class CalendarioActivity : AppCompatActivity() {
             val icon: ImageView = eventView.findViewById(R.id.ivEventIcon)
             val title: TextView = eventView.findViewById(R.id.tvEventTitle)
             val description: TextView = eventView.findViewById(R.id.tvEventDescription)
-            val completeButton: Button = eventView.findViewById(R.id.btnComplete)
+            val completeButton: MaterialButton = eventView.findViewById(R.id.btnComplete)
             val dateHeader: TextView = eventView.findViewById(R.id.tvEventDateHeader)
+            val eventType: TextView = eventView.findViewById(R.id.tvEventType)
 
             if (showAllTasks) {
                 if (lastDate == null || lastDate != event.date) {
@@ -179,23 +180,59 @@ class CalendarioActivity : AppCompatActivity() {
             description.text = event.description
 
             if (event.type == "tarea") {
+                eventType.text = "Tarea"
+                eventType.setTextColor(ContextCompat.getColor(this, R.color.b500))
                 icon.setImageResource(R.drawable.ic_task)
+
+                var isExpired = false
+                if (event.time != null) {
+                    try {
+                        val dateTimeString = "${event.date} ${event.time}"
+                        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+                        val expirationDateTime = LocalDateTime.parse(dateTimeString, formatter)
+                        isExpired = LocalDateTime.now().isAfter(expirationDateTime)
+                    } catch (e: java.time.format.DateTimeParseException) {
+                        isExpired = false
+                    }
+                }
+
                 if (event.completada) {
                     cardView.setCardBackgroundColor(ContextCompat.getColor(this, R.color.verde_completado))
                     completeButton.isEnabled = false
                     completeButton.text = "✓"
+                    completeButton.backgroundTintList = ContextCompat.getColorStateList(this, R.color.verde_completado)
+                    completeButton.setTextColor(ContextCompat.getColor(this, R.color.white))
+                } else if (isExpired) {
+                    cardView.setCardBackgroundColor(ContextCompat.getColor(this, R.color.rojo_expirado))
+                    completeButton.isEnabled = false
+                    completeButton.text = "X"
+                    completeButton.backgroundTintList = ContextCompat.getColorStateList(this, R.color.rojo_expirado)
+                    completeButton.setTextColor(ContextCompat.getColor(this, R.color.white))
                 } else {
+                    cardView.setCardBackgroundColor(ContextCompat.getColor(this, R.color.white))
                     completeButton.isEnabled = true
                     completeButton.text = "Completar"
+                    completeButton.backgroundTintList = ContextCompat.getColorStateList(this, R.color.b500)
+                    completeButton.setTextColor(ContextCompat.getColor(this, R.color.white))
                 }
+
                 completeButton.setOnClickListener {
-                    markAsCompleted(event)
+                    if (!event.completada && !isExpired) {
+                        markAsCompleted(event)
+                    }
                 }
             } else { // "examen"
+                eventType.text = "Examen"
+                eventType.setTextColor(ContextCompat.getColor(this, R.color.purple_500))
                 icon.setImageResource(R.drawable.ic_book)
                 completeButton.visibility = View.GONE
 
-                if (event.completada) {
+                val examDate = LocalDate.parse(event.date)
+                val isPastExam = LocalDate.now().isAfter(examDate)
+
+                if (isPastExam) {
+                    cardView.setCardBackgroundColor(ContextCompat.getColor(this, R.color.verde_completado))
+                } else if (event.completada) {
                     cardView.setCardBackgroundColor(ContextCompat.getColor(this, R.color.verde_completado))
                 }
             }
@@ -207,6 +244,7 @@ class CalendarioActivity : AppCompatActivity() {
                     putExtra("title", event.title)
                     putExtra("description", event.description)
                     putExtra("date", event.date)
+                    putExtra("hora_entrega", event.time)
                     putExtra("notif1", event.notificacion1)
                     putExtra("notif2", event.notificacion2)
                 }
@@ -241,6 +279,7 @@ class CalendarioActivity : AppCompatActivity() {
         val title: String,
         val description: String,
         val date: String,
+        val time: String?,
         val completada: Boolean,
         val notificacion1: String?,
         val notificacion2: String?

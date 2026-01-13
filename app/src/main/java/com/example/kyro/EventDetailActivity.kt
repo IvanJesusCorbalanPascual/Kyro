@@ -26,13 +26,14 @@ class EventDetailActivity : AppCompatActivity() {
         val type = intent.getStringExtra("type")
         val title = intent.getStringExtra("title")
         val date = intent.getStringExtra("date")
+        val time = intent.getStringExtra("hora_entrega")
         val description = intent.getStringExtra("description")
         val notif1 = intent.getStringExtra("notif1")
         val notif2 = intent.getStringExtra("notif2")
 
         // --- Rellenar la vista con los datos ---
         findViewById<TextView>(R.id.tvDetailTitle).text = title
-        findViewById<TextView>(R.id.tvDetailDate).text = date
+        findViewById<TextView>(R.id.tvDetailDate).text = if (time != null) "$date a las $time" else date
         findViewById<TextView>(R.id.tvDetailDescription).text = description
         findViewById<TextView>(R.id.tvDetailNotif1).text = "Recordatorio 1: ${notif1 ?: "No establecido"}"
         findViewById<TextView>(R.id.tvDetailNotif2).text = "Recordatorio 2: ${notif2 ?: "No establecido"}"
@@ -52,6 +53,7 @@ class EventDetailActivity : AppCompatActivity() {
                 putExtra("title", title)
                 putExtra("description", description)
                 putExtra("date", date)
+                putExtra("hora_entrega", time)
                 putExtra("notif1", notif1)
                 putExtra("notif2", notif2)
                 // Añade esta línea para redirigir a CalendarioActivity

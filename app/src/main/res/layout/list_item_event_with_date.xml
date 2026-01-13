@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -29,12 +30,24 @@
             android:layout_height="wrap_content"
             android:padding="16dp">
 
+            <TextView
+                android:id="@+id/tvEventType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textAllCaps="true"
+                tools:text="TAREA"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
             <ImageView
                 android:id="@+id/ivEventIcon"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
+                android:layout_marginTop="8dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@+id/tvEventType" />
 
             <TextView
                 android:id="@+id/tvEventTitle"
@@ -42,8 +55,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@id/ivEventIcon"
                 app:layout_constraintStart_toEndOf="@id/ivEventIcon"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toTopOf="@id/ivEventIcon"
                 app:layout_constraintEnd_toStartOf="@+id/btnComplete"/>
 
             <TextView
@@ -55,7 +69,7 @@
                 app:layout_constraintTop_toBottomOf="@id/tvEventTitle"
                 app:layout_constraintEnd_toEndOf="@id/tvEventTitle"/>
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnComplete"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

@@ -7,6 +7,7 @@ import android.widget.Button
 import android.widget.CalendarView
 import android.widget.EditText
 import android.widget.Spinner
+import android.widget.TimePicker
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -23,6 +24,7 @@ import java.util.Locale
 class AddTaskActivity : AppCompatActivity() {
 
     private var selectedDate: String = ""
+    private var selectedTime: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +42,7 @@ class AddTaskActivity : AppCompatActivity() {
         val etAsignatura: EditText = findViewById(R.id.etAsignaturaTarea)
         val etDescripcion: EditText = findViewById(R.id.etDescripcionTarea)
         val calendarView: CalendarView = findViewById(R.id.calendarView)
+        val timePicker: TimePicker = findViewById(R.id.timePicker)
         val spinnerNotificacion1: Spinner = findViewById(R.id.spinnerNotificacion1)
         val spinnerNotificacion2: Spinner = findViewById(R.id.spinnerNotificacion2)
         val btnGuardar: Button = findViewById(R.id.btnGuardarTarea)
@@ -55,14 +58,22 @@ class AddTaskActivity : AppCompatActivity() {
         val isEditMode = eventId != -1L
         val navigateToCalendar = intent.getBooleanExtra("NAVIGATE_TO_CALENDAR", false)
 
-        // Initialize selectedDate with today's date
+        // Initialize selectedDate and selectedTime with today's date and time
         val calendar = Calendar.getInstance()
-        val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.US)
-        selectedDate = sdf.format(calendar.time)
+        val sdfDate = SimpleDateFormat("yyyy-MM-dd", Locale.US)
+        val sdfTime = SimpleDateFormat("HH:mm", Locale.US)
+        selectedDate = sdfDate.format(calendar.time)
+        selectedTime = sdfTime.format(calendar.time)
 
         calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
             calendar.set(year, month, dayOfMonth)
-            selectedDate = sdf.format(calendar.time)
+            selectedDate = sdfDate.format(calendar.time)
+        }
+
+        timePicker.setOnTimeChangedListener { _, hourOfDay, minute ->
+            calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
+            calendar.set(Calendar.MINUTE, minute)
+            selectedTime = sdfTime.format(calendar.time)
         }
 
         if (isEditMode) {
@@ -71,6 +82,7 @@ class AddTaskActivity : AppCompatActivity() {
             val title = intent.getStringExtra("title")
             val description = intent.getStringExtra("description")
             val date = intent.getStringExtra("date")
+            val time = intent.getStringExtra("hora_entrega")
             val notif1 = intent.getStringExtra("notif1")
             val notif2 = intent.getStringExtra("notif2")
 
@@ -79,13 +91,26 @@ class AddTaskActivity : AppCompatActivity() {
             date?.let {
                 try {
                     val dateCalendar = Calendar.getInstance()
-                    sdf.parse(it)?.let { parsedDate ->
+                    sdfDate.parse(it)?.let { parsedDate ->
                         dateCalendar.time = parsedDate
                         calendarView.date = dateCalendar.timeInMillis
                         selectedDate = it
                     }
                 } catch (e: Exception) {
                     // Handle date parsing error
+                }
+            }
+            time?.let {
+                try {
+                    val timeCalendar = Calendar.getInstance()
+                    sdfTime.parse(it)?.let { parsedTime ->
+                        timeCalendar.time = parsedTime
+                        timePicker.hour = timeCalendar.get(Calendar.HOUR_OF_DAY)
+                        timePicker.minute = timeCalendar.get(Calendar.MINUTE)
+                        selectedTime = it
+                    }
+                } catch (e: Exception) {
+                    // Handle time parsing error
                 }
             }
 
@@ -133,6 +158,7 @@ class AddTaskActivity : AppCompatActivity() {
                             set("nombre_asignatura", asignatura)
                             set("descripcion", descripcion)
                             set("fecha_entrega", selectedDate)
+                            set("hora_entrega", selectedTime)
                             set("notificacion1", notificacion1)
                             set("notificacion2", notificacion2)
                         }) { filter { eq("id", eventId) } }
@@ -143,6 +169,7 @@ class AddTaskActivity : AppCompatActivity() {
                             nombre_asignatura = asignatura,
                             descripcion = descripcion,
                             fecha_entrega = selectedDate,
+                            hora_entrega = selectedTime,
                             notificacion1 = notificacion1,
                             notificacion2 = notificacion2
                         )

@@ -9,6 +9,7 @@ data class Tarea(
     val nombre_asignatura: String,
     val descripcion: String,
     val fecha_entrega: String,
+    val hora_entrega: String? = null,
     val completada: Boolean = false,
     val notificacion1: String? = null,
     val notificacion2: String? = null
