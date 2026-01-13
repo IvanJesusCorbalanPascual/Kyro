@@ -14,4 +14,3 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Kyro"
 include(":app")
- 

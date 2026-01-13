@@ -10,6 +10,41 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
@@ -19,16 +54,24 @@ import io.github.jan.supabase.postgrest.postgrest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.time.DayOfWeek
+import java.time.LocalDate
+import java.time.YearMonth
+import java.time.format.DateTimeFormatter
+import java.time.format.TextStyle
+import java.util.Locale
 
 class CalendarioActivity : AppCompatActivity() {
 
     private lateinit var tasksAndExamsContainer: LinearLayout
+    private lateinit var calendarComposeView: ComposeView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_calendario_tareas)
 
         tasksAndExamsContainer = findViewById(R.id.tasksAndExamsContainer)
+        calendarComposeView = findViewById(R.id.calendarComposeView)
 
         val botonAnadirTarea: MaterialButton = findViewById(R.id.btnAddTask)
         val botonAnadirExamen: MaterialButton = findViewById(R.id.btnAddExam)
@@ -67,10 +110,11 @@ class CalendarioActivity : AppCompatActivity() {
                 tareas.forEach { event -> event.id?.let { events.add(Event(it, "tarea", event.nombre_asignatura, event.descripcion, event.fecha_entrega, event.completada, event.notificacion1, event.notificacion2)) } }
                 examenes.forEach { event -> event.id?.let { events.add(Event(it, "examen", event.nombre_asignatura, event.descripcion, event.fecha_examen, event.completada, event.notificacion1, event.notificacion2)) } }
 
-                events.sortBy { it.date }
-
                 withContext(Dispatchers.Main) {
                     displayEvents(events)
+                    calendarComposeView.setContent {
+                        Calendar(events = events)
+                    }
                 }
             } catch (e: Exception) {
                 // Handle error
@@ -81,8 +125,9 @@ class CalendarioActivity : AppCompatActivity() {
     private fun displayEvents(events: List<Event>) {
         tasksAndExamsContainer.removeAllViews()
         val inflater = LayoutInflater.from(this)
+        val sortedEvents = events.sortedBy { it.date }
 
-        for (event in events) {
+        for (event in sortedEvents) {
             val eventView = inflater.inflate(R.layout.list_item_event, tasksAndExamsContainer, false)
 
             val cardView: CardView = eventView.findViewById(R.id.cardView)
@@ -144,9 +189,7 @@ class CalendarioActivity : AppCompatActivity() {
                     }
 
                 withContext(Dispatchers.Main) {
-                    cardView.setCardBackgroundColor(ContextCompat.getColor(this@CalendarioActivity, R.color.verde_completado))
-                    button.isEnabled = false
-                    button.text = "✓"
+                    loadTasksAndExams()
                 }
             } catch (e: Exception) {
                 // Handle error
@@ -164,4 +207,137 @@ class CalendarioActivity : AppCompatActivity() {
         val notificacion1: String?,
         val notificacion2: String?
     )
+}
+
+@Composable
+fun Calendar(events: List<CalendarioActivity.Event>) {
+    var currentMonth by remember { mutableStateOf(YearMonth.now()) }
+    var selectedDate by remember { mutableStateOf(LocalDate.now()) }
+    val eventMap = events.groupBy { it.date }
+
+    Column(modifier = Modifier.padding(16.dp)) {
+        // Header with month navigation
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            IconButton(onClick = { currentMonth = currentMonth.minusMonths(1) }) {
+                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Més anterior")
+            }
+            Text(
+                text = "${currentMonth.month.getDisplayName(TextStyle.FULL, Locale.getDefault())} ${currentMonth.year}",
+                fontWeight = FontWeight.Bold,
+                fontSize = 20.sp,
+                textAlign = TextAlign.Center
+            )
+            IconButton(onClick = { currentMonth = currentMonth.plusMonths(1) }) {
+                Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "Més següent")
+            }
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Days of the week header
+        Row(modifier = Modifier.fillMaxWidth()) {
+            val daysOfWeek = DayOfWeek.values()
+            for (day in daysOfWeek) {
+                Text(
+                    text = day.getDisplayName(TextStyle.SHORT, Locale.getDefault()),
+                    modifier = Modifier.weight(1f),
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.Medium
+                )
+            }
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // Days of the month grid
+        val firstDayOfMonth = currentMonth.atDay(1).dayOfWeek
+        val daysInMonth = currentMonth.lengthOfMonth()
+        val emptyDays = (1 until firstDayOfMonth.value).map { null }
+        val days = (1..daysInMonth).toList()
+        val allDays = emptyDays + days
+        val chunkedDays = allDays.chunked(7)
+
+        for (week in chunkedDays) {
+            Row(modifier = Modifier.fillMaxWidth()) {
+                for (day in week) {
+                    DayCell(day, currentMonth, selectedDate, eventMap) { newDate ->
+                        selectedDate = newDate
+                    }
+                }
+                // Fill remaining space in the last row
+                if (week.size < 7) {
+                    for (i in 0 until (7 - week.size)) {
+                        Box(modifier = Modifier.weight(1f).aspectRatio(1f))
+                    }
+                }
+            }
+            Spacer(modifier = Modifier.height(4.dp))
+        }
+    }
+}
+
+@Composable
+fun RowScope.DayCell(
+    day: Int?,
+    currentMonth: YearMonth,
+    selectedDate: LocalDate,
+    eventMap: Map<String, List<CalendarioActivity.Event>>,
+    onDateSelected: (LocalDate) -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .weight(1f)
+            .aspectRatio(1f)
+            .clickable { day?.let { onDateSelected(currentMonth.atDay(it)) } },
+        contentAlignment = Alignment.Center
+    ) {
+        if (day != null) {
+            val date = currentMonth.atDay(day)
+            val isSelected = date == selectedDate
+            val isToday = date == LocalDate.now()
+
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(2.dp)
+                    .clip(CircleShape)
+                    .background(if (isSelected) Color(0xFF2196F3) else Color.Transparent),
+                contentAlignment = Alignment.Center
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = day.toString(),
+                        textAlign = TextAlign.Center,
+                        color = if (isSelected) Color.White else if (isToday) Color(0xFF2196F3) else Color.Black,
+                        fontWeight = if (isSelected || isToday) FontWeight.Bold else FontWeight.Normal
+                    )
+
+                    val dateString = date.format(DateTimeFormatter.ISO_LOCAL_DATE)
+                    val eventsForDay = eventMap[dateString]
+                    val dotColor = if (eventsForDay != null) {
+                        if (eventsForDay.all { it.completada }) Color(0xFFA5D6A7) else Color(0xFFE57373)
+                    } else {
+                        null
+                    }
+
+                    if (dotColor != null) {
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Box(
+                            modifier = Modifier
+                                .size(6.dp)
+                                .clip(CircleShape)
+                                .background(dotColor)
+                        )
+                    } else {
+                        Spacer(modifier = Modifier.height(10.dp)) // Placeholder to keep alignment
+                    }
+                }
+            }
+        }
+    }
 }
