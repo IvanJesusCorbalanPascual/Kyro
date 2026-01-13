@@ -54,8 +54,11 @@ class EventDetailActivity : AppCompatActivity() {
                 putExtra("date", date)
                 putExtra("notif1", notif1)
                 putExtra("notif2", notif2)
+                // Añade esta línea para redirigir a CalendarioActivity
+                putExtra("NAVIGATE_TO_CALENDAR", true)
             }
             startActivity(editIntent)
+            finish() // Cierra la pantalla de detalles
         }
 
         // --- Configuración de la Navegación Inferior ---

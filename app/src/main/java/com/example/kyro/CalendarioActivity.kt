@@ -368,12 +368,12 @@ fun RowScope.DayCell(
                         Spacer(modifier = Modifier.height(4.dp))
                         Box(
                             modifier = Modifier
-                                .size(6.dp)
+                                .size(8.dp)
                                 .clip(CircleShape)
                                 .background(dotColor)
                         )
                     } else {
-                        Spacer(modifier = Modifier.height(10.dp)) // Placeholder to keep alignment
+                        Spacer(modifier = Modifier.height(12.dp)) // Placeholder to keep alignment
                     }
                 }
             }
