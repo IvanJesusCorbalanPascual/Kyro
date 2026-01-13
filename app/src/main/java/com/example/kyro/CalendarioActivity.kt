@@ -3,10 +3,15 @@ package com.example.kyro
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.button.MaterialButton
 import io.github.jan.supabase.gotrue.auth
@@ -59,8 +64,8 @@ class CalendarioActivity : AppCompatActivity() {
                     .decodeList<Examen>()
 
                 val events = mutableListOf<Event>()
-                tareas.forEach { event -> event.id?.let { events.add(Event(it, "tarea", event.nombre_asignatura, event.descripcion, event.fecha_entrega, event.notificacion1, event.notificacion2)) } }
-                examenes.forEach { event -> event.id?.let { events.add(Event(it, "examen", event.nombre_asignatura, event.descripcion, event.fecha_examen, event.notificacion1, event.notificacion2)) } }
+                tareas.forEach { event -> event.id?.let { events.add(Event(it, "tarea", event.nombre_asignatura, event.descripcion, event.fecha_entrega, event.completada, event.notificacion1, event.notificacion2)) } }
+                examenes.forEach { event -> event.id?.let { events.add(Event(it, "examen", event.nombre_asignatura, event.descripcion, event.fecha_examen, event.completada, event.notificacion1, event.notificacion2)) } }
 
                 events.sortBy { it.date }
 
@@ -80,10 +85,12 @@ class CalendarioActivity : AppCompatActivity() {
         for (event in events) {
             val eventView = inflater.inflate(R.layout.list_item_event, tasksAndExamsContainer, false)
 
+            val cardView: CardView = eventView.findViewById(R.id.cardView)
             val icon: ImageView = eventView.findViewById(R.id.ivEventIcon)
             val title: TextView = eventView.findViewById(R.id.tvEventTitle)
             val description: TextView = eventView.findViewById(R.id.tvEventDescription)
             val date: TextView = eventView.findViewById(R.id.tvEventDate)
+            val completeButton: Button = eventView.findViewById(R.id.btnComplete)
 
             title.text = event.title
             description.text = event.description
@@ -91,11 +98,26 @@ class CalendarioActivity : AppCompatActivity() {
 
             if (event.type == "tarea") {
                 icon.setImageResource(R.drawable.ic_task)
+                if (event.completada) {
+                    cardView.setCardBackgroundColor(ContextCompat.getColor(this, R.color.verde_completado))
+                    completeButton.isEnabled = false
+                    completeButton.text = "✓"
+                }
+                completeButton.setOnClickListener {
+                    markAsCompleted(event, cardView, completeButton)
+                }
             } else {
                 icon.setImageResource(R.drawable.ic_book)
+                completeButton.visibility = View.GONE
+                val params = cardView.layoutParams as ConstraintLayout.LayoutParams
+                params.endToEnd = ConstraintLayout.LayoutParams.PARENT_ID
+                cardView.layoutParams = params
+                if (event.completada) {
+                    cardView.setCardBackgroundColor(ContextCompat.getColor(this, R.color.verde_completado))
+                }
             }
 
-            eventView.setOnClickListener {
+            cardView.setOnClickListener {
                 val intent = Intent(this, EventDetailActivity::class.java).apply {
                     putExtra("id", event.id)
                     putExtra("type", event.type)
@@ -112,12 +134,33 @@ class CalendarioActivity : AppCompatActivity() {
         }
     }
 
+    private fun markAsCompleted(event: Event, cardView: CardView, button: Button) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val tableName = if (event.type == "tarea") "tareas" else "examenes"
+                SupabaseClient.client.postgrest[tableName]
+                    .update({ set("completada", true) }) {
+                        filter { eq("id", event.id) }
+                    }
+
+                withContext(Dispatchers.Main) {
+                    cardView.setCardBackgroundColor(ContextCompat.getColor(this@CalendarioActivity, R.color.verde_completado))
+                    button.isEnabled = false
+                    button.text = "✓"
+                }
+            } catch (e: Exception) {
+                // Handle error
+            }
+        }
+    }
+
     data class Event(
         val id: Long,
         val type: String,
         val title: String,
         val description: String,
         val date: String,
+        val completada: Boolean,
         val notificacion1: String?,
         val notificacion2: String?
     )
