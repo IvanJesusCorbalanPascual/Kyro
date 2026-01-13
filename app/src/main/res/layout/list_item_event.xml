@@ -49,15 +49,9 @@
                     android:id="@+id/tvEventDescription"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Descripción..." />
+                    android.text="Descripción..." />
 
             </LinearLayout>
-
-            <TextView
-                android:id="@+id/tvEventDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="YYYY-MM-DD" />
 
         </LinearLayout>
 

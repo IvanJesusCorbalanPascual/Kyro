@@ -65,6 +65,11 @@ class CalendarioActivity : AppCompatActivity() {
 
     private lateinit var tasksAndExamsContainer: LinearLayout
     private lateinit var calendarComposeView: ComposeView
+    private lateinit var btnToggleTasks: MaterialButton
+
+    private var allEvents = listOf<Event>()
+    private var selectedDate: LocalDate = LocalDate.now()
+    private var showAllTasks = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,6 +77,7 @@ class CalendarioActivity : AppCompatActivity() {
 
         tasksAndExamsContainer = findViewById(R.id.tasksAndExamsContainer)
         calendarComposeView = findViewById(R.id.calendarComposeView)
+        btnToggleTasks = findViewById(R.id.btnToggleTasks)
 
         val botonAnadirTarea: MaterialButton = findViewById(R.id.btnAddTask)
         val botonAnadirExamen: MaterialButton = findViewById(R.id.btnAddExam)
@@ -84,6 +90,16 @@ class CalendarioActivity : AppCompatActivity() {
         botonAnadirExamen.setOnClickListener {
             val intent = Intent(this, AddExamActivity::class.java)
             startActivity(intent)
+        }
+
+        btnToggleTasks.setOnClickListener {
+            showAllTasks = !showAllTasks
+            if (showAllTasks) {
+                btnToggleTasks.text = "Ver tareas del día"
+            } else {
+                btnToggleTasks.text = "Ver todas las tareas"
+            }
+            displayEvents(allEvents)
         }
     }
 
@@ -109,12 +125,16 @@ class CalendarioActivity : AppCompatActivity() {
                 val events = mutableListOf<Event>()
                 tareas.forEach { event -> event.id?.let { events.add(Event(it, "tarea", event.nombre_asignatura, event.descripcion, event.fecha_entrega, event.completada, event.notificacion1, event.notificacion2)) } }
                 examenes.forEach { event -> event.id?.let { events.add(Event(it, "examen", event.nombre_asignatura, event.descripcion, event.fecha_examen, event.completada, event.notificacion1, event.notificacion2)) } }
+                allEvents = events
 
                 withContext(Dispatchers.Main) {
-                    displayEvents(events)
                     calendarComposeView.setContent {
-                        Calendar(events = events)
+                        Calendar(events = allEvents, onDateSelected = {
+                            selectedDate = it
+                            displayEvents(allEvents)
+                        })
                     }
+                    displayEvents(allEvents)
                 }
             } catch (e: Exception) {
                 // Handle error
@@ -125,21 +145,38 @@ class CalendarioActivity : AppCompatActivity() {
     private fun displayEvents(events: List<Event>) {
         tasksAndExamsContainer.removeAllViews()
         val inflater = LayoutInflater.from(this)
-        val sortedEvents = events.sortedBy { it.date }
 
-        for (event in sortedEvents) {
-            val eventView = inflater.inflate(R.layout.list_item_event, tasksAndExamsContainer, false)
+        val eventsToDisplay = if (showAllTasks) {
+            events.sortedBy { it.date }
+        } else {
+            events.filter { it.date == selectedDate.format(DateTimeFormatter.ISO_LOCAL_DATE) }.sortedBy { it.date }
+        }
+
+        var lastDate: String? = null
+        for (event in eventsToDisplay) {
+            val eventView = inflater.inflate(R.layout.list_item_event_with_date, tasksAndExamsContainer, false)
 
             val cardView: CardView = eventView.findViewById(R.id.cardView)
             val icon: ImageView = eventView.findViewById(R.id.ivEventIcon)
             val title: TextView = eventView.findViewById(R.id.tvEventTitle)
             val description: TextView = eventView.findViewById(R.id.tvEventDescription)
-            val date: TextView = eventView.findViewById(R.id.tvEventDate)
             val completeButton: Button = eventView.findViewById(R.id.btnComplete)
+            val dateHeader: TextView = eventView.findViewById(R.id.tvEventDateHeader)
+
+            if (showAllTasks) {
+                if (lastDate == null || lastDate != event.date) {
+                    dateHeader.visibility = View.VISIBLE
+                    dateHeader.text = LocalDate.parse(event.date).format(DateTimeFormatter.ofPattern("dd MMMM yyyy"))
+                    lastDate = event.date
+                } else {
+                    dateHeader.visibility = View.GONE
+                }
+            } else {
+                dateHeader.visibility = View.GONE
+            }
 
             title.text = event.title
             description.text = event.description
-            date.text = event.date
 
             if (event.type == "tarea") {
                 icon.setImageResource(R.drawable.ic_task)
@@ -147,16 +184,17 @@ class CalendarioActivity : AppCompatActivity() {
                     cardView.setCardBackgroundColor(ContextCompat.getColor(this, R.color.verde_completado))
                     completeButton.isEnabled = false
                     completeButton.text = "✓"
+                } else {
+                    completeButton.isEnabled = true
+                    completeButton.text = "Completar"
                 }
                 completeButton.setOnClickListener {
-                    markAsCompleted(event, cardView, completeButton)
+                    markAsCompleted(event)
                 }
-            } else {
+            } else { // "examen"
                 icon.setImageResource(R.drawable.ic_book)
                 completeButton.visibility = View.GONE
-                val params = cardView.layoutParams as ConstraintLayout.LayoutParams
-                params.endToEnd = ConstraintLayout.LayoutParams.PARENT_ID
-                cardView.layoutParams = params
+
                 if (event.completada) {
                     cardView.setCardBackgroundColor(ContextCompat.getColor(this, R.color.verde_completado))
                 }
@@ -179,7 +217,7 @@ class CalendarioActivity : AppCompatActivity() {
         }
     }
 
-    private fun markAsCompleted(event: Event, cardView: CardView, button: Button) {
+    private fun markAsCompleted(event: Event) {
         lifecycleScope.launch(Dispatchers.IO) {
             try {
                 val tableName = if (event.type == "tarea") "tareas" else "examenes"
@@ -210,7 +248,7 @@ class CalendarioActivity : AppCompatActivity() {
 }
 
 @Composable
-fun Calendar(events: List<CalendarioActivity.Event>) {
+fun Calendar(events: List<CalendarioActivity.Event>, onDateSelected: (LocalDate) -> Unit) {
     var currentMonth by remember { mutableStateOf(YearMonth.now()) }
     var selectedDate by remember { mutableStateOf(LocalDate.now()) }
     val eventMap = events.groupBy { it.date }
@@ -264,6 +302,7 @@ fun Calendar(events: List<CalendarioActivity.Event>) {
                 for (day in week) {
                     DayCell(day, currentMonth, selectedDate, eventMap) { newDate ->
                         selectedDate = newDate
+                        onDateSelected(newDate)
                     }
                 }
                 // Fill remaining space in the last row
