@@ -65,6 +65,8 @@ class CalendarioActivity : AppCompatActivity() {
     private lateinit var calendarComposeView: ComposeView
     private lateinit var tasksAndExamsContainer: LinearLayout
     private lateinit var btnToggleTasks: MaterialButton
+    private lateinit var btnAddExam: MaterialButton
+    private lateinit var btnAddTask: MaterialButton
     private var selectedDate: LocalDate = LocalDate.now()
     private var allEvents: List<Event> = listOf()
     private var showAllTasks = false
@@ -76,6 +78,9 @@ class CalendarioActivity : AppCompatActivity() {
         calendarComposeView = findViewById(R.id.calendarComposeView)
         tasksAndExamsContainer = findViewById(R.id.tasksAndExamsContainer)
         btnToggleTasks = findViewById(R.id.btnToggleTasks)
+        btnAddExam = findViewById(R.id.btnAddExam)
+        btnAddTask = findViewById(R.id.btnAddTask)
+
 
         NavigationHelper.setupBottomNavigation(this, R.id.nav_calendar)
 
@@ -83,10 +88,20 @@ class CalendarioActivity : AppCompatActivity() {
             showAllTasks = !showAllTasks
             displayEvents(allEvents)
             if (showAllTasks) {
-                btnToggleTasks.text = "Ver tareas del día"
+                btnToggleTasks.text = "Ver del día"
             } else {
-                btnToggleTasks.text = "Ver todas las tareas"
+                btnToggleTasks.text = "Ver Todas"
             }
+        }
+
+        btnAddExam.setOnClickListener {
+            val intent = Intent(this, AddExamActivity::class.java)
+            startActivity(intent)
+        }
+
+        btnAddTask.setOnClickListener {
+            val intent = Intent(this, AddTaskActivity::class.java)
+            startActivity(intent)
         }
     }
 
@@ -278,7 +293,7 @@ fun Calendar(events: List<CalendarioActivity.Event>, onDateSelected: (LocalDate)
     var selectedDate by remember { mutableStateOf(LocalDate.now()) }
     val eventMap = events.groupBy { it.date }
 
-    Column(modifier = Modifier.padding(16.dp)) {
+    Column(modifier = Modifier.padding(8.dp)) { // Reduced padding
         // Header with month navigation
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -291,14 +306,14 @@ fun Calendar(events: List<CalendarioActivity.Event>, onDateSelected: (LocalDate)
             Text(
                 text = "${currentMonth.month.getDisplayName(TextStyle.FULL, Locale.getDefault())} ${currentMonth.year}",
                 fontWeight = FontWeight.Bold,
-                fontSize = 20.sp,
+                fontSize = 18.sp, // Reduced font size
                 textAlign = TextAlign.Center
             )
             IconButton(onClick = { currentMonth = currentMonth.plusMonths(1) }) {
                 Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "Més següent")
             }
         }
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(8.dp)) // Reduced spacer
 
         // Days of the week header
         Row(modifier = Modifier.fillMaxWidth()) {
@@ -308,11 +323,12 @@ fun Calendar(events: List<CalendarioActivity.Event>, onDateSelected: (LocalDate)
                     text = day.getDisplayName(TextStyle.SHORT, Locale.getDefault()),
                     modifier = Modifier.weight(1f),
                     textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.Medium
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 12.sp // Reduced font size
                 )
             }
         }
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(4.dp)) // Reduced spacer
 
         // Days of the month grid
         val firstDayOfMonth = currentMonth.atDay(1).dayOfWeek
@@ -337,7 +353,7 @@ fun Calendar(events: List<CalendarioActivity.Event>, onDateSelected: (LocalDate)
                     }
                 }
             }
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(2.dp)) // Reduced spacer
         }
     }
 }
@@ -350,62 +366,74 @@ fun RowScope.DayCell(
     eventMap: Map<String, List<CalendarioActivity.Event>>,
     onDateSelected: (LocalDate) -> Unit
 ) {
-    Box(
-        modifier = Modifier
-            .weight(1f)
-            .aspectRatio(1f)
-            .padding(4.dp) // Added padding for separation
-            .clickable { day?.let { onDateSelected(currentMonth.atDay(it)) } },
-        contentAlignment = Alignment.Center
-    ) {
-        if (day != null) {
-            val date = currentMonth.atDay(day)
-            val isSelected = date == selectedDate
-            val isToday = date == LocalDate.now()
+    if (day != null) {
+        val date = currentMonth.atDay(day)
+        val isSelected = date == selectedDate
+        val isToday = date == LocalDate.now()
+        val eventsOnDate = eventMap[date.format(DateTimeFormatter.ISO_LOCAL_DATE)] ?: emptyList()
 
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .clip(CircleShape)
-                    .background(if (isSelected) Color(0xFF2196F3) else if (isToday) Color.LightGray.copy(alpha = 0.5f) else Color.Transparent),
-                contentAlignment = Alignment.Center
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .aspectRatio(1f)
+                .padding(2.dp) // Reduced padding
+                .clip(CircleShape)
+                .background(if (isSelected) Color.LightGray else Color.Transparent)
+                .clickable { onDateSelected(date) },
+            contentAlignment = Alignment.Center
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
             ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Text(
-                        text = day.toString(),
-                        textAlign = TextAlign.Center,
-                        fontSize = 14.sp, // Uniform font size
-                        color = if (isSelected) Color.White else Color.Black,
-                        fontWeight = FontWeight.Normal // Uniform font weight
-                    )
-
-                    val dateString = date.format(DateTimeFormatter.ISO_LOCAL_DATE)
-                    val eventsForDay = eventMap[dateString]
-                    val dotColor = if (eventsForDay != null) {
-                        if (eventsForDay.all { it.completada }) Color(0xFFA5D6A7) else Color(0xFFE57373)
-                    } else {
-                        null
+                Text(
+                    text = day.toString(),
+                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                    fontSize = 14.sp, // Reduced font size
+                    color = when {
+                        isToday -> Color.Blue
+                        date.month == currentMonth.month -> Color.Black
+                        else -> Color.Gray
                     }
+                )
+                if (eventsOnDate.isNotEmpty()) {
+                    Row {
+                        eventsOnDate.take(3).forEach { event ->
+                            val dotColor = when {
+                                event.completada -> Color.Green
+                                event.type == "examen" -> Color.Blue
+                                event.type == "tarea" -> {
+                                    val isExpired = if (event.time != null) {
+                                        try {
+                                            val dateTimeString = "${event.date} ${event.time}"
+                                            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+                                            val expirationDateTime = LocalDateTime.parse(dateTimeString, formatter)
+                                            LocalDateTime.now().isAfter(expirationDateTime)
+                                        } catch (e: Exception) {
+                                            LocalDate.parse(event.date).isBefore(LocalDate.now())
+                                        }
+                                    } else {
+                                        LocalDate.parse(event.date).isBefore(LocalDate.now())
+                                    }
 
-                    // Consistent spacer
-                    Spacer(modifier = Modifier.height(4.dp))
+                                    if (isExpired) Color.Red else Color.Gray
+                                }
+                                else -> Color.Transparent
+                            }
 
-                    if (dotColor != null) {
-                        Box(
-                            modifier = Modifier
-                                .size(6.dp) // Dot size
-                                .clip(CircleShape)
-                                .background(dotColor)
-                        )
-                    } else {
-                        // Placeholder to keep spacing
-                        Spacer(modifier = Modifier.height(6.dp))
+                            Box(
+                                modifier = Modifier
+                                    .padding(horizontal = 1.dp)
+                                    .size(4.dp) // Reduced size
+                                    .clip(CircleShape)
+                                    .background(dotColor)
+                            )
+                        }
                     }
                 }
             }
         }
+    } else {
+        Box(modifier = Modifier.weight(1f).aspectRatio(1f))
     }
 }
