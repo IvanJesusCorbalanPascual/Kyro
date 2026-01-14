@@ -354,6 +354,7 @@ fun RowScope.DayCell(
         modifier = Modifier
             .weight(1f)
             .aspectRatio(1f)
+            .padding(4.dp) // Added padding for separation
             .clickable { day?.let { onDateSelected(currentMonth.atDay(it)) } },
         contentAlignment = Alignment.Center
     ) {
@@ -365,9 +366,8 @@ fun RowScope.DayCell(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(2.dp)
                     .clip(CircleShape)
-                    .background(if (isSelected) Color(0xFF2196F3) else Color.Transparent),
+                    .background(if (isSelected) Color(0xFF2196F3) else if (isToday) Color.LightGray.copy(alpha = 0.5f) else Color.Transparent),
                 contentAlignment = Alignment.Center
             ) {
                 Column(
@@ -377,8 +377,9 @@ fun RowScope.DayCell(
                     Text(
                         text = day.toString(),
                         textAlign = TextAlign.Center,
-                        color = if (isSelected) Color.White else if (isToday) Color(0xFF2196F3) else Color.Black,
-                        fontWeight = if (isSelected || isToday) FontWeight.Bold else FontWeight.Normal
+                        fontSize = 14.sp, // Uniform font size
+                        color = if (isSelected) Color.White else Color.Black,
+                        fontWeight = FontWeight.Normal // Uniform font weight
                     )
 
                     val dateString = date.format(DateTimeFormatter.ISO_LOCAL_DATE)
@@ -389,16 +390,19 @@ fun RowScope.DayCell(
                         null
                     }
 
+                    // Consistent spacer
+                    Spacer(modifier = Modifier.height(4.dp))
+
                     if (dotColor != null) {
-                        Spacer(modifier = Modifier.height(4.dp))
                         Box(
                             modifier = Modifier
-                                .size(8.dp)
+                                .size(6.dp) // Dot size
                                 .clip(CircleShape)
                                 .background(dotColor)
                         )
                     } else {
-                        Spacer(modifier = Modifier.height(12.dp)) // Placeholder to keep alignment
+                        // Placeholder to keep spacing
+                        Spacer(modifier = Modifier.height(6.dp))
                     }
                 }
             }

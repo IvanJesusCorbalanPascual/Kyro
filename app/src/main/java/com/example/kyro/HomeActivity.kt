@@ -60,6 +60,10 @@ class HomeActivity : AppCompatActivity() {
         val pbTasks: ProgressBar = findViewById(R.id.pbTasks)
         val tvTasksCompleted: TextView = findViewById(R.id.tvTasksCompleted)
 
+        val tvAllTasksPercentage: TextView = findViewById(R.id.tvAllTasksPercentage)
+        val pbAllTasks: ProgressBar = findViewById(R.id.pbAllTasks)
+        val tvAllTasksCompleted: TextView = findViewById(R.id.tvAllTasksCompleted)
+
         lifecycleScope.launch(Dispatchers.IO) {
             try {
                 val userId = SupabaseClient.client.auth.currentUserOrNull()?.id
@@ -68,44 +72,64 @@ class HomeActivity : AppCompatActivity() {
                     return@launch
                 }
 
-                val startDate = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE)
-                val endDate = LocalDate.now().plusDays(2).format(DateTimeFormatter.ISO_LOCAL_DATE)
+                val today = LocalDate.now()
+                val threeDaysLater = today.plusDays(2)
 
-                val tareas = SupabaseClient.client.postgrest["tareas"]
-                    .select {
-                        filter {
-                            eq("id_usuario", userId)
-                            gte("fecha_entrega", startDate)
-                            lte("fecha_entrega", endDate)
-                        }
-                    }
+                val allUpcomingTasks = SupabaseClient.client.postgrest["tareas"]
+                    .select { filter { eq("id_usuario", userId) } }
                     .decodeList<Tarea>()
+                    .filter { LocalDate.parse(it.fecha_entrega).isAfter(today.minusDays(1)) }
 
-                val totalTasks = tareas.size
-                val completedTasks = tareas.count { it.completada }
+                // Tareas en los próximos 3 días
+                val tasksInNext3Days = allUpcomingTasks.filter { 
+                    val taskDate = LocalDate.parse(it.fecha_entrega)
+                    !taskDate.isBefore(today) && !taskDate.isAfter(threeDaysLater)
+                }
 
-                val percentage = if (totalTasks > 0) {
-                    (completedTasks * 100) / totalTasks
+                val totalTasks3Days = tasksInNext3Days.size
+                val completedTasks3Days = tasksInNext3Days.count { it.completada }
+
+                val percentage3Days = if (totalTasks3Days > 0) {
+                    (completedTasks3Days * 100) / totalTasks3Days
                 } else {
                     0
                 }
 
                 withContext(Dispatchers.Main) {
-                    tvTasksPercentage.text = "$percentage%"
-                    pbTasks.progress = percentage
-                    if (totalTasks > 0) {
-                        tvTasksCompleted.text = "Has completado $completedTasks de $totalTasks tareas"
+                    tvTasksPercentage.text = "$percentage3Days%"
+                    pbTasks.progress = percentage3Days
+                    if (totalTasks3Days > 0) {
+                        tvTasksCompleted.text = "Has completado $completedTasks3Days de $totalTasks3Days tareas"
                     } else {
                         tvTasksCompleted.text = "No tienes tareas en los próximos 3 días"
                     }
-
                 }
+
+                // Todas las tareas próximas
+                val totalAllTasks = allUpcomingTasks.size
+                val completedAllTasks = allUpcomingTasks.count { it.completada }
+
+                val percentageAll = if (totalAllTasks > 0) {
+                    (completedAllTasks * 100) / totalAllTasks
+                } else {
+                    0
+                }
+
+                withContext(Dispatchers.Main) {
+                    tvAllTasksPercentage.text = "$percentageAll%"
+                    pbAllTasks.progress = percentageAll
+                    if (totalAllTasks > 0) {
+                        tvAllTasksCompleted.text = "Has completado $completedAllTasks de $totalAllTasks tareas"
+                    } else {
+                        tvAllTasksCompleted.text = "No tienes tareas próximas"
+                    }
+                }
+
             } catch (e: Exception) {
                 // Handle error
             }
         }
     }
-
 
     // Configuracion de los botones de las tarjetas
     private fun setupQuickActions() {
@@ -138,7 +162,6 @@ class HomeActivity : AppCompatActivity() {
         // Devuelve true si esta permitido, si no devuelve false
         return mode == AppOpsManager.MODE_ALLOWED
     }
-
 
     // Muestra el diálogo para pedir los permisos y reedirige al usuario si no los tiene
     private fun verificarYPedirPermisosFocus() {
