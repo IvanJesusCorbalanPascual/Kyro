@@ -1,19 +1,29 @@
 package com.example.kyro
 
 import android.Manifest
+import android.app.AppOpsManager
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.card.MaterialCardView
-import android.app.AppOpsManager
-import android.content.Context
+import android.os.Process
 import android.provider.Settings
+import android.widget.ProgressBar
+import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import android.os.Process
-import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.lifecycleScope
+import com.google.android.material.card.MaterialCardView
+import io.github.jan.supabase.gotrue.auth
+import io.github.jan.supabase.postgrest.postgrest
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class HomeActivity : AppCompatActivity() {
 
@@ -42,7 +52,60 @@ class HomeActivity : AppCompatActivity() {
             val intentService = Intent(this, MonitorService::class.java)
             startService(intentService)
         }
+        updateTaskProgress()
     }
+
+    private fun updateTaskProgress() {
+        val tvTasksPercentage: TextView = findViewById(R.id.tvTasksPercentage)
+        val pbTasks: ProgressBar = findViewById(R.id.pbTasks)
+        val tvTasksCompleted: TextView = findViewById(R.id.tvTasksCompleted)
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val userId = SupabaseClient.client.auth.currentUserOrNull()?.id
+                if (userId == null) {
+                    // Handle user not logged in
+                    return@launch
+                }
+
+                val startDate = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE)
+                val endDate = LocalDate.now().plusDays(2).format(DateTimeFormatter.ISO_LOCAL_DATE)
+
+                val tareas = SupabaseClient.client.postgrest["tareas"]
+                    .select {
+                        filter {
+                            eq("id_usuario", userId)
+                            gte("fecha_entrega", startDate)
+                            lte("fecha_entrega", endDate)
+                        }
+                    }
+                    .decodeList<Tarea>()
+
+                val totalTasks = tareas.size
+                val completedTasks = tareas.count { it.completada }
+
+                val percentage = if (totalTasks > 0) {
+                    (completedTasks * 100) / totalTasks
+                } else {
+                    0
+                }
+
+                withContext(Dispatchers.Main) {
+                    tvTasksPercentage.text = "$percentage%"
+                    pbTasks.progress = percentage
+                    if (totalTasks > 0) {
+                        tvTasksCompleted.text = "Has completado $completedTasks de $totalTasks tareas"
+                    } else {
+                        tvTasksCompleted.text = "No tienes tareas en los próximos 3 días"
+                    }
+
+                }
+            } catch (e: Exception) {
+                // Handle error
+            }
+        }
+    }
+
 
     // Configuracion de los botones de las tarjetas
     private fun setupQuickActions() {

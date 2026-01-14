@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -63,49 +62,36 @@ import java.util.Locale
 
 class CalendarioActivity : AppCompatActivity() {
 
-    private lateinit var tasksAndExamsContainer: LinearLayout
     private lateinit var calendarComposeView: ComposeView
+    private lateinit var tasksAndExamsContainer: LinearLayout
     private lateinit var btnToggleTasks: MaterialButton
-
-    private var allEvents = listOf<Event>()
     private var selectedDate: LocalDate = LocalDate.now()
+    private var allEvents: List<Event> = listOf()
     private var showAllTasks = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_calendario_tareas)
 
-        tasksAndExamsContainer = findViewById(R.id.tasksAndExamsContainer)
         calendarComposeView = findViewById(R.id.calendarComposeView)
+        tasksAndExamsContainer = findViewById(R.id.tasksAndExamsContainer)
         btnToggleTasks = findViewById(R.id.btnToggleTasks)
 
-        val botonAnadirTarea: MaterialButton = findViewById(R.id.btnAddTask)
-        val botonAnadirExamen: MaterialButton = findViewById(R.id.btnAddExam)
+        NavigationHelper.setupBottomNavigation(this, R.id.nav_calendar)
 
-        botonAnadirTarea.setOnClickListener {
-            val intent = Intent(this, AddTaskActivity::class.java)
-            startActivity(intent)
-        }
-
-        botonAnadirExamen.setOnClickListener {
-            val intent = Intent(this, AddExamActivity::class.java)
-            startActivity(intent)
-        }
-
-        btnToggleTasks.setOnClickListener {
+        btnToggleTasks.setOnClickListener { 
             showAllTasks = !showAllTasks
+            displayEvents(allEvents)
             if (showAllTasks) {
                 btnToggleTasks.text = "Ver tareas del día"
             } else {
                 btnToggleTasks.text = "Ver todas las tareas"
             }
-            displayEvents(allEvents)
         }
     }
 
     override fun onResume() {
         super.onResume()
-        NavigationHelper.setupBottomNavigation(this, R.id.nav_calendar)
         loadTasksAndExams()
     }
 
@@ -117,7 +103,6 @@ class CalendarioActivity : AppCompatActivity() {
                 val tareas = SupabaseClient.client.postgrest["tareas"]
                     .select { filter { eq("id_usuario", userId) } }
                     .decodeList<Tarea>()
-
                 val examenes = SupabaseClient.client.postgrest["examenes"]
                     .select { filter { eq("id_usuario", userId) } }
                     .decodeList<Examen>()
@@ -247,6 +232,7 @@ class CalendarioActivity : AppCompatActivity() {
                     putExtra("hora_entrega", event.time)
                     putExtra("notif1", event.notificacion1)
                     putExtra("notif2", event.notificacion2)
+                    putExtra("completada", event.completada) // <-- AÑADIDO
                 }
                 startActivity(intent)
             }
