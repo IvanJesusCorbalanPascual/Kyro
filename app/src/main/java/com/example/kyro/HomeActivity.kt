@@ -18,7 +18,9 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.card.MaterialCardView
 import io.github.jan.supabase.gotrue.auth
+import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.postgrest
+import io.github.jan.supabase.postgrest.query.Columns
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -61,6 +63,25 @@ class HomeActivity : AppCompatActivity() {
         }
         updateTaskProgress()
         updateNextEvent()
+        loadUserProfile()
+    }
+
+    private fun loadUserProfile() {
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val userId = SupabaseClient.client.auth.currentUserOrNull()?.id ?: return@launch
+                val userProfile = SupabaseClient.client.from("profiles").select { filter { eq("id", userId) } }.decodeSingleOrNull<UserProfile>()
+
+                withContext(Dispatchers.Main) {
+                    userProfile?.let {
+                        val tvGreeting = findViewById<TextView>(R.id.tvGreeting)
+                        tvGreeting.text = "Hola, ${it.username}! 👋"
+                    }
+                }
+            } catch (e: Exception) {
+                // Handle error
+            }
+        }
     }
 
     private fun updateNextEvent() {

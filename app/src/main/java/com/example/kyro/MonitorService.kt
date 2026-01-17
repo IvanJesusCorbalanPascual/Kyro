@@ -76,11 +76,12 @@ class MonitorService: Service() {
                     .decodeList<Examen>()
 
                 val now = LocalDateTime.now()
-                val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
+                val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+                val timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss")
 
                 for (exam in uncompletedExams) {
                     if (exam.hora_examen != null) {
-                        val examDateTime = LocalDateTime.parse("${exam.fecha_examen} ${exam.hora_examen}", formatter)
+                        val examDateTime = LocalDateTime.parse("${exam.fecha_examen} ${exam.hora_examen}", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
                         if (now.isAfter(examDateTime)) {
                             SupabaseClient.client.postgrest["examenes"].update(
                                 { set("completada", true) },

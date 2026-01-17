@@ -137,7 +137,7 @@ class CalendarioActivity : AppCompatActivity() {
                 // Convierte las tareas y examenes en una lista de eventos
                 val events = mutableListOf<Event>()
                 tareas.forEach { event -> event.id?.let { events.add(Event(it, "tarea", event.nombre_asignatura, event.descripcion, event.fecha_entrega, event.hora_entrega, event.completada, event.notificacion1, event.notificacion2)) } }
-                examenes.forEach { event -> event.id?.let { events.add(Event(it, "examen", event.nombre_asignatura, event.descripcion, event.fecha_examen, null, event.completada, event.notificacion1, event.notificacion2)) } }
+                examenes.forEach { event -> event.id?.let { events.add(Event(it, "examen", event.nombre_asignatura, event.descripcion, event.fecha_examen, event.hora_examen, event.completada, event.notificacion1, event.notificacion2)) } }
                 allEvents = events
 
                 withContext(Dispatchers.Main) {
@@ -271,10 +271,14 @@ class CalendarioActivity : AppCompatActivity() {
                     putExtra("title", event.title)
                     putExtra("description", event.description)
                     putExtra("date", event.date)
-                    putExtra("hora_entrega", event.time)
+                    if (event.type == "examen") {
+                        putExtra("hora_examen", event.time)
+                    } else {
+                        putExtra("hora_entrega", event.time)
+                    }
                     putExtra("notif1", event.notificacion1)
                     putExtra("notif2", event.notificacion2)
-                    putExtra("completada", event.completada) // <-- ANADIDO
+                    putExtra("completada", event.completada)
                 }
                 startActivity(intent)
             }

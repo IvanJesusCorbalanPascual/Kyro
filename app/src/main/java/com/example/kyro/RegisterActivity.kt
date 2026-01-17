@@ -10,7 +10,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import io.github.jan.supabase.gotrue.auth
 import io.github.jan.supabase.gotrue.providers.builtin.Email
-import io.github.jan.supabase.postgrest.from
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -62,43 +61,30 @@ class RegisterActivity : AppCompatActivity() {
             // Usamos lifecycleScope para lanzar una tarea en segundo plano, esto se encarga de evitar errores si el usuario cierra la pantalla
             lifecycleScope.launch(Dispatchers.IO) {
                 try {
-                    // Creando el usuario en Auth (Authentication) y guardando los datos de este en la tabla 'profiles'
+                    // Creando el usuario en Auth (Authentication).
+                    // Un trigger en la base de datos de Supabase debería encargarse de crear el perfil.
                     SupabaseClient.client.auth.signUpWith(Email) {
                         this.email = email
                         this.password = password
                         this.data = buildJsonObject{
+                            put("display_name", name)
                             put("username", name)
                         }
                     }
 
+                    // Volver al hilo principal para cambiar de pantalla
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(
+                            applicationContext,
+                            "¡Registro exitoso! Por favor confirma tu email.",
+                            Toast.LENGTH_LONG
+                        ).show()
 
-                    // B) Obtener el usuario recién creado
-                    val user = SupabaseClient.client.auth.currentUserOrNull()
-
-                    if (user != null) {
-                        // C) Crear la fila en la tabla 'profiles' (Database)
-                        val newProfile = UserProfile(
-                            id = user.id, // Vinculamos Auth ID con Profile ID
-                            username = name
-                        )
-
-                        SupabaseClient.client.from("profiles").insert(newProfile)
-
-                        // D) Volver al hilo principal para cambiar de pantalla
-                        withContext(Dispatchers.Main) {
-                            Toast.makeText(
-                                applicationContext,
-                                "¡Registro exitoso! Por favor confirma tu email.",
-                                Toast.LENGTH_LONG
-                            ).show()
-
-                            // Navegar al Login o directamente al Home
-                            val intent = Intent(this@RegisterActivity, LoginActivity::class.java)
-                            startActivity(intent)
-                            finish()
-                        }
+                        // Navegar al Login
+                        val intent = Intent(this@RegisterActivity, LoginActivity::class.java)
+                        startActivity(intent)
+                        finish()
                     }
-
                 } catch (e: Exception) {
                     // Manejo de errores (ej: email ya existe, sin internet)
                     withContext(Dispatchers.Main) {

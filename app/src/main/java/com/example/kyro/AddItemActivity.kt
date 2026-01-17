@@ -42,7 +42,7 @@ class AddItemActivity : AppCompatActivity() {
         val toolbar: MaterialToolbar = findViewById(R.id.topAppBar)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        toolbar.title = if (type == "Examen") "Anadir Examen" else "Anadir Tarea"
+        toolbar.title = if (type.equals("Examen", ignoreCase = true)) "Anadir Examen" else "Anadir Tarea"
         // Configura el boton para volver atras
         toolbar.setNavigationOnClickListener {
             onBackPressedDispatcher.onBackPressed()
@@ -74,7 +74,7 @@ class AddItemActivity : AppCompatActivity() {
         // Inicializa la fecha y hora seleccionadas con la fecha y hora actuales
         val calendar = Calendar.getInstance()
         val sdfDate = SimpleDateFormat("yyyy-MM-dd", Locale.US)
-        val sdfTime = SimpleDateFormat("HH:mm", Locale.US)
+        val sdfTime = SimpleDateFormat("HH:mm:ss", Locale.US)
         selectedDate = sdfDate.format(calendar.time)
         selectedTime = sdfTime.format(calendar.time)
 
@@ -90,15 +90,15 @@ class AddItemActivity : AppCompatActivity() {
             calendar.set(Calendar.MINUTE, minute)
             selectedTime = sdfTime.format(calendar.time)
         }
-        
+
         // Si esta en modo edicion rellena los campos con los datos del evento
         if (isEditMode) {
             // Modo Edicion
-            toolbar.title = if (type == "Examen") "Editar Examen" else "Editar Tarea"
+            toolbar.title = if (type.equals("Examen", ignoreCase = true)) "Editar Examen" else "Editar Tarea"
             val title = intent.getStringExtra("title")
             val description = intent.getStringExtra("description")
             val date = intent.getStringExtra("date")
-            val time = intent.getStringExtra("hora_entrega")
+            val time = if (type.equals("Examen", ignoreCase = true)) intent.getStringExtra("hora_examen") else intent.getStringExtra("hora_entrega")
             val notif1 = intent.getStringExtra("notif1")
             val notif2 = intent.getStringExtra("notif2")
 
@@ -129,7 +129,7 @@ class AddItemActivity : AppCompatActivity() {
                     // Maneja el error de parseo de hora
                 }
             }
-            
+
             // Establece la seleccion de los spinners de notificacion
             if (notif1 != null) {
                 val notif1Position = adapter.getPosition(notif1)
@@ -156,30 +156,25 @@ class AddItemActivity : AppCompatActivity() {
             val descripcion = etDescripcion.text.toString().trim()
             val notificacion1 = spinnerNotificacion1.selectedItem.toString()
             val notificacion2 = spinnerNotificacion2.selectedItem.toString()
-            
+
             // Comprueba que los campos no esten vacios
             if (asignatura.isEmpty() || descripcion.isEmpty() || selectedDate.isEmpty()) {
                 Toast.makeText(this, "Por favor, rellena todos los campos", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            
-            // Obtiene el ID del usuario actual
-            val idUsuarioActual = SupabaseClient.client.auth.currentUserOrNull()?.id
-            if (idUsuarioActual == null) {
-                Toast.makeText(this, "Error: sesion no valida.", Toast.LENGTH_LONG).show()
-                return@setOnClickListener
-            }
-            
+
             // Lanza una corrutina para realizar la operacion en la base de datos
             lifecycleScope.launch(Dispatchers.IO) {
                 try {
-                    val tableName = if (type == "Examen") "examenes" else "tareas"
+                    val idUsuarioActual = SupabaseClient.client.auth.currentUserOrNull()?.id
+
                     if (isEditMode) {
-                        // Actualiza el evento en la base de datos
+                        // Actualiza el evento usando el método de actualización directa
+                        val tableName = if (type.equals("Examen", ignoreCase = true)) "examenes" else "tareas"
                         SupabaseClient.client.postgrest[tableName].update({
                             set("nombre_asignatura", asignatura)
                             set("descripcion", descripcion)
-                            if (type == "Examen") {
+                            if (type.equals("Examen", ignoreCase = true)) {
                                 set("fecha_examen", selectedDate)
                                 set("hora_examen", selectedTime)
                             } else {
@@ -188,12 +183,16 @@ class AddItemActivity : AppCompatActivity() {
                             }
                             set("notificacion1", notificacion1)
                             set("notificacion2", notificacion2)
-                        }) { filter { eq("id", eventId) } }
+                        }) { filter {
+                            eq("id", eventId)
+                            eq("id_usuario", idUsuarioActual!!)
+                        } }
                     } else {
-                        // Inserta un nuevo evento en la base de datos
-                        if (type == "Examen") {
+                        // La logica para insertar un nuevo elemento no cambia
+                        val tableName = if (type.equals("Examen", ignoreCase = true)) "examenes" else "tareas"
+                        if (type.equals("Examen", ignoreCase = true)) {
                             val nuevoExamen = Examen(
-                                id_usuario = idUsuarioActual,
+                                id_usuario = idUsuarioActual!!,
                                 nombre_asignatura = asignatura,
                                 descripcion = descripcion,
                                 fecha_examen = selectedDate,
@@ -204,7 +203,7 @@ class AddItemActivity : AppCompatActivity() {
                             SupabaseClient.client.postgrest[tableName].insert(nuevoExamen)
                         } else {
                             val nuevaTarea = Tarea(
-                                id_usuario = idUsuarioActual,
+                                id_usuario = idUsuarioActual!!,
                                 nombre_asignatura = asignatura,
                                 descripcion = descripcion,
                                 fecha_entrega = selectedDate,
@@ -215,7 +214,7 @@ class AddItemActivity : AppCompatActivity() {
                             SupabaseClient.client.postgrest[tableName].insert(nuevaTarea)
                         }
                     }
-                    
+
                     // Muestra un mensaje de exito y cierra la actividad
                     withContext(Dispatchers.Main) {
                         val message = if (isEditMode) "$type actualizado" else "$type guardado"
@@ -231,7 +230,11 @@ class AddItemActivity : AppCompatActivity() {
                 } catch (e: Exception) {
                     // Muestra un mensaje de error
                     withContext(Dispatchers.Main) {
-                        Toast.makeText(applicationContext, "Error: ${e.message}", Toast.LENGTH_LONG).show()
+                        val errorMessage = when (e) {
+                            is NullPointerException -> "Error: Sesion no valida. Por favor, inicie sesion de nuevo."
+                            else -> e.message ?: "Ocurrio un error desconocido"
+                        }
+                        Toast.makeText(applicationContext, "Error: $errorMessage", Toast.LENGTH_LONG).show()
                     }
                 }
             }

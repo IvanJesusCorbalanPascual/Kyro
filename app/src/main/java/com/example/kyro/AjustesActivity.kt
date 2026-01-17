@@ -3,6 +3,7 @@ package com.example.kyro
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -11,10 +12,13 @@ import android.content.Intent
 import android.content.Context
 import androidx.appcompat.widget.SwitchCompat
 import androidx.lifecycle.lifecycleScope // Para lanzar tareas en segundo plano
+import io.github.jan.supabase.postgrest.from
 import kotlinx.coroutines.launch // Para usar corrutinas
 import io.github.jan.supabase.gotrue.auth// Para acceder a la autenticación
 import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.postgrest.rpc
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class AjustesActivity : AppCompatActivity() {
 
@@ -30,6 +34,25 @@ class AjustesActivity : AppCompatActivity() {
         super.onResume()
         // Llama al Helper y dile que ilumine "nav_settings"
         NavigationHelper.setupBottomNavigation(this, R.id.nav_settings)
+        loadUserProfile()
+    }
+
+    private fun loadUserProfile() {
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val userId = SupabaseClient.client.auth.currentUserOrNull()?.id ?: return@launch
+                val userProfile = SupabaseClient.client.from("profiles").select { filter { eq("id", userId) } }.decodeSingleOrNull<UserProfile>()
+
+                withContext(Dispatchers.Main) {
+                    userProfile?.let {
+                        val tvUsername = findViewById<TextView>(R.id.tvUsername)
+                        tvUsername.text = it.username
+                    }
+                }
+            } catch (e: Exception) {
+                // Handle error
+            }
+        }
     }
 
     private fun initListeners() {
