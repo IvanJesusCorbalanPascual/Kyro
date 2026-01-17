@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F4F6F8"
-    tools:context=".AddTaskActivity">
+    tools:context=".AddItemActivity">
 
     <!-- Toolbar -->
     <com.google.android.material.appbar.MaterialToolbar
@@ -36,7 +36,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_marginBottom="16dp">
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etAsignaturaTarea"
+                    android:id="@+id/etAsignatura"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/add_task_hint_asignatura" />
@@ -48,7 +48,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_marginBottom="16dp">
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etDescripcionTarea"
+                    android:id="@+id/etDescripcion"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:minLines="3"
@@ -71,6 +71,7 @@
                 android:layout_marginBottom="16dp"/>
 
             <TextView
+                android:id="@+id/tvHora"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/add_task_label_hora"
@@ -106,7 +107,7 @@
                 android:layout_marginBottom="24dp"/>
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnGuardarTarea"
+                android:id="@+id/btnGuardar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/add_task_btn_guardar"

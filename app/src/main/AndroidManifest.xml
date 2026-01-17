@@ -72,10 +72,7 @@
             android:name=".AjustesActivity"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
         <activity
-            android:name=".AddTaskActivity"
-            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
-        <activity
-            android:name=".AddExamActivity"
+            android:name=".AddItemActivity"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
         <activity
             android:name=".EventDetailActivity"

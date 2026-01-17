@@ -24,6 +24,13 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
+
+// Data class unificada para Tareas y Examenes
+data class Event(
+    val name: String,
+    val date: String
+)
 
 class HomeActivity : AppCompatActivity() {
 
@@ -53,6 +60,57 @@ class HomeActivity : AppCompatActivity() {
             startService(intentService)
         }
         updateTaskProgress()
+        updateNextEvent()
+    }
+
+    private fun updateNextEvent() {
+        val tvEventName: TextView = findViewById(R.id.tvEventName)
+        val tvEventTime: TextView = findViewById(R.id.tvEventTime)
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val userId = SupabaseClient.client.auth.currentUserOrNull()?.id ?: return@launch
+
+                val today = LocalDate.now()
+
+                val upcomingTasks = SupabaseClient.client.postgrest["tareas"]
+                    .select { filter { eq("id_usuario", userId); eq("completada", false) } }
+                    .decodeList<Tarea>()
+                    .filter { LocalDate.parse(it.fecha_entrega).isAfter(today.minusDays(1)) }
+                    .map { Event(it.nombre_asignatura, it.fecha_entrega) }
+
+                val upcomingExams = SupabaseClient.client.postgrest["examenes"]
+                    .select { filter { eq("id_usuario", userId); eq("completada", false) } }
+                    .decodeList<Examen>()
+                    .filter { LocalDate.parse(it.fecha_examen).isAfter(today.minusDays(1)) }
+                    .map { Event(it.nombre_asignatura, it.fecha_examen) }
+
+                val allUpcomingEvents = (upcomingTasks + upcomingExams).sortedBy { it.date }
+
+                val nextEvent = allUpcomingEvents.firstOrNull()
+
+                withContext(Dispatchers.Main) {
+                    if (nextEvent != null) {
+                        tvEventName.text = nextEvent.name
+
+                        val eventDate = LocalDate.parse(nextEvent.date)
+                        val daysUntil = ChronoUnit.DAYS.between(today, eventDate)
+                        val formatter = DateTimeFormatter.ofPattern("EEE, dd MMM")
+
+                        val timeText = "${eventDate.format(formatter)} • Faltan $daysUntil días"
+                        tvEventTime.text = timeText
+                    } else {
+                        tvEventName.text = "No hay eventos próximos"
+                        tvEventTime.text = ""
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    tvEventName.text = "Error al cargar evento"
+                    tvEventTime.text = e.message // Muestra el error para depurar
+                }
+            }
+        }
     }
 
     private fun updateTaskProgress() {

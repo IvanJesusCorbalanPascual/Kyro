@@ -2,6 +2,7 @@ package com.example.kyro
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.CalendarView
@@ -21,64 +22,79 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
-class AddTaskActivity : AppCompatActivity() {
+// Esta clase gestiona la logica para anadir o editar un nuevo elemento sea Tarea o Examen
+class AddItemActivity : AppCompatActivity() {
 
+    // Variables para almacenar la fecha y hora seleccionadas
     private var selectedDate: String = ""
     private var selectedTime: String = ""
 
+    // Funcion que se ejecuta al crear la actividad
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_add_task)
+        setContentView(R.layout.activity_add_item)
+
+        // Obtiene el tipo de elemento a anadir Tarea o Examen
+        val type = intent.getStringExtra("type") ?: "Tarea"
 
         // --- Toolbar ---
+        // Configura la barra de herramientas superior
         val toolbar: MaterialToolbar = findViewById(R.id.topAppBar)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        toolbar.title = if (type == "Examen") "Anadir Examen" else "Anadir Tarea"
+        // Configura el boton para volver atras
         toolbar.setNavigationOnClickListener {
             onBackPressedDispatcher.onBackPressed()
         }
 
         // --- Vistas ---
-        val etAsignatura: EditText = findViewById(R.id.etAsignaturaTarea)
-        val etDescripcion: EditText = findViewById(R.id.etDescripcionTarea)
+        // Inicializa las vistas de la interfaz de usuario
+        val etAsignatura: EditText = findViewById(R.id.etAsignatura)
+        val etDescripcion: EditText = findViewById(R.id.etDescripcion)
         val calendarView: CalendarView = findViewById(R.id.calendarView)
         val timePicker: TimePicker = findViewById(R.id.timePicker)
         val spinnerNotificacion1: Spinner = findViewById(R.id.spinnerNotificacion1)
         val spinnerNotificacion2: Spinner = findViewById(R.id.spinnerNotificacion2)
-        val btnGuardar: Button = findViewById(R.id.btnGuardarTarea)
+        val btnGuardar: Button = findViewById(R.id.btnGuardar)
 
         // --- Spinner Adapter ---
-        val notificationOptions = listOf("No notificar", "En el momento del evento", "5 minutos antes", "10 minutos antes", "30 minutos antes", "1 hora antes", "1 día antes")
+        // Configura las opciones para los spinners de notificacion
+        val notificationOptions = listOf("No notificar", "En el momento del evento", "5 minutos antes", "10 minutos antes", "30 minutos antes", "1 hora antes", "1 dia antes")
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, notificationOptions)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerNotificacion1.adapter = adapter
         spinnerNotificacion2.adapter = adapter
 
+        // Obtiene el ID del evento si se esta editando
         val eventId = intent.getLongExtra("id", -1)
         val isEditMode = eventId != -1L
         val navigateToCalendar = intent.getBooleanExtra("NAVIGATE_TO_CALENDAR", false)
 
-        // Initialize selectedDate and selectedTime with today's date and time
+        // Inicializa la fecha y hora seleccionadas con la fecha y hora actuales
         val calendar = Calendar.getInstance()
         val sdfDate = SimpleDateFormat("yyyy-MM-dd", Locale.US)
         val sdfTime = SimpleDateFormat("HH:mm", Locale.US)
         selectedDate = sdfDate.format(calendar.time)
         selectedTime = sdfTime.format(calendar.time)
 
+        // Listener para cuando cambia la fecha en el CalendarView
         calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
             calendar.set(year, month, dayOfMonth)
             selectedDate = sdfDate.format(calendar.time)
         }
 
+        // Listener para cuando cambia la hora en el TimePicker
         timePicker.setOnTimeChangedListener { _, hourOfDay, minute ->
             calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
             calendar.set(Calendar.MINUTE, minute)
             selectedTime = sdfTime.format(calendar.time)
         }
-
+        
+        // Si esta en modo edicion rellena los campos con los datos del evento
         if (isEditMode) {
-            // Modo Edición
-            toolbar.title = "Editar Tarea"
+            // Modo Edicion
+            toolbar.title = if (type == "Examen") "Editar Examen" else "Editar Tarea"
             val title = intent.getStringExtra("title")
             val description = intent.getStringExtra("description")
             val date = intent.getStringExtra("date")
@@ -97,7 +113,7 @@ class AddTaskActivity : AppCompatActivity() {
                         selectedDate = it
                     }
                 } catch (e: Exception) {
-                    // Handle date parsing error
+                    // Maneja el error de parseo de fecha
                 }
             }
             time?.let {
@@ -110,10 +126,11 @@ class AddTaskActivity : AppCompatActivity() {
                         selectedTime = it
                     }
                 } catch (e: Exception) {
-                    // Handle time parsing error
+                    // Maneja el error de parseo de hora
                 }
             }
-
+            
+            // Establece la seleccion de los spinners de notificacion
             if (notif1 != null) {
                 val notif1Position = adapter.getPosition(notif1)
                 if (notif1Position >= 0) {
@@ -133,61 +150,86 @@ class AddTaskActivity : AppCompatActivity() {
             }
         }
 
+        // Listener para el boton de guardar
         btnGuardar.setOnClickListener {
             val asignatura = etAsignatura.text.toString().trim()
             val descripcion = etDescripcion.text.toString().trim()
             val notificacion1 = spinnerNotificacion1.selectedItem.toString()
             val notificacion2 = spinnerNotificacion2.selectedItem.toString()
-
+            
+            // Comprueba que los campos no esten vacios
             if (asignatura.isEmpty() || descripcion.isEmpty() || selectedDate.isEmpty()) {
                 Toast.makeText(this, "Por favor, rellena todos los campos", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-
+            
+            // Obtiene el ID del usuario actual
             val idUsuarioActual = SupabaseClient.client.auth.currentUserOrNull()?.id
             if (idUsuarioActual == null) {
-                Toast.makeText(this, "Error: sesión no válida.", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Error: sesion no valida.", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
-
+            
+            // Lanza una corrutina para realizar la operacion en la base de datos
             lifecycleScope.launch(Dispatchers.IO) {
                 try {
+                    val tableName = if (type == "Examen") "examenes" else "tareas"
                     if (isEditMode) {
-                        // Actualizar
-                        SupabaseClient.client.postgrest["tareas"].update({
+                        // Actualiza el evento en la base de datos
+                        SupabaseClient.client.postgrest[tableName].update({
                             set("nombre_asignatura", asignatura)
                             set("descripcion", descripcion)
-                            set("fecha_entrega", selectedDate)
-                            set("hora_entrega", selectedTime)
+                            if (type == "Examen") {
+                                set("fecha_examen", selectedDate)
+                                set("hora_examen", selectedTime)
+                            } else {
+                                set("fecha_entrega", selectedDate)
+                                set("hora_entrega", selectedTime)
+                            }
                             set("notificacion1", notificacion1)
                             set("notificacion2", notificacion2)
                         }) { filter { eq("id", eventId) } }
                     } else {
-                        // Insertar
-                        val nuevaTarea = Tarea(
-                            id_usuario = idUsuarioActual,
-                            nombre_asignatura = asignatura,
-                            descripcion = descripcion,
-                            fecha_entrega = selectedDate,
-                            hora_entrega = selectedTime,
-                            notificacion1 = notificacion1,
-                            notificacion2 = notificacion2
-                        )
-                        SupabaseClient.client.postgrest["tareas"].insert(nuevaTarea)
+                        // Inserta un nuevo evento en la base de datos
+                        if (type == "Examen") {
+                            val nuevoExamen = Examen(
+                                id_usuario = idUsuarioActual,
+                                nombre_asignatura = asignatura,
+                                descripcion = descripcion,
+                                fecha_examen = selectedDate,
+                                hora_examen = selectedTime,
+                                notificacion1 = notificacion1,
+                                notificacion2 = notificacion2
+                            )
+                            SupabaseClient.client.postgrest[tableName].insert(nuevoExamen)
+                        } else {
+                            val nuevaTarea = Tarea(
+                                id_usuario = idUsuarioActual,
+                                nombre_asignatura = asignatura,
+                                descripcion = descripcion,
+                                fecha_entrega = selectedDate,
+                                hora_entrega = selectedTime,
+                                notificacion1 = notificacion1,
+                                notificacion2 = notificacion2
+                            )
+                            SupabaseClient.client.postgrest[tableName].insert(nuevaTarea)
+                        }
                     }
-
+                    
+                    // Muestra un mensaje de exito y cierra la actividad
                     withContext(Dispatchers.Main) {
-                        val message = if (isEditMode) "¡Tarea actualizada!" else "¡Tarea guardada!"
+                        val message = if (isEditMode) "$type actualizado" else "$type guardado"
                         Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
 
                         if (navigateToCalendar && isEditMode) {
-                            val intent = Intent(this@AddTaskActivity, CalendarioActivity::class.java)
+                            val intent = Intent(this@AddItemActivity, CalendarioActivity::class.java)
                             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
                             startActivity(intent)
                         }
-                        finish() // Cierra AddTaskActivity
+                        finish() // Cierra AddItemActivity
                     }
                 } catch (e: Exception) {
+                    // Muestra un mensaje de error
                     withContext(Dispatchers.Main) {
                         Toast.makeText(applicationContext, "Error: ${e.message}", Toast.LENGTH_LONG).show()
                     }
