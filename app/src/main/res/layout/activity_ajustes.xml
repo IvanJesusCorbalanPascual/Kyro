@@ -29,7 +29,7 @@
             android:id="@+id/tvTituloAjustes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Ajustes"
+            android:text="@string/ajustes_titulo"
             android:textColor="#000000"
             android:textSize="20sp"
             android:fontFamily="sans-serif-medium"
@@ -100,7 +100,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
-                            android:text="Gestionar cuenta"
+                            android:text="@string/gestionar_cuenta"
                             android:textColor="#E0E0E0"
                             android:textSize="14sp" />
                     </LinearLayout>
@@ -118,7 +118,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Bienestar Digital"
+                android:text="@string/bienestar_digital"
                 android:textColor="#757575"
                 android:textSize="14sp"
                 android:textStyle="bold"
@@ -147,7 +147,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Modo Focus"
+                            android:text="@string/modo_focus"
                             android:textColor="#000000"
                             android:textSize="16sp"
                             android:textStyle="bold"/>
@@ -155,7 +155,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Monitoriza distracciones"
+                            android:text="@string/modo_focus_subtitulo"
                             android:textColor="#757575"
                             android:textSize="12sp"/>
                     </LinearLayout>
@@ -172,7 +172,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="Si lo desactivas, Kyro dejará de alertarte cuando entres en redes sociales."
+                    android:text="@string/modo_focus_desc"
                     android:textColor="#FF9800"
                     android:textSize="12sp"
                     android:alpha="0.9"/>
@@ -184,7 +184,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="General"
+                android:text="@string/general"
                 android:textColor="#757575"
                 android:textSize="14sp"
                 android:textStyle="bold"
@@ -203,7 +203,7 @@
                     style="@style/Widget.Material3.Button.TextButton"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
-                    android:text="Idioma"
+                    android:text="@string/idioma"
                     android:textColor="#333333"
                     android:textSize="16sp"
                     android:textAlignment="viewStart"
@@ -225,7 +225,7 @@
                     style="@style/Widget.Material3.Button.TextButton"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
-                    android:text="Apariencia"
+                    android:text="@string/apariencia"
                     android:textColor="#333333"
                     android:textSize="16sp"
                     android:textAlignment="viewStart"
@@ -242,7 +242,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Zona de Peligro"
+                android:text="@string/zona_peligro"
                 android:textColor="#FF5252"
                 android:textSize="14sp"
                 android:textStyle="bold"
@@ -262,7 +262,7 @@
                     style="@style/Widget.Material3.Button.TextButton"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
-                    android:text="Borrar Datos"
+                    android:text="@string/borrar_datos"
                     android:textColor="#D32F2F"
                     android:textSize="16sp"
                     android:textStyle="bold"
@@ -284,7 +284,7 @@
                     style="@style/Widget.Material3.Button.TextButton"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
-                    android:text="Cerrar Sesión"
+                    android:text="@string/cerrar_sesion"
                     android:textColor="#D32F2F"
                     android:textSize="16sp"
                     android:textStyle="bold"
@@ -306,7 +306,7 @@
                     style="@style/Widget.Material3.Button.TextButton"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
-                    android:text="Eliminar Cuenta"
+                    android:text="@string/eliminar_cuenta"
                     android:textColor="#D32F2F"
                     android:textSize="16sp"
                     android:textStyle="bold"

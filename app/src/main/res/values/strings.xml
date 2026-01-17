@@ -1,11 +1,179 @@
 <resources>
     <string name="app_name">Kyro</string>
+
     <string name="primal1">Tu Asistente de Estudio Inteligente</string>
     <string name="primal2">Organiza tu tiempo y domina cualquier materia con ayuda de la IA.</string>
+
     <string name="primal3">Maximiza tu tiempo</string>
     <string name="primal4">Organiza tus tareas, vence a la procrastinación.</string>
+
     <string name="primal5">Tu Asistente de Estudio Inteligente</string>
     <string name="primal6">Organiza tu tiempo y domina cualquier materia con ayuda de la IA.</string>
+
     <string name="primal7">Empezar Ahora</string>
     <string name="primal8">Inicia Sesion</string>
+
+    <!-- AJUSTES -->
+    <string name="ajustes_titulo">Ajustes</string>
+    <string name="bienestar_digital">Bienestar Digital</string>
+
+    <string name="modo_focus">Modo Focus</string>
+    <string name="modo_focus_subtitulo">Monitoriza distracciones</string>
+    <string name="modo_focus_desc">Si lo desactivas, Kyro dejará de alertarte cuando entres en redes sociales.</string>
+
+    <string name="general">General</string>
+    <string name="idioma">Idioma</string>
+    <string name="apariencia">Apariencia</string>
+
+    <string name="zona_peligro">Zona de Peligro</string>
+    <string name="borrar_datos">Borrar Datos</string>
+    <string name="cerrar_sesion">Cerrar Sesión</string>
+    <string name="eliminar_cuenta">Eliminar Cuenta</string>
+    <string name="gestionar_cuenta">Gestionar cuenta</string>
+
+    <!-- HOME / INICIO -->
+    <string name="home_saludo">Hola, Estudiante! 👋</string>
+    <string name="home_subtitulo">¿Qué vamos a aprender hoy?</string>
+    <string name="home_prox_evento">Próximo Evento</string>
+    <string name="home_btn_repasar">Repasar ahora</string>
+    <string name="home_btn_ia">Preguntar a IA</string>
+    <string name="home_btn_temarios">Ver Temarios</string>
+    <string name="home_progreso_titulo">Tu Progreso</string>
+    <string name="home_progreso_3dias">Tareas en los próximos 3 días</string>
+    <string name="home_progreso_todas">Todas las tareas próximas</string>
+    <string name="home_sin_tareas">No has completado ninguna tarea</string>
+
+    <string name="home_placeholder_examen">Examen de Java POO</string>
+    <string name="home_placeholder_fecha">Vie, 20 Dic • Faltan 3 días</string>
+
+    <string name="home_status_progreso">Has completado %1$d de %2$d tareas</string>
+    <string name="home_sin_tareas_3dias">No tienes tareas en los próximos 3 días</string>
+    <string name="home_sin_tareas_proximas">No tienes tareas próximas</string>
+
+    <!-- CALENDARIO Y TAREAS -->
+    <string name="calendar_titulo">Calendario y Tareas</string>
+    <string name="calendar_btn_add_exam">+ Examen</string>
+    <string name="calendar_btn_add_task">+ Tarea</string>
+    <string name="calendar_btn_view_all">Ver Todas</string>
+
+    <string name="calendar_btn_ver_dia">Ver del día</string>
+    <string name="tipo_tarea">TAREA</string>
+    <string name="tipo_examen">EXAMEN</string>
+    <string name="btn_completar">COMPLETAR</string>
+
+    <!-- AÑADIR EXAMEN -->
+    <string name="add_exam_titulo">Añadir Examen</string>
+    <string name="add_exam_hint_asignatura">Nombre de la Asignatura</string>
+    <string name="add_exam_hint_desc">Descripción del Examen</string>
+    <string name="add_exam_label_fecha">Fecha del Examen</string>
+    <string name="add_exam_label_recordatorios">Recordatorios</string>
+    <string name="add_exam_btn_guardar">Guardar Examen</string>
+
+    <!-- AÑADIR TAREAS -->
+    <string name="add_task_titulo">Añadir Tarea</string>
+    <string name="add_task_hint_asignatura">Nombre de la Asignatura</string>
+    <string name="add_task_hint_desc">Descripción de la Tarea</string>
+    <string name="add_task_label_fecha">Fecha de Entrega</string>
+    <string name="add_task_label_hora">Hora de Entrega</string>
+    <string name="add_task_label_recordatorios">Recordatorios</string>
+    <string name="add_task_btn_guardar">Guardar Tarea</string>
+
+    <!-- DETALLES EVENTO -->
+    <string name="event_detail_titulo">Detalles del Evento</string>
+    <string name="event_detail_label_desc">Descripción</string>
+    <string name="event_detail_label_recordatorios">Recordatorios</string>
+    <string name="event_detail_btn_incompleta">Marcar como no completada</string>
+    <string name="event_detail_btn_editar">Editar Evento</string>
+    <string name="event_detail_btn_eliminar">Eliminar Evento</string>
+
+    <!-- INICIO DE SESIÓN / LOGIN -->
+    <string name="login_titulo">Hola de nuevo!</string>
+    <string name="login_subtitulo">Bienvenido de vuelta a Kyro.</string>
+    <string name="login_hint_email">Correo electrónico</string>
+    <string name="login_hint_pass">Contraseña</string>
+    <string name="login_chk_sesion">Mantener sesión</string>
+    <string name="login_olvide_pass">¿Olvidaste contraseña?</string>
+    <string name="login_btn_entrar">Iniciar Sesión</string>
+    <string name="login_no_cuenta">¿No tienes cuenta? </string>
+    <string name="login_link_registro">Regístrate aquí</string>
+
+    <!-- MODIFICAR TEMARIO -->
+    <string name="mod_temario_titulo">Modificar Temario Seleccionado</string>
+    <string name="mod_temario_editar_contenido">Editar Contenido</string>
+    <string name="mod_temario_hint_titulo">Título del Tema (Ej. Java POO)</string>
+    <string name="mod_temario_desc_ia">Sube tus apuntes, PDFs o enlaces, nuestra IA lo procesará y actualizará el temario con la información proporcionada.</string>
+    <string name="mod_temario_btn_adjuntar">Pulse aquí para adjuntar archivos</string>
+    <string name="mod_temario_hint_apuntes">También puedes pegar el texto del temario aquí...</string>
+    <string name="mod_temario_btn_guardar">Guardar Cambios</string>
+    <string name="mod_temario_btn_eliminar">Eliminar Temario</string>
+
+    <string name="mod_temario_placeholder_asignatura">Java POO Avanzado</string>
+    <string name="mod_temario_placeholder_ejercicios">12 ejercicios</string>
+
+    <!-- REGISTRO -->
+    <string name="register_titulo">Bienvenido a Kyro!</string>
+    <string name="register_subtitulo">Crea tu cuenta del Búho Azul</string>
+    <string name="register_hint_nombre">Escribe tu nombre...</string>
+    <string name="register_hint_email">Escribe tu correo...</string>
+    <string name="register_hint_pass">Escribe tu contraseña...</string>
+    <string name="register_hint_confirm_pass">Confirma tu contraseña...</string>
+    <string name="register_btn_registrar">Registrar</string>
+    <string name="register_ya_tengo_cuenta">¿Ya tienes cuenta? </string>
+    <string name="register_link_login">Inicia sesión</string>
+
+    <!-- TEMARIO -->
+    <string name="temario_titulo">Temario y Contenido</string>
+    <string name="temario_subtitulo_lista">Temarios</string>
+    <string name="temario_lista_vacia">No hay temarios guardados.</string>
+    <string name="temario_subtitulo_nuevo">Cargar Nuevo Temario</string>
+    <string name="temario_desc_ia">Sube tus apuntes, PDFs o enlaces, nuestra IA lo procesará y generará ejercicios.</string>
+    <string name="temario_hint_titulo_nuevo">Título (Ej: Java POO Tema 1)</string>
+    <string name="temario_btn_adjuntar">Pulse aquí para adjuntar archivos</string>
+    <string name="temario_hint_contenido">También puedes pegar el texto del temario aquí...</string>
+    <string name="temario_btn_generar">Generar Ejercicios</string>
+
+    <!-- TEMARIO SELECCIONADO -->
+    <string name="temario_sel_titulo">Temario Seleccionado</string>
+    <string name="temario_sel_btn_modificar">Modificar</string>
+    <string name="temario_sel_subtitulo_ejercicios">Ejercicios</string>
+
+    <string name="temario_sel_placeholder_asignatura">Java POO Avanzado</string>
+    <string name="temario_sel_placeholder_ejercicios">12 ejercicios</string>
+
+    <!-- USUARIO -->
+    <string name="user_titulo">Mi Perfil</string>
+    <string name="user_seccion_info">Información Personal</string>
+    <string name="user_hint_nombre">Nombre de usuario</string>
+    <string name="user_hint_email">Correo electrónico</string>
+    <string name="user_btn_guardar">Guardar Cambios</string>
+
+    <!-- ITEM TEMARIO -->
+    <string name="item_temario_titulo">Título del Tema</string>
+    <string name="item_temario_btn_estudiar">Estudiar</string>
+
+    <!-- ITEM EJERCICIO -->
+    <string name="item_ejercicio_titulo">1. Título del Ejercicio</string>
+    <string name="item_ejercicio_desc">Descripción del ejercicio</string>
+
+    <!-- ITEM EVENTO -->
+    <string name="item_event_titulo">Nombre del Evento</string>
+    <string name="item_event_desc">Descripción…</string>
+
+    <!-- ITEM EVENTO CON FECHA -->
+    <string name="item_event_btn_completar">Completar</string>
+
+    <!-- BARRA DE NAVEGACIÓN -->
+    <string name="nav_inicio">Inicio</string>
+    <string name="nav_agenda">Agenda</string>
+    <string name="nav_ia">Kyro IA</string>
+    <string name="nav_temario">Temario</string>
+    <string name="nav_ajustes">Ajustes</string>
+
+    <!-- TEXTO / POP UPS ADICIONALES DE HOME-->
+    <string name="dialog_focus_titulo">Activar Modo Focus</string>
+    <string name="dialog_focus_mensaje">Para que Kyro te pueda ayudar a concentrarte y evitar distracciones con redes sociales, necesita permiso para detectar qué apps usas.\n\nBusca "Kyro" en la siguiente lista y actívalo si estás de acuerdo.</string>
+    <string name="btn_ir_ajustes">Ir a Ajustes</string>
+    <string name="btn_mas_tarde">Más tarde</string>
+    <string name="toast_abriendo_ia">Abriendo Kyro IA...</string>
+
 </resources>

@@ -49,13 +49,35 @@ class AjustesActivity : AppCompatActivity() {
         // Botón de cambiar idioma, solo muestra "Seleccionar Idioma" se desarrollara proximamente
         val btnIdioma = findViewById<View>(R.id.btnIdioma)
         btnIdioma.setOnClickListener {
-            Toast.makeText(this, "Seleccionar Idioma", Toast.LENGTH_SHORT).show()
+            val idiomas = arrayOf("Español", "English")
+            AlertDialog.Builder(this)
+                .setTitle("Selecciona Idioma / Select Language")
+                .setItems(idiomas) { _, which ->
+                    // 0 es Español, 1 es Ingles
+                    val languageTag = if (which == 1) "en" else "es"
+
+                    // Esta función cambia el idioma  sin reiniciar la app de forma bruta
+                    val appLocale = androidx.core.os.LocaleListCompat.forLanguageTags(languageTag)
+                    androidx.appcompat.app.AppCompatDelegate.setApplicationLocales(appLocale)
+                }
+                .show()
         }
 
         // Igual que el botón anterior, muestra el texto, se desarollara en el futuro
         val btnTema = findViewById<View>(R.id.btnTema)
         btnTema.setOnClickListener {
-            Toast.makeText(this, "Cambiar Tema Oscuro/Claro", Toast.LENGTH_SHORT).show()
+            // Comprueba si esta activado el modo oscuro
+            val currentModeIsNight = resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK
+
+            // Si esta en modo oscuro, pone el modo claro
+            val newMode = if (currentModeIsNight == android.content.res.Configuration.UI_MODE_NIGHT_YES) {
+                androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
+            // Si esta en modo claro, pone el modo oscuro
+        } else {
+                androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
+            }
+            // Aplica los cambios y cambia el tema
+            androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(newMode)
         }
 
         // Muestra un diálogo de advertencia para confirmar si el usuario quiere cerrar sesión

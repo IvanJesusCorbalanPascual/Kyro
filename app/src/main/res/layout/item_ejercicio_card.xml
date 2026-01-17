@@ -20,7 +20,7 @@
             android:id="@+id/tvTituloEjercicio"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="1. Título del Ejercicio"
+            android:text="@string/item_ejercicio_titulo"
             android:textColor="#000000"
             android:textSize="14sp"
             android:textStyle="bold" />
@@ -30,7 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="Descripción del ejercicio"
+            android:text="@string/item_ejercicio_desc"
             android:textColor="#808080"
             android:textSize="12sp" />
     </LinearLayout>
