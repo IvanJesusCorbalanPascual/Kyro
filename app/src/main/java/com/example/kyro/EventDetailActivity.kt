@@ -12,13 +12,15 @@ import com.google.android.material.appbar.MaterialToolbar
 import io.github.jan.supabase.postgrest.postgrest
 import kotlinx.coroutines.launch
 
+// Esta clase muestra los detalles de un evento (tarea o examen)
 class EventDetailActivity : AppCompatActivity() {
 
+    // Funcion que se ejecuta al crear la actividad
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_event_detail)
 
-        // --- Configuración de la Toolbar ---
+        // --- Configuracion de la Toolbar ---
         val toolbar: MaterialToolbar = findViewById(R.id.topAppBar)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -44,14 +46,10 @@ class EventDetailActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.tvDetailNotif1).text = "Recordatorio 1: ${notif1 ?: "No establecido"}"
         findViewById<TextView>(R.id.tvDetailNotif2).text = "Recordatorio 2: ${notif2 ?: "No establecido"}"
 
-        // --- Lógica del botón de Editar ---
+        // --- Logica del boton de Editar ---
         val btnEdit: Button = findViewById(R.id.btnEditEvent)
         btnEdit.setOnClickListener {
-            val editIntent = if (type == "tarea") {
-                Intent(this, AddTaskActivity::class.java)
-            } else {
-                Intent(this, AddExamActivity::class.java)
-            }
+            val editIntent = Intent(this, AddItemActivity::class.java)
 
             editIntent.apply {
                 putExtra("id", id)
@@ -62,26 +60,27 @@ class EventDetailActivity : AppCompatActivity() {
                 putExtra("hora_entrega", time)
                 putExtra("notif1", notif1)
                 putExtra("notif2", notif2)
-                // Añade esta línea para redirigir a CalendarioActivity
+                // Anade esta linea para redirigir a CalendarioActivity
                 putExtra("NAVIGATE_TO_CALENDAR", true)
             }
             startActivity(editIntent)
             finish() // Cierra la pantalla de detalles
         }
 
-        // Lógica del botón Eliminar
+        // Logica del boton Eliminar
         val btnDelete: Button = findViewById(R.id.btnDeleteEvent)
         btnDelete.setOnClickListener {
             AlertDialog.Builder(this)
-                .setTitle("Confirmar Eliminación")
-                .setMessage("¿Estás seguro de que deseas eliminar este evento?")
+                .setTitle("Confirmar Eliminacion")
+                .setMessage("¿Estas seguro de que deseas eliminar este evento?")
                 .setPositiveButton("Eliminar") { _, _ ->
                     deleteEvent(id, type ?: "")
                 }
                 .setNegativeButton("Cancelar", null)
                 .show()
         }
-
+        
+        // Logica del boton para marcar como incompleto
         val btnMarkAsIncomplete: Button = findViewById(R.id.btnMarkAsIncomplete)
         if (type == "tarea" && completada) {
             btnMarkAsIncomplete.visibility = View.VISIBLE
@@ -90,10 +89,11 @@ class EventDetailActivity : AppCompatActivity() {
             }
         }
 
-        // --- Configuración de la Navegación Inferior ---
+        // --- Configuracion de la Navegacion Inferior ---
         NavigationHelper.setupBottomNavigation(this, R.id.nav_calendar)
     }
 
+    // Funcion para eliminar un evento
     private fun deleteEvent(id: Long, type: String) {
         lifecycleScope.launch {
             try {
@@ -114,6 +114,7 @@ class EventDetailActivity : AppCompatActivity() {
         }
     }
 
+    // Funcion para marcar una tarea como incompleta
     private fun markAsIncomplete(id: Long) {
         lifecycleScope.launch {
             try {
@@ -127,7 +128,7 @@ class EventDetailActivity : AppCompatActivity() {
                 startActivity(intent)
                 finish()
             } catch (e: Exception) {
-                // Handle error
+                // Manejar el error
             }
         }
     }

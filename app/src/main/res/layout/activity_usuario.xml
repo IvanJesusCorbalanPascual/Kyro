@@ -30,7 +30,7 @@
             android:id="@+id/tvTitulo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Mi Perfil"
+            android:text="@string/user_titulo"
             android:textColor="#000000"
             android:textSize="20sp"
             android:fontFamily="sans-serif-medium"
@@ -75,7 +75,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Información Personal"
+                android:text="@string/user_seccion_info"
                 android:textStyle="bold"
                 android:textSize="18sp"
                 android:layout_marginBottom="16dp"
@@ -85,7 +85,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Nombre de usuario"
+                android:hint="@string/user_hint_nombre"
                 app:boxStrokeColor="@color/b500"
                 app:hintTextColor="@color/b900"
                 android:layout_marginBottom="16dp">
@@ -101,7 +101,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Correo electrónico"
+                android:hint="@string/user_hint_email"
                 android:enabled="false"
                 android:layout_marginBottom="32dp">
 
@@ -116,7 +116,7 @@
                 android:id="@+id/btnGuardar"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:text="Guardar Cambios"
+                android:text="@string/user_btn_guardar"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:cornerRadius="12dp"

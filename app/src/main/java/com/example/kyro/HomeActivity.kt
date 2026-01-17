@@ -24,6 +24,13 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
+
+// Data class unificada para Tareas y Examenes
+data class Event(
+    val name: String,
+    val date: String
+)
 
 class HomeActivity : AppCompatActivity() {
 
@@ -53,6 +60,57 @@ class HomeActivity : AppCompatActivity() {
             startService(intentService)
         }
         updateTaskProgress()
+        updateNextEvent()
+    }
+
+    private fun updateNextEvent() {
+        val tvEventName: TextView = findViewById(R.id.tvEventName)
+        val tvEventTime: TextView = findViewById(R.id.tvEventTime)
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val userId = SupabaseClient.client.auth.currentUserOrNull()?.id ?: return@launch
+
+                val today = LocalDate.now()
+
+                val upcomingTasks = SupabaseClient.client.postgrest["tareas"]
+                    .select { filter { eq("id_usuario", userId); eq("completada", false) } }
+                    .decodeList<Tarea>()
+                    .filter { LocalDate.parse(it.fecha_entrega).isAfter(today.minusDays(1)) }
+                    .map { Event(it.nombre_asignatura, it.fecha_entrega) }
+
+                val upcomingExams = SupabaseClient.client.postgrest["examenes"]
+                    .select { filter { eq("id_usuario", userId); eq("completada", false) } }
+                    .decodeList<Examen>()
+                    .filter { LocalDate.parse(it.fecha_examen).isAfter(today.minusDays(1)) }
+                    .map { Event(it.nombre_asignatura, it.fecha_examen) }
+
+                val allUpcomingEvents = (upcomingTasks + upcomingExams).sortedBy { it.date }
+
+                val nextEvent = allUpcomingEvents.firstOrNull()
+
+                withContext(Dispatchers.Main) {
+                    if (nextEvent != null) {
+                        tvEventName.text = nextEvent.name
+
+                        val eventDate = LocalDate.parse(nextEvent.date)
+                        val daysUntil = ChronoUnit.DAYS.between(today, eventDate)
+                        val formatter = DateTimeFormatter.ofPattern("EEE, dd MMM")
+
+                        val timeText = "${eventDate.format(formatter)} • Faltan $daysUntil días"
+                        tvEventTime.text = timeText
+                    } else {
+                        tvEventName.text = "No hay eventos próximos"
+                        tvEventTime.text = ""
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    tvEventName.text = "Error al cargar evento"
+                    tvEventTime.text = e.message // Muestra el error para depurar
+                }
+            }
+        }
     }
 
     private fun updateTaskProgress() {
@@ -99,9 +157,10 @@ class HomeActivity : AppCompatActivity() {
                     tvTasksPercentage.text = "$percentage3Days%"
                     pbTasks.progress = percentage3Days
                     if (totalTasks3Days > 0) {
-                        tvTasksCompleted.text = "Has completado $completedTasks3Days de $totalTasks3Days tareas"
+                        // Buscado desde strings para poder ser traducido correctamente
+                        tvTasksCompleted.text = getString(R.string.home_status_progreso, completedTasks3Days, totalTasks3Days)
                     } else {
-                        tvTasksCompleted.text = "No tienes tareas en los próximos 3 días"
+                        tvTasksCompleted.text = getString(R.string.home_sin_tareas_3dias)
                     }
                 }
 
@@ -119,9 +178,9 @@ class HomeActivity : AppCompatActivity() {
                     tvAllTasksPercentage.text = "$percentageAll%"
                     pbAllTasks.progress = percentageAll
                     if (totalAllTasks > 0) {
-                        tvAllTasksCompleted.text = "Has completado $completedAllTasks de $totalAllTasks tareas"
+                        tvAllTasksCompleted.text = getString(R.string.home_status_progreso, completedAllTasks, totalAllTasks)
                     } else {
-                        tvAllTasksCompleted.text = "No tienes tareas próximas"
+                        tvAllTasksCompleted.text = getString(R.string.home_sin_tareas_proximas)
                     }
                 }
 
@@ -136,7 +195,7 @@ class HomeActivity : AppCompatActivity() {
         val btnQuickAI = findViewById<MaterialCardView>(R.id.btnQuickAI)
         btnQuickAI.setOnClickListener {
             //Toast.makeText(this, "Abriendo Kyro IA...", Toast.LENGTH_SHORT).show()
-            showKyroToast("Abriendo Kyro IA...")
+            showKyroToast(getString(R.string.toast_abriendo_ia))
         }
 
         // Botón para ir a temario
@@ -187,12 +246,12 @@ class HomeActivity : AppCompatActivity() {
         if (!comprobarPermisoDeUso()) {
             // Crea una alerta visual para avisar al usuario de porque necesita la app dichos permisos, obligatorio por Google Play
             val builder = AlertDialog.Builder(this)
-            builder.setTitle("Activar Modo Focus")
-            builder.setMessage("Para que Kyro te pueda ayudar a concentrarte y evitar distracciones con redes sociales, necesita permiso para detectar que apps usas. " +
-                    "\n\nBusca 'Kyro' en la siguiente lista  y actívalo si estas de acuerdo.")
+            // El texto lo uso desde los strings para poder traducir los mensajes a otros idiomas
+            builder.setTitle(getString(R.string.dialog_focus_titulo))
+            builder.setMessage(getString(R.string.dialog_focus_mensaje))
 
             // Lleva al usuario a la configuración de Android si selecciona esta opción
-            builder.setPositiveButton("Ir a Ajustes") { dialog, _ ->
+            builder.setPositiveButton(getString(R.string.btn_ir_ajustes)) { dialog, _ ->
                 // Abre la lista de "Acceso a datos de uso" del sistema
                 startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))
                 // Cierra el dialogo
@@ -200,7 +259,7 @@ class HomeActivity : AppCompatActivity() {
             }
 
             // En caso de ser negativo, cierra el diálogo
-            builder.setNegativeButton("Más tarde") { dialog, _ ->
+            builder.setNegativeButton(getString(R.string.btn_mas_tarde)) { dialog, _ ->
                 dialog.dismiss()
             }
 

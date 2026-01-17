@@ -35,7 +35,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Hola, Estudiante! 👋"
+                    android:text="@string/home_saludo"
                     android:fontFamily="@font/poppins"
                     android:textStyle="bold"
                     android:textSize="22sp"
@@ -44,7 +44,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="¿Qué vamos a aprender hoy?"
+                    android:text="@string/home_subtitulo"
                     android:fontFamily="@font/poppins"
                     android:textSize="14sp"
                     android:textColor="#757575"/>
@@ -72,7 +72,7 @@
                 android:id="@+id/tvLabelEventos"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Próximo Evento"
+                android:text="@string/home_prox_evento"
                 android:fontFamily="@font/poppins"
                 android:textStyle="bold"
                 android:textSize="16sp"
@@ -99,7 +99,7 @@
                         android:id="@+id/tvEventName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Examen de Java POO"
+                        android:text="@string/home_placeholder_examen"
                         android:textColor="#FFFFFF"
                         android:fontFamily="@font/poppins"
                         android:textStyle="bold"
@@ -111,7 +111,7 @@
                         android:id="@+id/tvEventTime"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Vie, 20 Dic • Faltan 3 días"
+                        android:text="@string/home_placeholder_fecha"
                         android:textColor="#E1F5FE"
                         android:fontFamily="@font/poppins"
                         android:textSize="14sp"
@@ -122,7 +122,7 @@
                     <com.google.android.material.button.MaterialButton
                         android:layout_width="wrap_content"
                         android:layout_height="40dp"
-                        android:text="Repasar ahora"
+                        android:text="@string/home_btn_repasar"
                         android:textSize="12sp"
                         android:textColor="#00A8E8"
                         android:backgroundTint="#FFFFFF"
@@ -173,7 +173,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Preguntar a IA"
+                            android:text="@string/home_btn_ia"
                             android:fontFamily="@font/poppins"
                             android:textStyle="bold"
                             android:layout_marginTop="8dp"/>
@@ -202,7 +202,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Ver Temarios"
+                            android:text="@string/home_btn_temarios"
                             android:fontFamily="@font/poppins"
                             android:textStyle="bold"
                             android:layout_marginTop="8dp"/>
@@ -214,7 +214,7 @@
                 android:id="@+id/tvLabelProgreso"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tu Progreso"
+                android:text="@string/home_progreso_titulo"
                 android:fontFamily="@font/poppins"
                 android:textStyle="bold"
                 android:textSize="16sp"
@@ -252,7 +252,7 @@
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:text="Tareas en los próximos 3 días"
+                                android:text="@string/home_progreso_3dias"
                                 android:fontFamily="@font/poppins"
                                 android:textSize="14sp"/>
                             <TextView
@@ -279,7 +279,7 @@
                             android:id="@+id/tvTasksCompleted"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="No has completado ninguna tarea"
+                            android:text="@string/home_sin_tareas"
                             android:textSize="12sp"
                             android:layout_marginTop="8dp"
                             android:textColor="#757575"/>
@@ -310,7 +310,7 @@
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:text="Todas las tareas próximas"
+                                android:text="@string/home_progreso_todas"
                                 android:fontFamily="@font/poppins"
                                 android:textSize="14sp"/>
                             <TextView
@@ -337,7 +337,7 @@
                             android:id="@+id/tvAllTasksCompleted"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="No has completado ninguna tarea"
+                            android:text="@string/home_sin_tareas"
                             android:textSize="12sp"
                             android:layout_marginTop="8dp"
                             android:textColor="#757575"/>

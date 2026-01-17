@@ -4,59 +4,52 @@ import android.app.Activity
 import android.content.Intent
 import android.widget.Toast
 import com.google.android.material.bottomnavigation.BottomNavigationView
-// Clase que se encarga de cambiar de pantalla e iluminar el botón correcto
 
 object NavigationHelper {
 
-    fun setupBottomNavigation(activity: Activity, selectedItemId: Int) {
+    fun setupBottomNavigation(activity: Activity, currentItemId: Int) {
         val bottomNav = activity.findViewById<BottomNavigationView>(R.id.bottomNavigation) ?: return
 
-        // Limpiando el listener para evitar errores
+        // Anulamos el listener para evitar que se dispare al seleccionar el ítem mediante código
         bottomNav.setOnItemSelectedListener(null)
+        // Marcamos el ítem de la actividad actual como seleccionado
+        bottomNav.selectedItemId = currentItemId
 
-        // Marcamos el botón que corresponde a ESTA pantalla
-        // Configuramos el listener
         bottomNav.setOnItemSelectedListener { item ->
-            // Si pulsamos el mismo botón donde ya estamos, no hacemos nada y mantenemos la selección
-            if (item.itemId == selectedItemId) {
-                if (item.itemId == R.id.nav_syllabus && activity !is TemarioActivity) {
-                    startActivityWithAnimation(activity, TemarioActivity::class.java)
-                    return@setOnItemSelectedListener true
-                }
+            // Si el ítem seleccionado es el actual, no hacemos nada
+            if (item.itemId == currentItemId) {
                 return@setOnItemSelectedListener true
             }
 
-            when (item.itemId) {
-                R.id.nav_home -> {
-                    startActivityWithAnimation(activity, HomeActivity::class.java)
-                    false // Devolvemos false para que el cambio visual lo gestione la nueva Activity
-                }
-                R.id.nav_calendar -> {
-                    startActivityWithAnimation(activity, CalendarioActivity::class.java)
-                    false
-                }
+            val targetActivity: Class<*>? = when (item.itemId) {
+                R.id.nav_home -> HomeActivity::class.java
+                R.id.nav_calendar -> CalendarioActivity::class.java
+                R.id.nav_syllabus -> TemarioActivity::class.java
+                R.id.nav_settings -> AjustesActivity::class.java
                 R.id.nav_ai_chat -> {
                     Toast.makeText(activity, "Próximamente: Chat IA", Toast.LENGTH_SHORT).show()
-                    false
+                    null
                 }
-                R.id.nav_syllabus -> {
-                    startActivityWithAnimation(activity, TemarioActivity::class.java)
-                    false
-                }
-                R.id.nav_settings -> {
-                    startActivityWithAnimation(activity, AjustesActivity::class.java)
-                    false
-                }
-                else -> false
+                else -> null
             }
+
+            if (targetActivity != null) {
+                startActivityWithAnimation(activity, targetActivity)
+                // Devolvemos false para que la nueva actividad sea la que gestione el cambio visual
+                return@setOnItemSelectedListener false
+            }
+
+            // Si no hay actividad de destino (como en el Toast), no cambiamos la selección
+            return@setOnItemSelectedListener false
         }
     }
 
     private fun startActivityWithAnimation(activity: Activity, targetActivity: Class<*>) {
         val intent = Intent(activity, targetActivity)
+        // Usamos esta bandera para traer una actividad existente al frente en lugar de crear una nueva
         intent.flags = Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
         activity.startActivity(intent)
-        // Eliminamos la transición para que el cambio sea instantáneo (efecto tab)
+        // Eliminamos la animación de transición para un efecto de "pestaña" más fluido
         activity.overridePendingTransition(0, 0)
     }
 }

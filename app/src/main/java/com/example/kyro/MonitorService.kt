@@ -15,6 +15,9 @@ import android.app.PendingIntent
 import android.graphics.BitmapFactory
 import android.os.Build
 import androidx.core.app.NotificationCompat
+import io.github.jan.supabase.postgrest.postgrest
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class MonitorService: Service() {
 
@@ -58,11 +61,40 @@ class MonitorService: Service() {
         serviceScope.launch {
             while (isMonitoring) {
                 detectarAppEnPrimerPlano()
+                checkCompletedExams()
                 // Suspende la corrutina sin bloquear el hilo para ahorrar batería
                 delay(CHECK_INTERVAL)
             }
         }
     }
+
+    private fun checkCompletedExams() {
+        serviceScope.launch {
+            try {
+                val uncompletedExams = SupabaseClient.client.postgrest["examenes"]
+                    .select { filter { eq("completada", false) } }
+                    .decodeList<Examen>()
+
+                val now = LocalDateTime.now()
+                val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
+
+                for (exam in uncompletedExams) {
+                    if (exam.hora_examen != null) {
+                        val examDateTime = LocalDateTime.parse("${exam.fecha_examen} ${exam.hora_examen}", formatter)
+                        if (now.isAfter(examDateTime)) {
+                            SupabaseClient.client.postgrest["examenes"].update(
+                                { set("completada", true) },
+                                { filter { eq("id", exam.id!!) } }
+                            )
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e("MonitorService", "Error al comprobar los exámenes completados", e)
+            }
+        }
+    }
+
 
     private fun detectarAppEnPrimerPlano() {
         // Comprueba si el usuario quiere el modo Focus en las preferencias
@@ -122,7 +154,16 @@ class MonitorService: Service() {
         val blackList = listOf(
             "com.google.android.youtube",
             "com.instagram.android",
-            "com.zhiliaoapp.musically"
+            "com.zhiliaoapp.musically",
+            "com.netflix.mediaclient",
+            "tv.twitch.android.app",
+            "com.hbo.hbonow",
+            "com.amazon.avod.thirdpartyclient",
+            "com.discord",
+            "com.facebook.katana",
+            "com.twitter.android",
+            "com.pinterest",
+            "com.reddit.frontpage"
         )
         return packageName in blackList
     }
