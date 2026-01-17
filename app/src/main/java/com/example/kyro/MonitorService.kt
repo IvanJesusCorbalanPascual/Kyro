@@ -65,6 +65,16 @@ class MonitorService: Service() {
     }
 
     private fun detectarAppEnPrimerPlano() {
+        // Comprueba si el usuario quiere el modo Focus en las preferencias
+        val sharedPref = getSharedPreferences("KyroPrefs", Context.MODE_PRIVATE)
+        // Por defecto true
+        val isFocusEnabled = sharedPref.getBoolean("FOCUS_ENABLED", true)
+
+        // Si el usuario lo apago, sale con el return
+        if (!isFocusEnabled) {
+            return
+        }
+
         try {
 
             val usm = getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager

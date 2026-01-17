@@ -9,6 +9,7 @@ data class Examen(
     val nombre_asignatura: String,
     val descripcion: String,
     val fecha_examen: String,
+    val completada: Boolean = false,
     val notificacion1: String? = null,
     val notificacion2: String? = null
 )

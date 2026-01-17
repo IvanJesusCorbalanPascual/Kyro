@@ -15,8 +15,6 @@ object NavigationHelper {
         bottomNav.setOnItemSelectedListener(null)
 
         // Marcamos el botón que corresponde a ESTA pantalla
-        bottomNav.selectedItemId = selectedItemId
-
         // Configuramos el listener
         bottomNav.setOnItemSelectedListener { item ->
             // Si pulsamos el mismo botón donde ya estamos, no hacemos nada y mantenemos la selección

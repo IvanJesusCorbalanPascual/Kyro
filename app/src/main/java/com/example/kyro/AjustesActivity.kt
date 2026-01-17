@@ -8,6 +8,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.card.MaterialCardView
 import android.content.Intent
+import android.content.Context
+import androidx.appcompat.widget.SwitchCompat
 import androidx.lifecycle.lifecycleScope // Para lanzar tareas en segundo plano
 import kotlinx.coroutines.launch // Para usar corrutinas
 import io.github.jan.supabase.gotrue.auth// Para acceder a la autenticación
@@ -21,6 +23,7 @@ class AjustesActivity : AppCompatActivity() {
         setContentView(R.layout.activity_ajustes)
 
         initListeners()
+        setupFocusSwitch()
     }
 
     override fun onResume() {
@@ -157,5 +160,26 @@ class AjustesActivity : AppCompatActivity() {
         val dialog = builder.create()
         dialog.show()
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(resources.getColor(android.R.color.holo_red_dark))
+    }
+
+    private fun setupFocusSwitch() {
+        // Busca el interruptor en la vista
+        val switchFocus = findViewById<SwitchCompat>(R.id.switchModoFocus)
+
+        // Abre la memoria del móvil
+        val sharedPref = getSharedPreferences("KyroPrefs", Context.MODE_PRIVATE)
+
+        // Lee como estaba antes, por defecto estará activado
+        val isFocusEnabled = sharedPref.getBoolean("FOCUS_ENABLED", true)
+        switchFocus.isChecked = isFocusEnabled
+
+        // Guarda los cambios al tocar el botón
+        switchFocus.setOnCheckedChangeListener { _, isChecked ->
+            sharedPref.edit().putBoolean("FOCUS_ENABLED", isChecked).apply()
+
+            // Muestra al usuario visualmente si esta activado o desactivado
+            val estado = if(isChecked) "Activado" else "Desactivado"
+            Toast.makeText(this, "Modo Focus $estado", Toast.LENGTH_SHORT).show()
+        }
     }
 }

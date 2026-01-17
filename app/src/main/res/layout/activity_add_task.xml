@@ -57,18 +57,34 @@
                     android:hint="Descripción de la Tarea" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Fecha de Entrega"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp"/>
+
+            <CalendarView
+                android:id="@+id/calendarView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_marginBottom="24dp">
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etFechaEntrega"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Fecha de Entrega (YYYY-MM-DD)"
-                    android:inputType="date" />
-            </com.google.android.material.textfield.TextInputLayout>
+                android:layout_marginBottom="16dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hora de Entrega"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp"/>
+
+            <TimePicker
+                android:id="@+id/timePicker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:timePickerMode="spinner"
+                android:layout_marginBottom="24dp"/>
 
             <!-- Recordatorios -->
             <TextView
@@ -83,15 +99,13 @@
                 android:id="@+id/spinnerNotificacion1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:entries="@array/notification_options"/>
+                android:layout_marginBottom="16dp"/>
 
             <Spinner
                 android:id="@+id/spinnerNotificacion2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                android:entries="@array/notification_options"/>
+                android:layout_marginBottom="24dp"/>
 
             <!-- Botón Guardar -->
             <com.google.android.material.button.MaterialButton

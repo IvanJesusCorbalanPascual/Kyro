@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="notification_options">
+        <item>No notificar</item>
+        <item>En el momento del evento</item>
+        <item>5 minutos antes</item>
+        <item>10 minutos antes</item>
+        <item>30 minutos antes</item>
+        <item>1 hora antes</item>
+        <item>1 día antes</item>
+    </string-array>
+</resources>

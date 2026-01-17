@@ -1,19 +1,29 @@
 package com.example.kyro
 
 import android.Manifest
+import android.app.AppOpsManager
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.card.MaterialCardView
-import android.app.AppOpsManager
-import android.content.Context
+import android.os.Process
 import android.provider.Settings
+import android.widget.ProgressBar
+import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import android.os.Process
-import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.lifecycleScope
+import com.google.android.material.card.MaterialCardView
+import io.github.jan.supabase.gotrue.auth
+import io.github.jan.supabase.postgrest.postgrest
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class HomeActivity : AppCompatActivity() {
 
@@ -41,6 +51,83 @@ class HomeActivity : AppCompatActivity() {
         if (comprobarPermisoDeUso()) {
             val intentService = Intent(this, MonitorService::class.java)
             startService(intentService)
+        }
+        updateTaskProgress()
+    }
+
+    private fun updateTaskProgress() {
+        val tvTasksPercentage: TextView = findViewById(R.id.tvTasksPercentage)
+        val pbTasks: ProgressBar = findViewById(R.id.pbTasks)
+        val tvTasksCompleted: TextView = findViewById(R.id.tvTasksCompleted)
+
+        val tvAllTasksPercentage: TextView = findViewById(R.id.tvAllTasksPercentage)
+        val pbAllTasks: ProgressBar = findViewById(R.id.pbAllTasks)
+        val tvAllTasksCompleted: TextView = findViewById(R.id.tvAllTasksCompleted)
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val userId = SupabaseClient.client.auth.currentUserOrNull()?.id
+                if (userId == null) {
+                    // Handle user not logged in
+                    return@launch
+                }
+
+                val today = LocalDate.now()
+                val threeDaysLater = today.plusDays(2)
+
+                val allUpcomingTasks = SupabaseClient.client.postgrest["tareas"]
+                    .select { filter { eq("id_usuario", userId) } }
+                    .decodeList<Tarea>()
+                    .filter { LocalDate.parse(it.fecha_entrega).isAfter(today.minusDays(1)) }
+
+                // Tareas en los próximos 3 días
+                val tasksInNext3Days = allUpcomingTasks.filter { 
+                    val taskDate = LocalDate.parse(it.fecha_entrega)
+                    !taskDate.isBefore(today) && !taskDate.isAfter(threeDaysLater)
+                }
+
+                val totalTasks3Days = tasksInNext3Days.size
+                val completedTasks3Days = tasksInNext3Days.count { it.completada }
+
+                val percentage3Days = if (totalTasks3Days > 0) {
+                    (completedTasks3Days * 100) / totalTasks3Days
+                } else {
+                    0
+                }
+
+                withContext(Dispatchers.Main) {
+                    tvTasksPercentage.text = "$percentage3Days%"
+                    pbTasks.progress = percentage3Days
+                    if (totalTasks3Days > 0) {
+                        tvTasksCompleted.text = "Has completado $completedTasks3Days de $totalTasks3Days tareas"
+                    } else {
+                        tvTasksCompleted.text = "No tienes tareas en los próximos 3 días"
+                    }
+                }
+
+                // Todas las tareas próximas
+                val totalAllTasks = allUpcomingTasks.size
+                val completedAllTasks = allUpcomingTasks.count { it.completada }
+
+                val percentageAll = if (totalAllTasks > 0) {
+                    (completedAllTasks * 100) / totalAllTasks
+                } else {
+                    0
+                }
+
+                withContext(Dispatchers.Main) {
+                    tvAllTasksPercentage.text = "$percentageAll%"
+                    pbAllTasks.progress = percentageAll
+                    if (totalAllTasks > 0) {
+                        tvAllTasksCompleted.text = "Has completado $completedAllTasks de $totalAllTasks tareas"
+                    } else {
+                        tvAllTasksCompleted.text = "No tienes tareas próximas"
+                    }
+                }
+
+            } catch (e: Exception) {
+                // Handle error
+            }
         }
     }
 
@@ -75,7 +162,6 @@ class HomeActivity : AppCompatActivity() {
         // Devuelve true si esta permitido, si no devuelve false
         return mode == AppOpsManager.MODE_ALLOWED
     }
-
 
     // Muestra el diálogo para pedir los permisos y reedirige al usuario si no los tiene
     private fun verificarYPedirPermisosFocus() {
