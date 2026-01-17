@@ -182,7 +182,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
-                        android:text="Generar Ejercicios"
+                        android:text="Generar Ejercicios con IA ✨"
                         android:textStyle="bold"
                         android:textColor="#FFFFFF"
                         app:backgroundTint="#00A8E8"

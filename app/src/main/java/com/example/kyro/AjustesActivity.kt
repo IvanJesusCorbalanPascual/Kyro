@@ -179,7 +179,7 @@ class AjustesActivity : AppCompatActivity() {
 
             // Muestra al usuario visualmente si esta activado o desactivado
             val estado = if(isChecked) "Activado" else "Desactivado"
-            Toast.makeText(this, "Modo Focus $estado", Toast.LENGTH_SHORT).show()
+            showKyroToast("Modo Focus $estado")
         }
     }
 }
