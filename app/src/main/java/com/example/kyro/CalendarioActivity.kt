@@ -93,9 +93,9 @@ class CalendarioActivity : AppCompatActivity() {
             showAllTasks = !showAllTasks
             displayEvents(allEvents)
             if (showAllTasks) {
-                btnToggleTasks.text = "Ver del dia"
+                btnToggleTasks.text = getString(R.string.calendar_btn_ver_dia)
             } else {
-                btnToggleTasks.text = "Ver Todas"
+                btnToggleTasks.text = getString(R.string.calendar_btn_view_all)
             }
         }
 
@@ -202,7 +202,7 @@ class CalendarioActivity : AppCompatActivity() {
 
             // Configura la vista segun si es una tarea o un examen
             if (event.type == "tarea") {
-                eventType.text = "Tarea"
+                eventType.text = getString(R.string.tipo_tarea)
                 eventType.setTextColor(ContextCompat.getColor(this, R.color.b500))
                 icon.setImageResource(R.drawable.ic_task)
                 
@@ -235,7 +235,7 @@ class CalendarioActivity : AppCompatActivity() {
                 } else {
                     cardView.setCardBackgroundColor(ContextCompat.getColor(this, R.color.white))
                     completeButton.isEnabled = true
-                    completeButton.text = "Completar"
+                    completeButton.text = getString(R.string.btn_completar)
                     completeButton.backgroundTintList = ContextCompat.getColorStateList(this, R.color.b500)
                     completeButton.setTextColor(ContextCompat.getColor(this, R.color.white))
                 }
@@ -247,7 +247,7 @@ class CalendarioActivity : AppCompatActivity() {
                     }
                 }
             } else { // "examen"
-                eventType.text = "Examen"
+                eventType.text = getString(R.string.tipo_examen)
                 eventType.setTextColor(ContextCompat.getColor(this, R.color.purple_500))
                 icon.setImageResource(R.drawable.ic_book)
                 completeButton.visibility = View.GONE

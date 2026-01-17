@@ -155,7 +155,16 @@ class MonitorService: Service() {
         val blackList = listOf(
             "com.google.android.youtube",
             "com.instagram.android",
-            "com.zhiliaoapp.musically"
+            "com.zhiliaoapp.musically",
+            "com.netflix.mediaclient",
+            "tv.twitch.android.app",
+            "com.hbo.hbonow",
+            "com.amazon.avod.thirdpartyclient",
+            "com.discord",
+            "com.facebook.katana",
+            "com.twitter.android",
+            "com.pinterest",
+            "com.reddit.frontpage"
         )
         return packageName in blackList
     }

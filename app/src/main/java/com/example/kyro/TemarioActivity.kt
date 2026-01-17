@@ -15,10 +15,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.gotrue.auth
-import io.github.jan.supabase.gotrue.providers.builtin.Email
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-
+import java.util.ArrayList // Necesario para pasar la lista
 
 class TemarioActivity : AppCompatActivity() {
 
@@ -46,7 +45,7 @@ class TemarioActivity : AppCompatActivity() {
         val btnAdjuntarClick = findViewById<View>(R.id.btnAdjuntarArchivo)
 
         btnAdjuntarClick.setOnClickListener {
-            Toast.makeText(this, "Funcionalidad de adjuntar PDF esta en desarrollo", Toast.LENGTH_SHORT).show()
+            showKyroToast("Funcionalidad de adjuntar PDF esta en desarrollo")
         }
 
         // Carga la lista al entrar
@@ -89,39 +88,39 @@ class TemarioActivity : AppCompatActivity() {
                         // Lo más nuevo aparece primero
                         .sortedByDescending { it.id }
 
-                // Oculta la carga al terminar
-                barraProgreso.visibility = View.GONE
+                    // Oculta la carga al terminar
+                    barraProgreso.visibility = View.GONE
 
-                // Comprueba si esta vacia o llena la lista
-                if (listaApuntes.isEmpty()) {
-                    // Muestra el aviso de que no hay temas, si esta vacio
-                    tvVacio.visibility = View.VISIBLE
-                    rvTemarios.visibility = View.GONE
-                } else {
-                    tvVacio.visibility = View.GONE
-                    rvTemarios.visibility = View.VISIBLE
+                    // Comprueba si esta vacia o llena la lista
+                    if (listaApuntes.isEmpty()) {
+                        // Muestra el aviso de que no hay temas, si esta vacio
+                        tvVacio.visibility = View.VISIBLE
+                        rvTemarios.visibility = View.GONE
+                    } else {
+                        tvVacio.visibility = View.GONE
+                        rvTemarios.visibility = View.VISIBLE
 
-                    // Configura el layout del RecyclerView
-                    rvTemarios.layoutManager = LinearLayoutManager(this@TemarioActivity)
+                        // Configura el layout del RecyclerView
+                        rvTemarios.layoutManager = LinearLayoutManager(this@TemarioActivity)
 
-                    // Conecta el adaptador con la lista de datos
-                    rvTemarios.adapter = ApuntesAdapter(listaApuntes) { apunte ->
-                        // Se ejecuta al pulsar una tarjeta, abriendo el detalle
-                        abrirDetalle(apunte)
+                        // Conecta el adaptador con la lista de datos
+                        rvTemarios.adapter = ApuntesAdapter(listaApuntes) { apunte ->
+                            // Se ejecuta al pulsar una tarjeta, abriendo el detalle
+                            abrirDetalle(apunte)
+                        }
                     }
-                }
-            } else {
-                // En el caso improbable de que no haya usuario logeado, oculta
-                barraProgreso.visibility = View.GONE
-                tvVacio.text = "Error de sesión."
-                tvVacio.visibility = View.VISIBLE
+                } else {
+                    // En el caso improbable de que no haya usuario logeado, oculta
+                    barraProgreso.visibility = View.GONE
+                    tvVacio.text = "Error de sesión."
+                    tvVacio.visibility = View.VISIBLE
                 }
 
             }catch (e: Exception) {
                 // Si falla por falta de internet, etc, quita la carga y avisa del error
                 barraProgreso.visibility = View.GONE
                 Log.e("TemarioActivity", "Error al cargar" , e)
-                Toast.makeText(this@TemarioActivity, "Error de conexión", Toast.LENGTH_SHORT).show()
+                showKyroToast("Error de conexión")
             }
         }
     }
@@ -137,16 +136,24 @@ class TemarioActivity : AppCompatActivity() {
                 etTituloNuevo.error = "Escribe el título, es obligatorio"
                 return@setOnClickListener
             }
-                // Si están ambos datos, llama a la función para subirlo
-                subirNuevoTemario(titulo, contenido)
+
+            // Estableciendo un minimo de 50 caracteres para evitar fallos o respuestas muy pobres
+            if (contenido.isEmpty() || contenido.length < 50) {
+                etContenidoNuevo.error = "Escribe al menos 50 caracteres para generar ejercicios"
+                Toast.makeText(this, "El contenido es muy corto para la IA", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
             }
+
+            // Si están ambos datos, llama a la función para subirlo y procesarlo con IA
+            subirNuevoTemarioYGenerar(titulo, contenido)
         }
+    }
 
     // Función que envia los datos a la nube
-    private fun subirNuevoTemario(titulo: String, contenido: String) {
+    private fun subirNuevoTemarioYGenerar(titulo: String, contenido: String) {
         // Bloquea el botón para no pulsarse más veces
         btnGenerar.isEnabled = false
-        btnGenerar.text = "Guardando..."
+        btnGenerar.text = "Guardando y Generando..."
 
         lifecycleScope.launch {
             try {
@@ -162,13 +169,15 @@ class TemarioActivity : AppCompatActivity() {
                 // Crea el objeto que se debe subir pasandole el id del usuarios
                 val nuevoApunte = ApunteUsuario(titulo = titulo, contenido = contenido, user_id = usuarioActual.id)
 
-                // Lo inserta en Supabase
-                SupabaseClient.client
+                // Lo inserta en Supabase (y recuperamos el objeto guardado para tener su ID)
+                val apunteGuardado = SupabaseClient.client
                     .from("apuntes_usuario")
-                    .insert(nuevoApunte)
+                    .insert(nuevoApunte) {
+                        select() // Importante: esto nos devuelve el ID generado
+                    }.decodeSingle<ApunteUsuario>()
 
                 // Si no hay problemas, muestra al usuario que se ha guardado correctamente
-                Toast.makeText(this@TemarioActivity, "¡Guardado!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@TemarioActivity, "¡Guardado! Consultando a la IA...", Toast.LENGTH_SHORT).show()
 
                 // Limpia ambos campos
                 etTituloNuevo.text.clear()
@@ -178,6 +187,34 @@ class TemarioActivity : AppCompatActivity() {
                 etTituloNuevo.clearFocus()
                 etContenidoNuevo.clearFocus()
 
+                // --- LÓGICA DE IA ---
+                val servicioIA = GeminiService()
+                val preguntasGeneradas = servicioIA.generarTestDeApuntes(contenido)
+
+                if (preguntasGeneradas.isNotEmpty()) {
+
+                    // Guardamos las preguntas en Supabase para que no se pierdan
+                    val gson = com.google.gson.Gson()
+                    val preguntasJson = gson.toJson(preguntasGeneradas)
+
+                    SupabaseClient.client
+                        .from("apuntes_usuario")
+                        .update({
+                            set("preguntas_json", preguntasJson)
+                        }) {
+                            filter {
+                                eq("id", apunteGuardado.id)
+                            }
+                        }
+
+                    // Si la IA funcionó, vamos directos al Quiz
+                    val intent = Intent(this@TemarioActivity, QuizActivity::class.java)
+                    intent.putExtra("EXTRA_PREGUNTAS", ArrayList(preguntasGeneradas))
+                    startActivity(intent)
+                } else {
+                    showKyroToast("La IA no pudo generar preguntas. Revisa el texto.")
+                }
+
                 // Espera medio segundo para que la BD pueda procesar los datos
                 delay(500)
                 // Recarga la lista para que se actualice sola
@@ -185,11 +222,11 @@ class TemarioActivity : AppCompatActivity() {
 
             } catch (e: Exception) {
                 Log.e("TemarioActivity", "Error al subir", e)
-                Toast.makeText(this@TemarioActivity, "Error al guardar", Toast.LENGTH_SHORT).show()
+               showKyroToast("Error al guardar o generar")
             } finally {
                 // Siempre, haya error o no, reactiva el botón y el texto del botón
                 btnGenerar.isEnabled = true
-                btnGenerar.text = "Generar Ejercicios"
+                btnGenerar.text = "Generar Ejercicios con IA ✨"
             }
         }
     }
@@ -198,10 +235,11 @@ class TemarioActivity : AppCompatActivity() {
     private fun abrirDetalle(apunte: ApunteUsuario) {
         val intent = Intent(this, TemarioSeleccionadoActivity::class.java)
 
-        // Mete el contenido en el intent
+        // Mete el contenido en el intent antes de enviarlo a la siguiente pantalla (TemarioSeleccionadoActivity)
         intent.putExtra("EXTRA_TITULO", apunte.titulo)
         intent.putExtra("EXTRA_CONTENIDO", apunte.contenido)
         intent.putExtra("EXTRA_ID", apunte.id)
+        intent.putExtra("EXTRA_JSON_PREGUNTAS", apunte.preguntas_json)
 
         startActivity(intent)
     }

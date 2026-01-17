@@ -8,24 +8,31 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.FrameLayout
-import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.credentials.CredentialManager
+import androidx.credentials.CustomCredential
+import androidx.credentials.GetCredentialRequest
 import androidx.lifecycle.lifecycleScope
+import com.google.android.libraries.identity.googleid.GetGoogleIdOption
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import io.github.jan.supabase.gotrue.auth
+import io.github.jan.supabase.gotrue.providers.Google
 import io.github.jan.supabase.gotrue.providers.builtin.Email
+import io.github.jan.supabase.gotrue.providers.builtin.IDToken
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class LoginActivity : AppCompatActivity() {
 
+    private val WEB_CLIENT_ID = "500842940773-ea8mcvvn13uqe773t99ql0p91ct41oj2.apps.googleusercontent.com"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // 1. VERIFICACIÓN AUTOMÁTICA: ¿Ya hay sesión y el usuario la guardó?
-        // Esto se hace antes de cargar la vista para que el salto sea rápido
+        // Verificación automática de Sesión
         verificarSesionExistente()
 
         setContentView(R.layout.activity_login)
@@ -34,50 +41,37 @@ class LoginActivity : AppCompatActivity() {
         val etEmail = findViewById<EditText>(R.id.etEmail)
         val etPassword = findViewById<EditText>(R.id.etPassword)
         val btnLogin = findViewById<Button>(R.id.btnLogin)
+        val btnGoogle = findViewById<Button>(R.id.btnGoogle) // Nuevo botón
         val tvGoToRegister = findViewById<TextView>(R.id.tvGoToRegister)
-
-        // Nuevos elementos
         val cbMantenerSesion = findViewById<CheckBox>(R.id.cbMantenerSesion)
         val tvForgotPassword = findViewById<TextView>(R.id.tvForgotPassword)
 
-        // --- 2. LÓGICA DE INICIO DE SESIÓN ---
+        // Login con Email y Contraseña
         btnLogin.setOnClickListener {
             val email = etEmail.text.toString().trim()
             val password = etPassword.text.toString().trim()
 
-            // A) Validación Local
             if (email.isEmpty() || password.isEmpty()) {
-                showKyroToast("Porfavor, rellena todos los campos")
+                showKyroToast("Por favor, rellena todos los campos")
                 return@setOnClickListener
             }
 
-            // B) Conexión con Supabase
             lifecycleScope.launch(Dispatchers.IO) {
                 try {
-                    // Intentamos loguear al usuario
                     SupabaseClient.client.auth.signInWith(Email) {
                         this.email = email
                         this.password = password
                     }
 
-                    // --- NUEVO: GUARDAR PREFERENCIA DEL CHECKBOX ---
-                    // Guardamos en la memoria del teléfono si el usuario quiere mantener la sesión
-                    val sharedPref = getSharedPreferences("PreferenciasKyro", Context.MODE_PRIVATE)
-                    with(sharedPref.edit()) {
-                        putBoolean("mantener_sesion_activa", cbMantenerSesion.isChecked)
-                        apply()
-                    }
-                    // -----------------------------------------------
+                    // Guardar preferencia
+                    guardarPreferenciaSesion(cbMantenerSesion.isChecked)
 
-                    // C) Éxito: Vamos al Home
                     withContext(Dispatchers.Main) {
-                        showKyroToast("Bienvenido al Nido!")
-                        // Toast.makeText(applicationContext, "¡Bienvenido al Nido!", Toast.LENGTH_SHORT).show()
+                        showKyroToast("¡Bienvenido al Nido!")
                         irAHome()
                     }
 
                 } catch (e: Exception) {
-                    // D) Error
                     withContext(Dispatchers.Main) {
                         val errorMessage = when {
                             e.message?.contains("Invalid login credentials") == true -> "Email o contraseña incorrectos"
@@ -85,44 +79,114 @@ class LoginActivity : AppCompatActivity() {
                             e.message?.contains("network") == true -> "Error de conexión. Revisa tu internet."
                             else -> "Error: ${e.message}"
                         }
-                        Toast.makeText(applicationContext, errorMessage, Toast.LENGTH_LONG).show()
+                        showKyroToast(errorMessage)
                     }
                 }
             }
         }
 
-        // --- 3. LÓGICA DE RECUPERAR CONTRASEÑA ---
+        // --- LOGIN CON GOOGLE ---
+        btnGoogle.setOnClickListener {
+            iniciarLoginGoogle(cbMantenerSesion.isChecked)
+        }
+
+        // Restablecer contraseña
         tvForgotPassword.setOnClickListener {
             val emailActual = etEmail.text.toString().trim()
             mostrarDialogoRecuperarContrasena(emailActual)
         }
 
-        // --- 4. NAVEGACIÓN AL REGISTRO ---
+        // Registro
         tvGoToRegister.setOnClickListener {
             val intent = Intent(this, RegisterActivity::class.java)
             startActivity(intent)
+            finish() // Cerramos Login para no volver atrás
         }
     }
 
-    // ------------------------------------------------------------------------
-    // MÉTODOS AUXILIARES
-    // ------------------------------------------------------------------------
+    private fun iniciarLoginGoogle(mantenerSesion: Boolean) {
+        lifecycleScope.launch {
+            try {
+                // Configurar la petición a Google
+                val googleIdOption = GetGoogleIdOption.Builder()
+                    .setFilterByAuthorizedAccounts(false)
+                    .setServerClientId(WEB_CLIENT_ID)
+                    .setAutoSelectEnabled(false)
+                    .build()
+
+                val request = GetCredentialRequest.Builder()
+                    .addCredentialOption(googleIdOption)
+                    .build()
+
+                // Lanzar la ventana de cuentas
+                val credentialManager = CredentialManager.create(this@LoginActivity)
+                val result = credentialManager.getCredential(this@LoginActivity, request)
+
+                // Procesar el resultado
+                val credential = result.credential
+                if (credential is CustomCredential && credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
+                    val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
+                    val googleToken = googleIdTokenCredential.idToken
+
+                    // Enviar token a Supabase
+                    loginEnSupabaseConTokenGoogle(googleToken, mantenerSesion)
+                } else {
+                    showKyroToast("Error: Tipo de credencial desconocida")
+                }
+            } catch (e: Exception) {
+                // Usuario canceló o error de Google (ya manejado en logs internos si fuera necesario)
+                e.printStackTrace()
+
+            }
+        }
+    }
+
+    private suspend fun loginEnSupabaseConTokenGoogle(token: String, mantenerSesion: Boolean) {
+        withContext(Dispatchers.IO) {
+            try {
+                // Usamos IDToken con provider = Google
+                SupabaseClient.client.auth.signInWith(IDToken) {
+                    this.idToken = token
+                    this.provider = Google
+                }
+
+                guardarPreferenciaSesion(mantenerSesion)
+
+                withContext(Dispatchers.Main) {
+                    showKyroToast("¡Bienvenido al Nido!")
+                    irAHome()
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    showKyroToast("Error de conexión con Supabase: ${e.message}")
+                }
+            }
+        }
+    }
+
+    private fun guardarPreferenciaSesion(mantener: Boolean) {
+        val sharedPref = getSharedPreferences("PreferenciasKyro", Context.MODE_PRIVATE)
+        with(sharedPref.edit()) {
+            putBoolean("mantener_sesion_activa", mantener)
+            apply()
+        }
+    }
 
     private fun verificarSesionExistente() {
         val sharedPref = getSharedPreferences("PreferenciasKyro", Context.MODE_PRIVATE)
         val quiereMantenerSesion = sharedPref.getBoolean("mantener_sesion_activa", false)
 
         lifecycleScope.launch {
-            // Intentamos cargar la sesión desde la memoria interna de Supabase
             try {
+                // Cargar sesión guardada si existe
                 SupabaseClient.client.auth.loadFromStorage()
             } catch (e: Exception) {
-                // Si falla la carga, no pasa nada, pedirá login
+                // Ignorar si no hay archivo de sesión
             }
 
             val session = SupabaseClient.client.auth.currentSessionOrNull()
 
-            // Si hay sesión válida Y el usuario marcó el checkbox anteriormente -> Entrar directo
+            // Si hay sesión y el usuario dijo "Mantener sesión" -> Entrar
             if (session != null && quiereMantenerSesion) {
                 withContext(Dispatchers.Main) {
                     irAHome()
@@ -133,7 +197,6 @@ class LoginActivity : AppCompatActivity() {
 
     private fun irAHome() {
         val intent = Intent(this, HomeActivity::class.java)
-        // Estas banderas evitan volver atrás al login
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
         finish()
@@ -144,13 +207,11 @@ class LoginActivity : AppCompatActivity() {
         builder.setTitle("Recuperar Contraseña")
         builder.setMessage("Introduce tu correo y te enviaremos un enlace mágico.")
 
-        // Input de texto
         val input = EditText(this)
         input.inputType = InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
         input.hint = "tu@email.com"
         input.setText(emailPrevio)
 
-        // Contenedor para darle márgenes
         val container = FrameLayout(this)
         val params = FrameLayout.LayoutParams(
             FrameLayout.LayoutParams.MATCH_PARENT,
@@ -162,18 +223,17 @@ class LoginActivity : AppCompatActivity() {
         container.addView(input)
         builder.setView(container)
 
-        builder.setPositiveButton("Enviar") { _, _ ->
+        // La _ avisa al programa de que va a recibir un valor pero no lo vamos a usar
+        builder.setPositiveButton("Enviar") { _, _ -> // Serían dialog e id pero no los necesitamos
             val email = input.text.toString().trim()
             if (email.isNotEmpty()) {
                 enviarCorreoRecuperacion(email)
             } else {
-                Toast.makeText(this, "Escribe un correo válido", Toast.LENGTH_SHORT).show()
+                showKyroToast("Escribe un correo válido")
             }
         }
 
-        builder.setNegativeButton("Cancelar") { dialog, _ ->
-            dialog.dismiss()
-        }
+        builder.setNegativeButton("Cancelar") { dialog, _ -> dialog.dismiss() }
 
         builder.show()
     }
@@ -183,15 +243,14 @@ class LoginActivity : AppCompatActivity() {
             try {
                 SupabaseClient.client.auth.resetPasswordForEmail(email)
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(applicationContext, "¡Correo enviado! Revisa tu bandeja.", Toast.LENGTH_LONG).show()
+                    showKyroToast("¡Correo enviado! Revisa tu bandeja.")
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
                     val errorMsg = if (e.message?.contains("Too many requests") == true)
                         "Espera un poco antes de volver a intentarlo."
-                    else
-                        "Error: ${e.message}"
-                    Toast.makeText(applicationContext, errorMsg, Toast.LENGTH_LONG).show()
+                    else "Error: ${e.message}"
+                    showKyroToast(errorMsg)
                 }
             }
         }

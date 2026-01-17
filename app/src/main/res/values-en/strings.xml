@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Kyro</string>
+
+    <string name="primal1">Your Smart Study Assistant</string>
+    <string name="primal2">Organize your time and master any subject with AI help.</string>
+
+    <string name="primal3">Maximize Your Time</string>
+    <string name="primal4">Organize your tasks, beat procrastination.</string>
+
+    <string name="primal5">Your Smart Study Assistant</string>
+    <string name="primal6">Organize your time and master any subject with AI help.</string>
+
+    <string name="primal7">Get Started</string>
+    <string name="primal8">Log In</string>
+
+    <!-- AJUSTES -->
+    <string name="ajustes_titulo">Settings</string>
+    <string name="bienestar_digital">Digital Wellbeing</string>
+    <string name="modo_focus">Focus Mode</string>
+    <string name="modo_focus_subtitulo">Track distractions</string>
+    <string name="modo_focus_desc">If you disable this, Kyro will stop alerting you when you enter social networks.</string>
+    <string name="general">General</string>
+    <string name="idioma">Language</string>
+    <string name="apariencia">Appearance</string>
+    <string name="zona_peligro">Danger Zone</string>
+    <string name="borrar_datos">Clear Data</string>
+    <string name="cerrar_sesion">Log Out</string>
+    <string name="eliminar_cuenta">Delete Account</string>
+    <string name="gestionar_cuenta">Manage account</string>
+
+    <!-- HOME / INICIO-->
+    <string name="home_saludo">Hello, Student! 👋</string>
+    <string name="home_subtitulo">What are we learning today?</string>
+    <string name="home_prox_evento">Next Event</string>
+    <string name="home_btn_repasar">Review now</string>
+    <string name="home_btn_ia">Ask AI</string>
+    <string name="home_btn_temarios">View Syllabus</string>
+    <string name="home_progreso_titulo">Your Progress</string>
+    <string name="home_progreso_3dias">Tasks in the next 3 days</string>
+    <string name="home_progreso_todas">All upcoming tasks</string>
+    <string name="home_sin_tareas">You haven\'t completed any tasks</string>
+
+    <string name="home_placeholder_examen">Java OOP Exam</string>
+    <string name="home_placeholder_fecha">Fri, Dec 20 • 3 days left</string>
+
+    <string name="home_status_progreso">You have completed %1$d of %2$d tasks</string>
+    <string name="home_sin_tareas_3dias">No tasks in the next 3 days</string>
+    <string name="home_sin_tareas_proximas">No upcoming tasks</string>
+
+    <!-- CALENDARIO Y TAREAS -->
+    <string name="calendar_titulo">Calendar &amp; Tasks</string>
+    <string name="calendar_btn_add_exam">+ Exam</string>
+    <string name="calendar_btn_add_task">+ Task</string>
+    <string name="calendar_btn_view_all">View All</string>
+
+    <string name="calendar_btn_ver_dia">View Daily</string>
+    <string name="tipo_tarea">TASK</string>
+    <string name="tipo_examen">EXAM</string>
+    <string name="btn_completar">COMPLETE</string>
+
+    <!-- AÑADIR EXAMEN -->
+    <string name="add_exam_titulo">Add Exam</string>
+    <string name="add_exam_hint_asignatura">Subject Name</string>
+    <string name="add_exam_hint_desc">Exam Description</string>
+    <string name="add_exam_label_fecha">Exam Date</string>
+    <string name="add_exam_label_recordatorios">Reminders</string>
+    <string name="add_exam_btn_guardar">Save Exam</string>
+
+    <!-- AÑADIR TAREAS -->
+    <string name="add_task_titulo">Add Task</string>
+    <string name="add_task_hint_asignatura">Subject Name</string>
+    <string name="add_task_hint_desc">Task Description</string>
+    <string name="add_task_label_fecha">Due Date</string>
+    <string name="add_task_label_hora">Due Time</string>
+    <string name="add_task_label_recordatorios">Reminders</string>
+    <string name="add_task_btn_guardar">Save Task</string>
+
+    <!-- DETALLES EVENTO -->
+    <string name="event_detail_titulo">Event Details</string>
+    <string name="event_detail_label_desc">Description</string>
+    <string name="event_detail_label_recordatorios">Reminders</string>
+    <string name="event_detail_btn_incompleta">Mark as Incomplete</string>
+    <string name="event_detail_btn_editar">Edit Event</string>
+    <string name="event_detail_btn_eliminar">Delete Event</string>
+
+    <!-- INICIO DE SESIÓN / LOGIN -->
+    <string name="login_titulo">Hello again!</string>
+    <string name="login_subtitulo">Welcome back to Kyro.</string>
+    <string name="login_hint_email">Email address</string>
+    <string name="login_hint_pass">Password</string>
+    <string name="login_chk_sesion">Keep me logged in</string>
+    <string name="login_olvide_pass">Forgot password?</string>
+    <string name="login_btn_entrar">Log In</string>
+    <string name="login_no_cuenta">Don\'t have an account? </string>
+    <string name="login_link_registro">Sign up here</string>
+
+    <!-- MODIFICAR TEMARIO -->
+    <string name="mod_temario_titulo">Modify Selected Syllabus</string>
+    <string name="mod_temario_editar_contenido">Edit Content</string>
+    <string name="mod_temario_hint_titulo">Topic Title (e.g. Java OOP)</string>
+    <string name="mod_temario_desc_ia">Upload your notes, PDFs, or links. Our AI will process it and update the syllabus with the provided information.</string>
+    <string name="mod_temario_btn_adjuntar">Tap here to attach files</string>
+    <string name="mod_temario_hint_apuntes">You can also paste the syllabus text here...</string>
+    <string name="mod_temario_btn_guardar">Save Changes</string>
+    <string name="mod_temario_btn_eliminar">Delete Syllabus</string>
+
+    <string name="mod_temario_placeholder_asignatura">Java OOP Advanced</string>
+    <string name="mod_temario_placeholder_ejercicios">12 exercises</string>
+
+    <!-- REGISTRO -->
+    <string name="register_titulo">Welcome to Kyro!</string>
+    <string name="register_subtitulo">Create your Blue Owl account</string>
+    <string name="register_hint_nombre">Enter your name...</string>
+    <string name="register_hint_email">Enter your email...</string>
+    <string name="register_hint_pass">Enter your password...</string>
+    <string name="register_hint_confirm_pass">Confirm your password...</string>
+    <string name="register_btn_registrar">Sign Up</string>
+    <string name="register_ya_tengo_cuenta">Already have an account? </string>
+    <string name="register_link_login">Log In</string>
+
+    <!-- TEMARIO -->
+    <string name="temario_titulo">Syllabus &amp; Content</string>
+    <string name="temario_subtitulo_lista">Syllabuses</string>
+    <string name="temario_lista_vacia">No saved syllabuses.</string>
+    <string name="temario_subtitulo_nuevo">Upload New Syllabus</string>
+    <string name="temario_desc_ia">Upload your notes, PDFs, or links. Our AI will process it and generate exercises.</string>
+    <string name="temario_hint_titulo_nuevo">Title (e.g. Java OOP Topic 1)</string>
+    <string name="temario_btn_adjuntar">Tap here to attach files</string>
+    <string name="temario_hint_contenido">You can also paste the syllabus text here...</string>
+    <string name="temario_btn_generar">Generate Exercises</string>
+
+    <!-- TEMARIO SELECCIONADO -->
+    <string name="temario_sel_titulo">Selected Syllabus</string>
+    <string name="temario_sel_btn_modificar">Modify</string>
+    <string name="temario_sel_subtitulo_ejercicios">Exercises</string>
+
+    <string name="temario_sel_placeholder_asignatura">Java OOP Advanced</string>
+    <string name="temario_sel_placeholder_ejercicios">12 exercises</string>
+
+    <!-- USUARIO -->
+    <string name="user_titulo">My Profile</string>
+    <string name="user_seccion_info">Personal Information</string>
+    <string name="user_hint_nombre">Username</string>
+    <string name="user_hint_email">Email address</string>
+    <string name="user_btn_guardar">Save Changes</string>
+
+    <!-- ITEM TEMARIO -->
+    <string name="item_temario_titulo">Topic Title</string>
+    <string name="item_temario_btn_estudiar">Study</string>
+
+    <!-- ITEM EJERCICIO -->
+    <string name="item_ejercicio_titulo">1. Exercise Title</string>
+    <string name="item_ejercicio_desc">Exercise Description</string>
+
+    <!-- ITEM EVENTO -->
+    <string name="item_event_titulo">Event Name</string>
+    <string name="item_event_desc">Description…</string>
+
+    <!-- ITEM EVENTO CON FECHA -->
+    <string name="item_event_btn_completar">Complete</string>
+
+
+    <!-- BARRA DE NAVEGACIÓN -->
+    <string name="nav_inicio">Home</string>
+    <string name="nav_agenda">Calendar</string>
+    <string name="nav_ia">Kyro AI</string>
+    <string name="nav_temario">Syllabus</string>
+    <string name="nav_ajustes">Settings</string>
+
+    <!-- TEXTO / POP UPS ADICIONALES DE HOME-->
+    <string name="dialog_focus_titulo">Enable Focus Mode</string>
+    <string name="dialog_focus_mensaje">For Kyro to help you focus and avoid social media distractions, it needs permission to detect which apps you are using.\n\nPlease find "Kyro" in the following list and enable it if you agree.</string>
+    <string name="btn_ir_ajustes">Go to Settings</string>
+    <string name="btn_mas_tarde">Later</string>
+    <string name="toast_abriendo_ia">Opening Kyro AI...</string>
+
+</resources>

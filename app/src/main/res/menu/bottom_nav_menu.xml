@@ -4,26 +4,26 @@
     <item
         android:id="@+id/nav_home"
         android:icon="@drawable/ic_home"
-        android:title="Inicio" />
+        android:title="@string/nav_inicio" />
 
     <item
         android:id="@+id/nav_calendar"
         android:icon="@drawable/ic_calendar"
-        android:title="Agenda" />
+        android:title="@string/nav_agenda" />
 
     <item
         android:id="@+id/nav_ai_chat"
         android:icon="@drawable/ic_star"
-        android:title="Kyro IA" />
+        android:title="@string/nav_ia" />
 
     <item
         android:id="@+id/nav_syllabus"
         android:icon="@drawable/ic_book"
-        android:title="Temario" />
+        android:title="@string/nav_temario" />
 
     <item
         android:id="@+id/nav_settings"
         android:icon="@drawable/ic_stats"
-        android:title="Ajustes" />
+        android:title="@string/nav_ajustes" />
 
 </menu>

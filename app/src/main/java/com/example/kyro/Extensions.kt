@@ -7,17 +7,17 @@ import android.widget.TextView
 import android.widget.Toast
 
 // ARCHIVO DE EXTENSIONES (Metodos extra que se pueden usar en cualquier parte del codigo)
-// Metodo "showKyroToast" para poder crear toast personalizados de Kyro
+// Metodo "showKyroToast" para poder crear notificaciones personalizadas de Kyro
 fun Context.showKyroToast(message: String) {
-    // 1. Inflamos el diseño que acabamos de crear
+    // Inflamos el diseño que acabamos de crear
     val inflater = LayoutInflater.from(this)
     val layout = inflater.inflate(R.layout.layout_custom_toast, null)
 
-    // 2. Ponemos el texto que tú quieras
+    // Ponemos el texto
     val text: TextView = layout.findViewById(R.id.toast_text)
     text.text = message
 
-    // 3. Creamos el Toast y le pegamos nuestro diseño
+    // Creamos el Toast y le pegamos el diseño de Kyro
     val toast = Toast(applicationContext)
     toast.duration = Toast.LENGTH_SHORT
     toast.view = layout

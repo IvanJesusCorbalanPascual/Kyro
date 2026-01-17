@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:gravity="center_horizontal"
+    android:background="#F8F9FA"
+    android:fitsSystemWindows="true">
+
+    <TextView
+        android:id="@+id/tvContador"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pregunta 1 de 5"
+        android:textColor="#757575"
+        android:textSize="16sp"
+        android:fontFamily="sans-serif-medium"
+        android:layout_marginBottom="32dp"/>
+
+    <TextView
+        android:id="@+id/tvPregunta"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Cargando pregunta..."
+        android:textColor="#000000"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textAlignment="center"
+        android:layout_marginBottom="48dp"/>
+
+    <Button
+        android:id="@+id/btnOpcion1"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="Opción A"
+        android:background="@drawable/bg_azul_oscuro_kyro"
+        app:backgroundTint="@null"
+        android:textColor="#FFFFFF"
+        android:layout_marginBottom="20dp"/>
+
+    <Button
+        android:id="@+id/btnOpcion2"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="Opción B"
+        android:background="@drawable/bg_azul_oscuro_kyro"
+        app:backgroundTint="@null"
+        android:textColor="#FFFFFF"
+        android:layout_marginBottom="20dp"/>
+
+    <Button
+        android:id="@+id/btnOpcion3"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="Opción C"
+        android:background="@drawable/bg_azul_oscuro_kyro"
+        app:backgroundTint="@null"
+        android:textColor="#FFFFFF"
+        android:layout_marginBottom="20dp"/>
+
+    <Button
+        android:id="@+id/btnOpcion4"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="Opción D"
+        android:background="@drawable/bg_azul_oscuro_kyro"
+        app:backgroundTint="@null"
+        android:textColor="#FFFFFF"/>
+
+</LinearLayout>
