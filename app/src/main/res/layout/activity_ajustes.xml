@@ -5,13 +5,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F8F9FA"> <androidx.constraintlayout.widget.ConstraintLayout
-    android:id="@+id/headerContainer"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:padding="20dp"
-    android:background="#FFFFFF"
-    app:layout_constraintTop_toTopOf="parent">
+    android:background="#F8F9FA"
+    android:fitsSystemWindows="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/headerContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="20dp"
+        android:background="#FFFFFF"
+        app:layout_constraintTop_toTopOf="parent">
 
     <ImageView
         android:id="@+id/btnAtras"

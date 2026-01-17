@@ -91,4 +91,9 @@ dependencies {
 
     // Gson (para convertir el texto de la IA a Objetos Kotlin)
     implementation("com.google.code.gson:gson:2.10.1")
+
+    // Google Credential Manager
+    implementation("androidx.credentials:credentials:1.3.0")
+    implementation("androidx.credentials:credentials-play-services-auth:1.3.0")
+    implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
 }
