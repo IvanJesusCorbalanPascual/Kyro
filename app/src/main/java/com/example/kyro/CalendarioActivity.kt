@@ -55,6 +55,7 @@ import kotlinx.coroutines.withContext
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
@@ -200,9 +201,20 @@ class CalendarioActivity : AppCompatActivity() {
             title.text = event.title
             description.text = event.description
 
+            val timeText = if (event.time != null) {
+                try {
+                    val time = LocalTime.parse(event.time, DateTimeFormatter.ofPattern("HH:mm:ss"))
+                    " - ${time.format(DateTimeFormatter.ofPattern("HH:mm"))}"
+                } catch (e: Exception) {
+                    ""
+                }
+            } else {
+                ""
+            }
+
             // Configura la vista segun si es una tarea o un examen
             if (event.type == "tarea") {
-                eventType.text = getString(R.string.tipo_tarea)
+                eventType.text = "${getString(R.string.tipo_tarea)}$timeText"
                 eventType.setTextColor(ContextCompat.getColor(this, R.color.b500))
                 icon.setImageResource(R.drawable.ic_task)
                 
@@ -247,7 +259,7 @@ class CalendarioActivity : AppCompatActivity() {
                     }
                 }
             } else { // "examen"
-                eventType.text = getString(R.string.tipo_examen)
+                eventType.text = "${getString(R.string.tipo_examen)}$timeText"
                 eventType.setTextColor(ContextCompat.getColor(this, R.color.b400))
                 icon.setImageResource(R.drawable.ic_book)
                 completeButton.visibility = View.GONE

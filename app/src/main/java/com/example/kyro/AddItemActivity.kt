@@ -74,7 +74,7 @@ class AddItemActivity : AppCompatActivity() {
         // Inicializa la fecha y hora seleccionadas con la fecha y hora actuales
         val calendar = Calendar.getInstance()
         val sdfDate = SimpleDateFormat("yyyy-MM-dd", Locale.US)
-        val sdfTime = SimpleDateFormat("HH:mm:ss", Locale.US)
+        val sdfTime = SimpleDateFormat("HH:mm:00", Locale.US)
         selectedDate = sdfDate.format(calendar.time)
         selectedTime = sdfTime.format(calendar.time)
 
@@ -88,6 +88,7 @@ class AddItemActivity : AppCompatActivity() {
         timePicker.setOnTimeChangedListener { _, hourOfDay, minute ->
             calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
             calendar.set(Calendar.MINUTE, minute)
+            calendar.set(Calendar.SECOND, 0)
             selectedTime = sdfTime.format(calendar.time)
         }
 

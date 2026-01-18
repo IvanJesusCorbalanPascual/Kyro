@@ -12,42 +12,34 @@ import java.util.TreeMap
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
-import android.graphics.BitmapFactory
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import io.github.jan.supabase.postgrest.postgrest
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
 
-class MonitorService: Service() {
+class MonitorService : Service() {
 
-    // Ayuda a repetir una tarea periodicamente con corrutines, Dispatchers.IO esta optimizado para esto
     private val serviceScope = CoroutineScope(Dispatchers.IO + Job())
-
-    // Para controlar el estado del bucle
     private var isMonitoring = false
-
-    // Detecta la última app y la recuerda para no repetir y consumir en exceso
     private var lastDetectedPackage = ""
+    private val sentNotifications = mutableSetOf<String>()
 
-    // Lista de aplicaciones a ignorar
     private val ignoredPackages = setOf(
         "com.android.systemui",
         "com.google.android.apps.nexuslauncher",
         "com.google.android.permissioncontroller",
-        // Ignora nuestra app
         "com.example.kyro"
     )
 
-    // El intervalo en el que comprueba, en este caso cada 2 segundos
     private val CHECK_INTERVAL = 2000L
 
     override fun onCreate() {
         super.onCreate()
-        Log.d("MonitorService", "Modo Focus Activado: Listo para trabajar")
+        Log.d("MonitorService", "Servicio de monitorización creado.")
     }
 
-    // Se ejecuta al llamar a startService
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (!isMonitoring) {
             isMonitoring = true
@@ -57,12 +49,12 @@ class MonitorService: Service() {
     }
 
     private fun iniciarBucleDeVigilancia() {
-        // Lanza la corrutina en segundo plano
         serviceScope.launch {
             while (isMonitoring) {
                 detectarAppEnPrimerPlano()
                 checkCompletedExams()
-                // Suspende la corrutina sin bloquear el hilo para ahorrar batería
+                checkTaskNotifications()
+                checkExamNotifications()
                 delay(CHECK_INTERVAL)
             }
         }
@@ -76,17 +68,20 @@ class MonitorService: Service() {
                     .decodeList<Examen>()
 
                 val now = LocalDateTime.now()
-                val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-                val timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss")
+                val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
 
                 for (exam in uncompletedExams) {
                     if (exam.hora_examen != null) {
-                        val examDateTime = LocalDateTime.parse("${exam.fecha_examen} ${exam.hora_examen}", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
-                        if (now.isAfter(examDateTime)) {
-                            SupabaseClient.client.postgrest["examenes"].update(
-                                { set("completada", true) },
-                                { filter { eq("id", exam.id!!) } }
-                            )
+                        try {
+                            val examDateTime = LocalDateTime.parse("${exam.fecha_examen} ${exam.hora_examen}", formatter)
+                            if (now.isAfter(examDateTime)) {
+                                SupabaseClient.client.postgrest["examenes"].update(
+                                    { set("completada", true) },
+                                    { filter { eq("id", exam.id!!) } }
+                                )
+                            }
+                        } catch (e: DateTimeParseException) {
+                            Log.e("MonitorService", "Error al parsear fecha del examen: ${exam.fecha_examen}", e)
                         }
                     }
                 }
@@ -96,132 +91,219 @@ class MonitorService: Service() {
         }
     }
 
+    private fun checkTaskNotifications() {
+        serviceScope.launch {
+            try {
+                val upcomingTasks = SupabaseClient.client.postgrest["tareas"]
+                    .select { filter { eq("completada", false) } }
+                    .decodeList<Tarea>()
 
-    private fun detectarAppEnPrimerPlano() {
-        // Comprueba si el usuario quiere el modo Focus en las preferencias
-        val sharedPref = getSharedPreferences("KyroPrefs", Context.MODE_PRIVATE)
-        // Por defecto true
-        val isFocusEnabled = sharedPref.getBoolean("FOCUS_ENABLED", true)
+                for (task in upcomingTasks) {
+                    checkAndSendNotification(task, task.notificacion1, "notif1")
+                    checkAndSendNotification(task, task.notificacion2, "notif2")
+                }
+            } catch (e: Exception) {
+                Log.e("MonitorService", "Error al comprobar notificaciones de tareas", e)
+            }
+        }
+    }
 
-        // Si el usuario lo apago, sale con el return
-        if (!isFocusEnabled) {
-            return
+    private fun checkExamNotifications() {
+        serviceScope.launch {
+            try {
+                val upcomingExams = SupabaseClient.client.postgrest["examenes"]
+                    .select { filter { eq("completada", false) } }
+                    .decodeList<Examen>()
+
+                for (exam in upcomingExams) {
+                    checkAndSendNotification(exam, exam.notificacion1, "notif1")
+                    checkAndSendNotification(exam, exam.notificacion2, "notif2")
+                }
+            } catch (e: Exception) {
+                Log.e("MonitorService", "Error al comprobar notificaciones de exámenes", e)
+            }
+        }
+    }
+
+    private fun checkAndSendNotification(event: Any, notificationTime: String?, notifType: String) {
+        if (notificationTime == null || notificationTime == "No notificar") return
+
+        val eventId: Long
+        val eventDateTime: LocalDateTime
+        val eventType: String
+
+        when (event) {
+            is Tarea -> {
+                if (event.hora_entrega == null) return
+                eventId = event.id!!
+                eventDateTime = LocalDateTime.parse("${event.fecha_entrega} ${event.hora_entrega}", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                eventType = "task"
+            }
+            is Examen -> {
+                if (event.hora_examen == null) return
+                eventId = event.id!!
+                eventDateTime = LocalDateTime.parse("${event.fecha_examen} ${event.hora_examen}", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                eventType = "exam"
+            }
+            else -> return
         }
 
-        try {
+        val notificationId = "$eventType-$eventId-$notifType"
+        if (notificationId in sentNotifications) return
 
+        val notificationDateTime = getNotificationTime(eventDateTime, notificationTime)
+
+        if (LocalDateTime.now().isAfter(notificationDateTime)) {
+            when (event) {
+                is Tarea -> sendTaskNotification(event)
+                is Examen -> sendExamNotification(event)
+            }
+            sentNotifications.add(notificationId)
+        }
+    }
+
+    private fun getNotificationTime(taskDateTime: LocalDateTime, notificationTime: String): LocalDateTime {
+        return when (notificationTime) {
+            "En el momento del evento" -> taskDateTime
+            "5 minutos antes" -> taskDateTime.minusMinutes(5)
+            "10 minutos antes" -> taskDateTime.minusMinutes(10)
+            "30 minutos antes" -> taskDateTime.minusMinutes(30)
+            "1 hora antes" -> taskDateTime.minusHours(1)
+            "1 día antes" -> taskDateTime.minusDays(1)
+            else -> taskDateTime
+        }
+    }
+
+    private fun sendTaskNotification(task: Tarea) {
+        val intent = Intent(this, EventDetailActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            putExtra("id", task.id)
+            putExtra("type", "tarea")
+            putExtra("title", task.nombre_asignatura)
+            putExtra("description", task.descripcion)
+            putExtra("date", task.fecha_entrega)
+            putExtra("hora_entrega", task.hora_entrega)
+            putExtra("notif1", task.notificacion1)
+            putExtra("notif2", task.notificacion2)
+            putExtra("completada", task.completada)
+        }
+        val pendingIntent = PendingIntent.getActivity(this, task.id!!.toInt(), intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+        sendNotification("Recordatorio de Tarea: ${task.nombre_asignatura}", task.descripcion, pendingIntent, task.id.toInt())
+    }
+
+    private fun sendExamNotification(exam: Examen) {
+        val intent = Intent(this, EventDetailActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            putExtra("id", exam.id)
+            putExtra("type", "examen")
+            putExtra("title", exam.nombre_asignatura)
+            putExtra("description", exam.descripcion)
+            putExtra("date", exam.fecha_examen)
+            putExtra("hora_examen", exam.hora_examen)
+            putExtra("notif1", exam.notificacion1)
+            putExtra("notif2", exam.notificacion2)
+            putExtra("completada", exam.completada)
+        }
+        val pendingIntent = PendingIntent.getActivity(this, exam.id!!.toInt(), intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+        sendNotification("Recordatorio de Examen: ${exam.nombre_asignatura}", exam.descripcion, pendingIntent, exam.id.toInt())
+    }
+
+    private fun sendNotification(title: String, content: String, pendingIntent: PendingIntent, notificationId: Int) {
+        val channelId = "kyro_reminders_channel"
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(channelId, "Recordatorios", NotificationManager.IMPORTANCE_HIGH).apply {
+                description = "Recordatorios de tareas y exámenes"
+            }
+            notificationManager.createNotificationChannel(channel)
+        }
+
+        val notification = NotificationCompat.Builder(this, channelId)
+            .setSmallIcon(R.drawable.ic_stat_kyro)
+            .setContentTitle(title)
+            .setContentText(content)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setContentIntent(pendingIntent)
+            .setAutoCancel(true)
+            .build()
+
+        notificationManager.notify(notificationId, notification)
+    }
+
+
+    private fun detectarAppEnPrimerPlano() {
+        val sharedPref = getSharedPreferences("KyroPrefs", Context.MODE_PRIVATE)
+        val isFocusEnabled = sharedPref.getBoolean("FOCUS_ENABLED", true)
+
+        if (!isFocusEnabled) return
+
+        try {
             val usm = getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
             val time = System.currentTimeMillis()
+            val appList = usm.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, time - 1000 * 10, time)
 
-            // Pide las estadisticas en los últimos 10 segundos
-            val appList = usm.queryUsageStats(
-                UsageStatsManager.INTERVAL_DAILY,
-                time - 1000 * 10,
-                time
-            )
-
-            if (appList != null && appList.isNotEmpty()) {
-                // Ordena por última vez usada para saber cual es la más reciente o actual
+            if (appList.isNotEmpty()) {
                 val sortedMap = TreeMap<Long, UsageStats>()
                 for (usageStats in appList) {
                     sortedMap[usageStats.lastTimeUsed] = usageStats
                 }
-                if (sortedMap.isNotEmpty()) {
-                    // La última en el mapa es la que esta en la pantalla, si es null sale de la función
-                    val currentApp = sortedMap.lastEntry()?.value?.packageName ?: return
-                    // Solo actua si detecta que la app es diferente a la anterior y no esta ignorada
-                    if (currentApp != lastDetectedPackage && currentApp !in ignoredPackages) {
-
-                        lastDetectedPackage = currentApp
-                        Log.d("MonitorService", "Cambio de contexto de app: $currentApp")
-
-                        // Aquí ira la lógica de detección de distracciones
-                        if (esAppDeDistraccion(currentApp)) {
-                            Log.w("MonitorService", "App de distracción detectada en: $currentApp")
-
-                            mostrarNotificacionDistraccion()
-                        }
+                val currentApp = sortedMap.lastEntry()?.value?.packageName ?: return
+                if (currentApp != lastDetectedPackage && currentApp !in ignoredPackages) {
+                    lastDetectedPackage = currentApp
+                    if (esAppDeDistraccion(currentApp)) {
+                        mostrarNotificacionDistraccion()
                     }
                 }
             }
         } catch (e: Exception) {
-            Log.e("MonitorService", "Error al intentar detectar app", e)
+            Log.e("MonitorService", "Error al detectar app", e)
         }
     }
 
-    // Función para mantener el código limpio
     private fun esAppDeDistraccion(packageName: String): Boolean {
-        // Lista de apps detectadas como distracción, en el futuro podra configurarlo el usuario
         val blackList = listOf(
-            "com.google.android.youtube",
-            "com.instagram.android",
-            "com.zhiliaoapp.musically",
-            "com.netflix.mediaclient",
-            "tv.twitch.android.app",
-            "com.hbo.hbonow",
-            "com.amazon.avod.thirdpartyclient",
-            "com.discord",
-            "com.facebook.katana",
-            "com.twitter.android",
-            "com.pinterest",
-            "com.reddit.frontpage"
+            "com.google.android.youtube", "com.instagram.android", "com.zhiliaoapp.musically",
+            "com.netflix.mediaclient", "tv.twitch.android.app", "com.hbo.hbonow",
+            "com.amazon.avod.thirdpartyclient", "com.discord", "com.facebook.katana",
+            "com.twitter.android", "com.pinterest", "com.reddit.frontpage"
         )
         return packageName in blackList
     }
 
-    // Limpia al cerrarlo
     override fun onDestroy() {
         super.onDestroy()
-        // Cancela las corrutinas y evita posibles fugas de memoria
         serviceScope.cancel()
-        Log.d("MonitorService", "Modo Focus desactivado.")
+        Log.d("MonitorService", "Servicio de monitorización destruido.")
     }
 
-    override fun onBind(intent: Intent?): IBinder? {
-            return null
-    }
+    override fun onBind(intent: Intent?): IBinder? = null
 
-    // Función que lanza notificaciones desde el Servicio
     private fun mostrarNotificacionDistraccion() {
         val channelId = "kyro_focus_channel"
-        val notificationId = 1001
-
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        // Crea el canal de notificaciones
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                channelId,
-                "Alertas de Modo Focus",
-                // Importancia alta, el telefono vibra
-                NotificationManager.IMPORTANCE_HIGH
-            ).apply {
+            val channel = NotificationChannel(channelId, "Alertas de Modo Focus", NotificationManager.IMPORTANCE_HIGH).apply {
                 description = "Notificaciones para volver a estudiar"
             }
             notificationManager.createNotificationChannel(channel)
         }
 
-        // Gestiona lo que pasa al tocar la notificación
         val intent = Intent(this, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
+        val pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
 
-        val pendingIntent = PendingIntent.getActivity(
-            this, 0, intent, PendingIntent.FLAG_IMMUTABLE
-        )
-
-        // Construye la notificacion
         val notification = NotificationCompat.Builder(this, channelId)
             .setSmallIcon(R.drawable.ic_stat_kyro)
-            // Fuerza el icono grande a color
-            .setContentTitle("Un paso más")
-            .setContentText("Cada minuto cuenta. Si vuelves ahora, tu yo del futuro te lo agradecerá \uD83D\uDE42")
+            .setContentTitle("¡Ey! Un pequeño recordatorio")
+            .setContentText("Cada minuto de estudio cuenta. ¡Vuelve a la tarea y acércate a tus metas!")
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setContentIntent(pendingIntent)
-            // La notificación desaparece al tocarla
             .setAutoCancel(true)
             .build()
 
-        notificationManager.notify(notificationId, notification)
+        notificationManager.notify(1001, notification)
     }
 }
