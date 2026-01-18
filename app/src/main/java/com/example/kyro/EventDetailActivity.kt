@@ -32,8 +32,9 @@ class EventDetailActivity : AppCompatActivity() {
         val id = intent.getLongExtra("id", -1)
         val type = intent.getStringExtra("type")
         val title = intent.getStringExtra("title")
+        val asignaturaNombre = intent.getStringExtra("asignatura_nombre")
         val date = intent.getStringExtra("date")
-        val time = intent.getStringExtra("hora_entrega")
+        val time = if (type == "examen") intent.getStringExtra("hora_examen") else intent.getStringExtra("hora_entrega")
         val description = intent.getStringExtra("description")
         val notif1 = intent.getStringExtra("notif1")
         val notif2 = intent.getStringExtra("notif2")
@@ -41,6 +42,7 @@ class EventDetailActivity : AppCompatActivity() {
 
         // --- Rellenar la vista con los datos ---
         findViewById<TextView>(R.id.tvDetailTitle).text = title
+        findViewById<TextView>(R.id.tvDetailAsignatura).text = asignaturaNombre
         findViewById<TextView>(R.id.tvDetailDate).text = if (time != null) "$date a las $time" else date
         findViewById<TextView>(R.id.tvDetailDescription).text = description
         findViewById<TextView>(R.id.tvDetailNotif1).text = "Recordatorio 1: ${notif1 ?: "No establecido"}"
@@ -57,7 +59,12 @@ class EventDetailActivity : AppCompatActivity() {
                 putExtra("title", title)
                 putExtra("description", description)
                 putExtra("date", date)
-                putExtra("hora_entrega", time)
+                putExtra("asignatura_nombre", asignaturaNombre)
+                if (type == "examen") {
+                    putExtra("hora_examen", time)
+                } else {
+                    putExtra("hora_entrega", time)
+                }
                 putExtra("notif1", notif1)
                 putExtra("notif2", notif2)
                 // Anade esta linea para redirigir a CalendarioActivity
@@ -71,8 +78,8 @@ class EventDetailActivity : AppCompatActivity() {
         val btnDelete: Button = findViewById(R.id.btnDeleteEvent)
         btnDelete.setOnClickListener {
             AlertDialog.Builder(this)
-                .setTitle("Confirmar Eliminacion")
-                .setMessage("¿Estas seguro de que deseas eliminar este evento?")
+                .setTitle("Confirmar Eliminación")
+                .setMessage("¿Estás seguro de que deseas eliminar este evento?")
                 .setPositiveButton("Eliminar") { _, _ ->
                     deleteEvent(id, type ?: "")
                 }

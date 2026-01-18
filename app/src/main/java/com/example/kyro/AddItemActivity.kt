@@ -9,11 +9,14 @@ import android.widget.DatePicker
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.Spinner
+import android.widget.TextView
 import android.widget.TimePicker
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.textfield.TextInputLayout
 import io.github.jan.supabase.gotrue.auth
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.postgrest
@@ -39,11 +42,16 @@ class AddItemActivity : AppCompatActivity() {
     private val asignaturasList = mutableListOf<Asignatura>()
     private lateinit var asignaturasAdapter: ArrayAdapter<String>
 
+    private var isEditMode = false
+    private var eventId: Long = -1
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_item)
 
         calendar = Calendar.getInstance()
+        eventId = intent.getLongExtra("id", -1)
+        isEditMode = eventId != -1L
 
         val type = intent.getStringExtra("type") ?: "Tarea"
 
@@ -56,6 +64,7 @@ class AddItemActivity : AppCompatActivity() {
         }
 
         spinnerAsignaturas = findViewById(R.id.spinnerAsignaturas)
+        val tilNombre: TextInputLayout = findViewById(R.id.tilNombre)
         val etNombre: EditText = findViewById(R.id.etNombre)
         val etDescripcion: EditText = findViewById(R.id.etDescripcion)
         datePicker = findViewById(R.id.datePicker)
@@ -66,6 +75,14 @@ class AddItemActivity : AppCompatActivity() {
         val spinnerNotificacion2: Spinner = findViewById(R.id.spinnerNotificacion2)
         val btnGuardar: Button = findViewById(R.id.btnGuardar)
         val btnToggleCalendar: ImageButton = findViewById(R.id.btnToggleCalendar)
+
+        // Ajuste 1: Pista dinámica para el nombre
+        tilNombre.hint = if (type.equals("Examen", ignoreCase = true)) "Nombre del examen" else "Nombre de la tarea"
+        toolbar.title = if (isEditMode) {
+            if (type.equals("Examen", ignoreCase = true)) "Editar Examen" else "Editar Tarea"
+        } else {
+            if (type.equals("Examen", ignoreCase = true)) "Añadir Examen" else "Añadir Tarea"
+        }
 
         setupAsignaturasSpinner()
         loadAsignaturas()
@@ -79,6 +96,15 @@ class AddItemActivity : AppCompatActivity() {
         val sdfDate = SimpleDateFormat("yyyy-MM-dd", Locale.US)
         val sdfTime = SimpleDateFormat("HH:mm:00", Locale.US)
 
+        // Ajuste 2: Hora por defecto correcta al crear
+        if (!isEditMode) {
+            val currentHour = calendar.get(Calendar.HOUR_OF_DAY)
+            val currentMinute = calendar.get(Calendar.MINUTE)
+            timePicker.hour = currentHour
+            timePicker.minute = currentMinute
+            selectedTime = sdfTime.format(calendar.time)
+        }
+
         val selectedDateStr = intent.getStringExtra("selectedDate")
         if (selectedDateStr != null) {
             try {
@@ -87,12 +113,11 @@ class AddItemActivity : AppCompatActivity() {
                     calendar.time = date
                 }
             } catch (e: Exception) {
-                // Handle error
+                // En caso de error, usar la fecha actual
             }
         }
 
         selectedDate = sdfDate.format(calendar.time)
-        selectedTime = sdfTime.format(calendar.time)
 
         datePicker.init(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)) { _, year, monthOfYear, dayOfMonth ->
             calendar.set(year, monthOfYear, dayOfMonth)
@@ -117,13 +142,10 @@ class AddItemActivity : AppCompatActivity() {
             cvCalendarContainer.visibility = if (cvCalendarContainer.visibility == View.VISIBLE) View.GONE else View.VISIBLE
         }
 
-        val eventId = intent.getLongExtra("id", -1)
-        val isEditMode = eventId != -1L
-
+        // Ajuste 3: Cargar datos en modo edición
         if (isEditMode) {
-            toolbar.title = if (type.equals("Examen", ignoreCase = true)) "Editar Examen" else "Editar Tarea"
-            val nombre = intent.getStringExtra("nombre")
-            val descripcion = intent.getStringExtra("descripcion")
+            val nombre = intent.getStringExtra("title") // Usamos "title" como clave
+            val descripcion = intent.getStringExtra("description")
             val dateStr = intent.getStringExtra("date")
             val timeStr = if (type.equals("Examen", ignoreCase = true)) intent.getStringExtra("hora_examen") else intent.getStringExtra("hora_entrega")
             val notif1 = intent.getStringExtra("notif1")
@@ -161,7 +183,7 @@ class AddItemActivity : AppCompatActivity() {
                     spinnerNotificacion1.setSelection(notif1Position)
                 }
             } else {
-                spinnerNotificacion1.setSelection(0) // No notificar
+                spinnerNotificacion1.setSelection(0)
             }
 
             if (notif2 != null) {
@@ -170,24 +192,24 @@ class AddItemActivity : AppCompatActivity() {
                     spinnerNotificacion2.setSelection(notif2Position)
                 }
             } else {
-                spinnerNotificacion2.setSelection(0) // No notificar
+                spinnerNotificacion2.setSelection(0)
             }
         }
 
         btnGuardar.setOnClickListener {
             val selectedAsignaturaPosition = spinnerAsignaturas.selectedItemPosition
-            if (selectedAsignaturaPosition == 0) { // Asumiendo que la posición 0 es "Elige una asignatura"
-              showKyroToast("Por favor, selecciona una asignatura")
+            if (selectedAsignaturaPosition == 0) {
+                Toast.makeText(this, "Por favor, selecciona una asignatura", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            val selectedAsignatura = asignaturasList[selectedAsignaturaPosition - 1] // Ajuste de índice
+            val selectedAsignatura = asignaturasList[selectedAsignaturaPosition - 1]
             val nombre = etNombre.text.toString().trim()
             val descripcion = etDescripcion.text.toString().trim()
             val notificacion1 = spinnerNotificacion1.selectedItem.toString()
             val notificacion2 = spinnerNotificacion2.selectedItem.toString()
 
             if (nombre.isEmpty()) {
-               showKyroToast("Por favor, rellena todos los campos")
+                Toast.makeText(this, "Por favor, rellena el nombre", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
@@ -285,6 +307,16 @@ class AddItemActivity : AppCompatActivity() {
                         asignaturasAdapter.clear()
                         asignaturasAdapter.addAll(asignaturaNombres)
                         asignaturasAdapter.notifyDataSetChanged()
+
+                        if (isEditMode) {
+                            val asignaturaIdToSelect = intent.getLongExtra("asignatura_id", -1L)
+                            if (asignaturaIdToSelect != -1L) {
+                                val position = asignaturasList.indexOfFirst { it.id == asignaturaIdToSelect }
+                                if (position != -1) {
+                                    spinnerAsignaturas.setSelection(position + 1)
+                                }
+                            }
+                        }
                     }
                 }
             } catch (e: Exception) {

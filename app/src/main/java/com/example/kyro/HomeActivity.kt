@@ -24,17 +24,28 @@ import io.github.jan.supabase.postgrest.postgrest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.Serializable
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 
 // Data class unificada para Tareas y Examenes
 data class Event(
+    val id: Long,
+    val type: String,
     val name: String,
-    val date: String
-)
+    val description: String,
+    val date: String,
+    val time: String?,
+    val completada: Boolean,
+    val notificacion1: String?,
+    val notificacion2: String?,
+    val asignaturaId: Long
+) : Serializable
 
 class HomeActivity : AppCompatActivity() {
+
+    private var nextEvent: Event? = null
 
     // Identifica la respuesta del usuario al pedir notificaciones
     private val CODIGO_PETICION_NOTIFICACIONES = 101
@@ -88,6 +99,7 @@ class HomeActivity : AppCompatActivity() {
     private fun updateNextEvent() {
         val tvEventName: TextView = findViewById(R.id.tvEventName)
         val tvEventTime: TextView = findViewById(R.id.tvEventTime)
+        val cardNextEvent: MaterialCardView = findViewById(R.id.cardNextEvent)
 
         lifecycleScope.launch(Dispatchers.IO) {
             try {
@@ -99,31 +111,53 @@ class HomeActivity : AppCompatActivity() {
                     .select { filter { eq("id_usuario", userId); eq("completada", false) } }
                     .decodeList<Tarea>()
                     .filter { LocalDate.parse(it.fecha_entrega).isAfter(today.minusDays(1)) }
-                    .map { Event(it.nombre_tarea, it.fecha_entrega) }
+                    .map { Event(it.id!!, "tarea", it.nombre_tarea, it.descripcion, it.fecha_entrega, it.hora_entrega, it.completada, it.notificacion1, it.notificacion2, it.asignatura_id) }
 
                 val upcomingExams = SupabaseClient.client.postgrest["examenes"]
                     .select { filter { eq("id_usuario", userId); eq("completada", false) } }
                     .decodeList<Examen>()
                     .filter { LocalDate.parse(it.fecha_examen).isAfter(today.minusDays(1)) }
-                    .map { Event(it.nombre_examen, it.fecha_examen) }
+                    .map { Event(it.id!!, "examen", it.nombre_examen, it.descripcion, it.fecha_examen, it.hora_examen, it.completada, it.notificacion1, it.notificacion2, it.asignatura_id) }
 
                 val allUpcomingEvents = (upcomingTasks + upcomingExams).sortedBy { it.date }
 
-                val nextEvent = allUpcomingEvents.firstOrNull()
+                nextEvent = allUpcomingEvents.firstOrNull()
 
                 withContext(Dispatchers.Main) {
                     if (nextEvent != null) {
-                        tvEventName.text = nextEvent.name
+                        tvEventName.text = nextEvent!!.name
 
-                        val eventDate = LocalDate.parse(nextEvent.date)
+                        val eventDate = LocalDate.parse(nextEvent!!.date)
                         val daysUntil = ChronoUnit.DAYS.between(today, eventDate)
                         val formatter = DateTimeFormatter.ofPattern("EEE, dd MMM")
 
                         val timeText = "${eventDate.format(formatter)} • Faltan $daysUntil días"
                         tvEventTime.text = timeText
+
+                        cardNextEvent.setOnClickListener {
+                            val intent = Intent(this@HomeActivity, EventDetailActivity::class.java).apply {
+                                putExtra("id", nextEvent!!.id)
+                                putExtra("type", nextEvent!!.type)
+                                putExtra("title", nextEvent!!.name)
+                                putExtra("description", nextEvent!!.description)
+                                putExtra("date", nextEvent!!.date)
+                                if (nextEvent!!.type == "examen") {
+                                    putExtra("hora_examen", nextEvent!!.time)
+                                } else {
+                                    putExtra("hora_entrega", nextEvent!!.time)
+                                }
+                                putExtra("notif1", nextEvent!!.notificacion1)
+                                putExtra("notif2", nextEvent!!.notificacion2)
+                                putExtra("completada", nextEvent!!.completada)
+                                putExtra("asignatura_id", nextEvent!!.asignaturaId)
+                            }
+                            startActivity(intent)
+                        }
+
                     } else {
                         tvEventName.text = "No hay eventos próximos"
                         tvEventTime.text = ""
+                        cardNextEvent.setOnClickListener(null)
                     }
                 }
             } catch (e: Exception) {

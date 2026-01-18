@@ -7,7 +7,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 class EjerciciosAdapter(
-    private val listaEjercicios: List<Ejercicio>
+    private val listaEjercicios: List<Ejercicio>,
+    private val onItemClicked: (Ejercicio) -> Unit
 ) : RecyclerView.Adapter<EjerciciosAdapter.EjercicioViewHolder>() {
 
     // Prepara el diseño del XML
@@ -23,6 +24,11 @@ class EjerciciosAdapter(
 
         holder.tvTitulo.text = ejercicio.titulo
         holder.tvDescripcion.text = ejercicio.descripcion
+
+        // Define la acción al hacer clic en un elemento
+        holder.itemView.setOnClickListener {
+            onItemClicked(ejercicio)
+        }
     }
 
     // Devuelve la cantidad de elementos que hay en total
@@ -34,6 +40,4 @@ class EjerciciosAdapter(
         val tvTitulo: TextView = itemView.findViewById(R.id.tvTituloEjercicio)
         val tvDescripcion: TextView = itemView.findViewById(R.id.tvDescripcionEjercicio)
     }
-
-
 }

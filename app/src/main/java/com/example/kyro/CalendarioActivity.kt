@@ -48,6 +48,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.button.MaterialButton
 import io.github.jan.supabase.gotrue.auth
+import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.postgrest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -132,17 +133,15 @@ class CalendarioActivity : AppCompatActivity() {
                 val userId = SupabaseClient.client.auth.currentUserOrNull()?.id ?: return@launch
 
                 // Obtiene las tareas y examenes del usuario actual
-                val tareas = SupabaseClient.client.postgrest["tareas"]
-                    .select { filter { eq("id_usuario", userId) } }
-                    .decodeList<Tarea>()
-                val examenes = SupabaseClient.client.postgrest["examenes"]
-                    .select { filter { eq("id_usuario", userId) } }
-                    .decodeList<Examen>()
+                val tareas = SupabaseClient.client.postgrest["tareas"].select { filter { eq("id_usuario", userId) } }.decodeList<Tarea>()
+                val examenes = SupabaseClient.client.postgrest["examenes"].select { filter { eq("id_usuario", userId) } }.decodeList<Examen>()
+                val asignaturas = SupabaseClient.client.from("asignaturas").select { filter { eq("user_id", userId) } }.decodeList<Asignatura>()
+                val asignaturaMap = asignaturas.associateBy { it.id }
                 
                 // Convierte las tareas y examenes en una lista de eventos
                 val events = mutableListOf<Event>()
-                tareas.forEach { event -> event.id?.let { events.add(Event(it, "tarea", event.nombre_tarea, event.descripcion, event.fecha_entrega, event.hora_entrega, event.completada, event.notificacion1, event.notificacion2)) } }
-                examenes.forEach { event -> event.id?.let { events.add(Event(it, "examen", event.nombre_examen, event.descripcion, event.fecha_examen, event.hora_examen, event.completada, event.notificacion1, event.notificacion2)) } }
+                tareas.forEach { event -> event.id?.let { events.add(Event(it, "tarea", event.nombre_tarea, event.descripcion, event.fecha_entrega, event.hora_entrega, event.completada, event.notificacion1, event.notificacion2, asignaturaMap[event.asignatura_id]?.titulo ?: "")) } }
+                examenes.forEach { event -> event.id?.let { events.add(Event(it, "examen", event.nombre_examen, event.descripcion, event.fecha_examen, event.hora_examen, event.completada, event.notificacion1, event.notificacion2, asignaturaMap[event.asignatura_id]?.titulo ?: "")) } }
                 allEvents = events
 
                 withContext(Dispatchers.Main) {
@@ -287,6 +286,7 @@ class CalendarioActivity : AppCompatActivity() {
                     putExtra("title", event.title)
                     putExtra("description", event.description)
                     putExtra("date", event.date)
+                    putExtra("asignatura_nombre", event.asignaturaNombre)
                     if (event.type == "examen") {
                         putExtra("hora_examen", event.time)
                     } else {
@@ -332,7 +332,8 @@ class CalendarioActivity : AppCompatActivity() {
         val time: String?,
         val completada: Boolean,
         val notificacion1: String?,
-        val notificacion2: String?
+        val notificacion2: String?,
+        val asignaturaNombre: String
     )
 }
 
