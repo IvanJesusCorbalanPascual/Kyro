@@ -95,7 +95,6 @@
                             android:layout_height="wrap_content"
                             android:text="Usuario Kyro"
                             android:textColor="#FFFFFF"
-                            android:fontFamily="@font/poppins"
                             android:textSize="18sp"
                             android:textStyle="bold" />
 
@@ -105,7 +104,6 @@
                             android:layout_marginTop="4dp"
                             android:text="@string/gestionar_cuenta"
                             android:textColor="#E0E0E0"
-                            android:fontFamily="@font/poppins"
                             android:textSize="14sp" />
                     </LinearLayout>
 
@@ -124,7 +122,6 @@
                 android:layout_height="wrap_content"
                 android:text="@string/bienestar_digital"
                 android:textColor="#757575"
-                android:fontFamily="@font/poppins"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:layout_marginBottom="8dp"
@@ -162,7 +159,6 @@
                             android:layout_height="wrap_content"
                             android:text="@string/modo_focus_subtitulo"
                             android:textColor="#757575"
-                            android:fontFamily="@font/poppins"
                             android:textSize="12sp"/>
                     </LinearLayout>
 
@@ -180,7 +176,6 @@
                     android:layout_marginTop="8dp"
                     android:text="@string/modo_focus_desc"
                     android:textColor="#FF9800"
-                    android:fontFamily="@font/poppins"
                     android:textSize="12sp"
                     android:alpha="0.9"/>
 
@@ -193,7 +188,6 @@
                 android:layout_height="wrap_content"
                 android:text="@string/general"
                 android:textColor="#757575"
-                android:fontFamily="@font/poppins"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:layout_marginBottom="8dp"
@@ -217,7 +211,6 @@
                     android:textAlignment="viewStart"
                     app:icon="@drawable/ic_book"
                     app:iconTint="#333333"
-                    android:fontFamily="@font/poppins"
                     app:iconSize="24dp"
                     app:iconGravity="textStart"
                     app:iconPadding="16dp"
@@ -238,9 +231,8 @@
                     android:textColor="#333333"
                     android:textSize="16sp"
                     android:textAlignment="viewStart"
-                    app:icon="@drawable/ic_pallete"
+                    app:icon="@drawable/ic_star"
                     app:iconTint="#333333"
-                    android:fontFamily="@font/poppins"
                     app:iconSize="24dp"
                     app:iconGravity="textStart"
                     app:iconPadding="16dp"
@@ -254,7 +246,6 @@
                 android:layout_height="wrap_content"
                 android:text="@string/zona_peligro"
                 android:textColor="#FF5252"
-                android:fontFamily="@font/poppins"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:layout_marginBottom="8dp"
@@ -280,7 +271,6 @@
                     android:textAlignment="viewStart"
                     app:icon="@drawable/ic_person"
                     app:iconTint="#D32F2F"
-                    android:fontFamily="@font/poppins"
                     app:iconGravity="textStart"
                     app:iconPadding="16dp"
                     android:paddingStart="16dp"/>
@@ -298,7 +288,6 @@
                     android:layout_height="56dp"
                     android:text="@string/cerrar_sesion"
                     android:textColor="#D32F2F"
-                    android:fontFamily="@font/poppins"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:textAlignment="viewStart"
@@ -321,7 +310,6 @@
                     android:layout_height="56dp"
                     android:text="@string/eliminar_cuenta"
                     android:textColor="#D32F2F"
-                    android:fontFamily="@font/poppins"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:textAlignment="viewStart"

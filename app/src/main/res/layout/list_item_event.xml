@@ -43,14 +43,12 @@
                     android:layout_height="wrap_content"
                     android:text="@string/item_event_titulo"
                     android:textSize="16sp"
-                    android:fontFamily="@font/poppins"
                     android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tvEventDescription"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins"
                     android:text="@string/item_event_desc" />
 
             </LinearLayout>

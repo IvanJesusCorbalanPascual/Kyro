@@ -15,9 +15,4 @@
         <!-- Personalización de la barra de estado -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
     </style>
-    <style name="EstiloTextoMenu">
-        <item name="android:fontFamily">@font/poppins</item>
-        <item name="android:textSize">12sp</item>
-        <item name="android:textStyle">bold</item>
-    </style>
 </resources>
