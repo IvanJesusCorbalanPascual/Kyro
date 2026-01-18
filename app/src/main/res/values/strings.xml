@@ -37,7 +37,7 @@
     <string name="home_prox_evento">Próximo Evento</string>
     <string name="home_btn_repasar">Repasar ahora</string>
     <string name="home_btn_ia">Preguntar a IA</string>
-    <string name="home_btn_temarios">Ver Temarios</string>
+    <string name="home_btn_asignaturas">Ver Asignaturas</string>
     <string name="home_progreso_titulo">Tu Progreso</string>
     <string name="home_progreso_3dias">Tareas en los próximos 3 días</string>
     <string name="home_progreso_todas">Todas las tareas próximas</string>
@@ -97,18 +97,18 @@
     <string name="login_no_cuenta">¿No tienes cuenta? </string>
     <string name="login_link_registro">Regístrate aquí</string>
 
-    <!-- MODIFICAR TEMARIO -->
-    <string name="mod_temario_titulo">Modificar Temario Seleccionado</string>
-    <string name="mod_temario_editar_contenido">Editar Contenido</string>
-    <string name="mod_temario_hint_titulo">Título del Tema (Ej. Java POO)</string>
-    <string name="mod_temario_desc_ia">Sube tus apuntes, PDFs o enlaces, nuestra IA lo procesará y actualizará el temario con la información proporcionada.</string>
-    <string name="mod_temario_btn_adjuntar">Pulse aquí para adjuntar archivos</string>
-    <string name="mod_temario_hint_apuntes">También puedes pegar el texto del temario aquí...</string>
-    <string name="mod_temario_btn_guardar">Guardar Cambios</string>
-    <string name="mod_temario_btn_eliminar">Eliminar Temario</string>
+    <!-- MODIFICAR ASIGNATURA -->
+    <string name="mod_asignatura_titulo">Modificar Asignatura Seleccionada</string>
+    <string name="mod_asignatura_editar_contenido">Editar Contenido</string>
+    <string name="mod_asignatura_hint_titulo">Título de la asignatura (Ej. Java POO)</string>
+    <string name="mod_asignatura_desc_ia">Sube tus apuntes, PDFs o enlaces, nuestra IA lo procesará y actualizará la asignatura con la información proporcionada.</string>
+    <string name="mod_asignatura_btn_adjuntar">Pulse aquí para adjuntar archivos</string>
+    <string name="mod_asignatura_hint_apuntes">También puedes pegar el texto de la asignatura aquí...</string>
+    <string name="mod_asignatura_btn_guardar">Guardar Cambios</string>
+    <string name="mod_asignatura_btn_eliminar">Eliminar Asignatura</string>
 
-    <string name="mod_temario_placeholder_asignatura">Java POO Avanzado</string>
-    <string name="mod_temario_placeholder_ejercicios">12 ejercicios</string>
+    <string name="mod_asignatura_placeholder_asignatura">Java POO Avanzado</string>
+    <string name="mod_asignatura_placeholder_ejercicios">12 ejercicios</string>
 
     <!-- REGISTRO -->
     <string name="register_titulo">Bienvenido a Kyro!</string>
@@ -121,24 +121,24 @@
     <string name="register_ya_tengo_cuenta">¿Ya tienes cuenta? </string>
     <string name="register_link_login">Inicia sesión</string>
 
-    <!-- TEMARIO -->
-    <string name="temario_titulo">Temario y Contenido</string>
-    <string name="temario_subtitulo_lista">Temarios</string>
-    <string name="temario_lista_vacia">No hay temarios guardados.</string>
-    <string name="temario_subtitulo_nuevo">Cargar Nuevo Temario</string>
-    <string name="temario_desc_ia">Sube tus apuntes, PDFs o enlaces, nuestra IA lo procesará y generará ejercicios.</string>
-    <string name="temario_hint_titulo_nuevo">Título (Ej: Java POO Tema 1)</string>
-    <string name="temario_btn_adjuntar">Pulse aquí para adjuntar archivos</string>
-    <string name="temario_hint_contenido">También puedes pegar el texto del temario aquí...</string>
-    <string name="temario_btn_generar">Generar Ejercicios</string>
+    <!-- ASIGNATURA -->
+    <string name="asignatura_titulo">Asignaturas y Contenido</string>
+    <string name="asignatura_subtitulo_lista">Asignaturas</string>
+    <string name="asignatura_lista_vacia">No hay asignaturas guardadas.</string>
+    <string name="asignatura_subtitulo_nuevo">Cargar Nueva Asignatura</string>
+    <string name="asignatura_desc_ia">Sube tus apuntes, PDFs o enlaces, nuestra IA lo procesará y generará ejercicios.</string>
+    <string name="asignatura_hint_titulo_nuevo">Título (Ej: Java POO Tema 1)</string>
+    <string name="asignatura_btn_adjuntar">Pulse aquí para adjuntar archivos</string>
+    <string name="asignatura_hint_contenido">También puedes pegar el texto de la asignatura aquí...</string>
+    <string name="asignatura_btn_generar">Generar Ejercicios</string>
 
-    <!-- TEMARIO SELECCIONADO -->
-    <string name="temario_sel_titulo">Temario Seleccionado</string>
-    <string name="temario_sel_btn_modificar">Modificar</string>
-    <string name="temario_sel_subtitulo_ejercicios">Ejercicios</string>
+    <!-- ASIGNATURA SELECCIONADA -->
+    <string name="asignatura_sel_titulo">Asignatura Seleccionada</string>
+    <string name="asignatura_sel_btn_modificar">Modificar</string>
+    <string name="asignatura_sel_subtitulo_ejercicios">Ejercicios</string>
 
-    <string name="temario_sel_placeholder_asignatura">Java POO Avanzado</string>
-    <string name="temario_sel_placeholder_ejercicios">12 ejercicios</string>
+    <string name="asignatura_sel_placeholder_asignatura">Java POO Avanzado</string>
+    <string name="asignatura_sel_placeholder_ejercicios">12 ejercicios</string>
 
     <!-- USUARIO -->
     <string name="user_titulo">Mi Perfil</string>
@@ -147,9 +147,9 @@
     <string name="user_hint_email">Correo electrónico</string>
     <string name="user_btn_guardar">Guardar Cambios</string>
 
-    <!-- ITEM TEMARIO -->
-    <string name="item_temario_titulo">Título del Tema</string>
-    <string name="item_temario_btn_estudiar">Estudiar</string>
+    <!-- ITEM ASIGNATURA -->
+    <string name="item_asignatura_titulo">Título de la Asignatura</string>
+    <string name="item_asignatura_btn_estudiar">Estudiar</string>
 
     <!-- ITEM EJERCICIO -->
     <string name="item_ejercicio_titulo">1. Título del Ejercicio</string>
@@ -166,7 +166,7 @@
     <string name="nav_inicio">Inicio</string>
     <string name="nav_agenda">Agenda</string>
     <string name="nav_ia">Kyro IA</string>
-    <string name="nav_temario">Temario</string>
+    <string name="nav_asignatura">Asignaturas</string>
     <string name="nav_ajustes">Ajustes</string>
 
     <!-- TEXTO / POP UPS ADICIONALES DE HOME-->

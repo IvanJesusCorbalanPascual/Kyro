@@ -179,7 +179,7 @@ class MonitorService : Service() {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             putExtra("id", task.id)
             putExtra("type", "tarea")
-            putExtra("title", task.nombre_asignatura)
+            putExtra("title", task.nombre_tarea)
             putExtra("description", task.descripcion)
             putExtra("date", task.fecha_entrega)
             putExtra("hora_entrega", task.hora_entrega)
@@ -188,7 +188,7 @@ class MonitorService : Service() {
             putExtra("completada", task.completada)
         }
         val pendingIntent = PendingIntent.getActivity(this, task.id!!.toInt(), intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-        sendNotification("Recordatorio de Tarea: ${task.nombre_asignatura}", task.descripcion, pendingIntent, task.id.toInt())
+        sendNotification("Recordatorio de Tarea: ${task.nombre_tarea}", task.descripcion, pendingIntent, task.id.toInt())
     }
 
     private fun sendExamNotification(exam: Examen) {
@@ -196,7 +196,7 @@ class MonitorService : Service() {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             putExtra("id", exam.id)
             putExtra("type", "examen")
-            putExtra("title", exam.nombre_asignatura)
+            putExtra("title", exam.nombre_examen)
             putExtra("description", exam.descripcion)
             putExtra("date", exam.fecha_examen)
             putExtra("hora_examen", exam.hora_examen)
@@ -205,7 +205,7 @@ class MonitorService : Service() {
             putExtra("completada", exam.completada)
         }
         val pendingIntent = PendingIntent.getActivity(this, exam.id!!.toInt(), intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-        sendNotification("Recordatorio de Examen: ${exam.nombre_asignatura}", exam.descripcion, pendingIntent, exam.id.toInt())
+        sendNotification("Recordatorio de Examen: ${exam.nombre_examen}", exam.descripcion, pendingIntent, exam.id.toInt())
     }
 
     private fun sendNotification(title: String, content: String, pendingIntent: PendingIntent, notificationId: Int) {

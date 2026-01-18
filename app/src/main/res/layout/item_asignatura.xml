@@ -28,14 +28,14 @@
 
         <!-- Título del tema, uso ellipsize para poner 3 puntos en caso de cortarse el título -->
         <TextView
-            android:id="@+id/tvTituloTema"
+            android:id="@+id/tvTituloAsignatura"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:layout_marginEnd="8dp"
             android:ellipsize="end"
             android:maxLines="2"
-            android:text="@string/item_temario_titulo"
+            android:text="@string/item_asignatura_titulo"
             android:textColor="#000000"
             android:textSize="14sp"
             android:textStyle="bold"
@@ -48,7 +48,7 @@
             android:id="@+id/tvBtnEstudiar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/item_temario_btn_estudiar"
+            android:text="@string/item_asignatura_btn_estudiar"
             android:textColor="#00A8E8"
             android:textSize="12sp"
             android:textStyle="bold"

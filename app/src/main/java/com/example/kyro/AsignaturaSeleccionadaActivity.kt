@@ -9,17 +9,17 @@ import com.google.android.material.card.MaterialCardView
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
-class TemarioSeleccionadoActivity: AppCompatActivity() {
+class AsignaturaSeleccionadaActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_temario_seleccionado)
+        setContentView(R.layout.activity_asignatura_seleccionada)
 
-        val tvTituloTema = findViewById<TextView>(R.id.tvNombreAsignatura)
+        val tvTituloAsignatura = findViewById<TextView>(R.id.tvNombreAsignatura)
         val btnModificar = findViewById<TextView>(R.id.btnModificar)
 
         // Vincula la tarjeta de ejercicios (Asegúrate de que en el XML tenga este ID: cardEjercicios)
-        val cardEjercicios = findViewById<MaterialCardView>(R.id.cardInfoTemario)
+        val cardEjercicios = findViewById<MaterialCardView>(R.id.cardInfoAsignatura)
 
         // Recibe los datos
         val tituloRecibido = intent.getStringExtra("EXTRA_TITULO") ?: "Sin Título"
@@ -27,7 +27,7 @@ class TemarioSeleccionadoActivity: AppCompatActivity() {
         val preguntasJson = intent.getStringExtra("EXTRA_JSON_PREGUNTAS")
         val idRecibido = intent.getLongExtra("EXTRA_ID", -1)
 
-        tvTituloTema.text = tituloRecibido
+        tvTituloAsignatura.text = tituloRecibido
 
         // Al pulsar la tarjeta azul de ejercicios
         cardEjercicios.setOnClickListener {
@@ -52,19 +52,19 @@ class TemarioSeleccionadoActivity: AppCompatActivity() {
                 }
             } else {
                 // Si no hay test guardado (porque es un tema antiguo o falló la IA)
-                Toast.makeText(this, "Este tema no tiene ejercicios generados aún.", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Esta asignatura no tiene ejercicios generados aún.", Toast.LENGTH_LONG).show()
             }
         }
 
         // --- BOTÓN MODIFICAR ---
         btnModificar.setOnClickListener {
-            val intent = Intent(this, ModificarTemarioActivity::class.java)
+            val intent = Intent(this, ModificarAsignaturaActivity::class.java)
             intent.putExtra("EXTRA_TITULO", tituloRecibido)
             intent.putExtra("EXTRA_CONTENIDO", contenidoRecibido)
             intent.putExtra("EXTRA_ID", idRecibido)
             startActivity(intent)
         }
 
-        NavigationHelper.setupBottomNavigation(this, R.id.nav_syllabus)
+        NavigationHelper.setupBottomNavigation(this, R.id.nav_asignatura)
     }
 }

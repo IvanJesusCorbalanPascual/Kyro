@@ -4,11 +4,18 @@ import kotlinx.serialization.SerialName
 import java.io.Serializable
 
 // Representa las asignaturas
+@kotlinx.serialization.Serializable
 data class Asignatura(
-    val id: String = "",
-    val nombre: String = "",
-    val color: String = "#FF5252"
-) : Serializable
+    val id: Long = 0,
+    val created_at: String = "",
+    val contenido: String = "",
+    val titulo: String = "",
+    val preguntas_json: String? = null,
+
+    // Para que coincida con su columna de Supabase
+    @SerialName("user_id")
+    val user_id: String? = null
+)
 
 // Representa un tema dentro de una asignatura
 data class Tema(
@@ -30,16 +37,19 @@ data class Ejercicio(
 
 // Clase para apuntes de usuario (Supabase)
 @kotlinx.serialization.Serializable
-data class ApunteUsuario(
+data class Archivo(
     val id: Long = 0,
-    val created_at: String = "",
-    val contenido: String = "",
-    val titulo: String = "",
-    val preguntas_json: String? = null,
-
-    // Para que coincida con su columna de Supabase
     @SerialName("user_id")
-    val user_id: String? = null
+    val userId: String,
+    @SerialName("asignatura_id")
+    val asignaturaId: Long,
+    @SerialName("tarea_id")
+    val tareaId: Long? = null,
+    @SerialName("examen_id")
+    val examenId: Long? = null,
+    val nombre: String,
+    val url: String,
+    val created_at: String = ""
 )
 
 // Clase para manejar las preguntas generadas por la IA
@@ -50,11 +60,11 @@ data class PreguntaGenerada(
     val explicacion: String
 ) : Serializable
 
-// Clase para manejar los ejercicios de cada temario
+// Clase para manejar los ejercicios de cada asignatura
 @kotlinx.serialization.Serializable
 data class EjercicioIA(
     val id: Long = 0,
-    val apunte_id: Long, // Vincula con el temario padre
+    val asignatura_id: Long, // Vincula con la asignatura padre
     val nombre: String,  // Ej: "Test Generado 1"
     val preguntas_json: String // Aquí va el array de preguntas
 )

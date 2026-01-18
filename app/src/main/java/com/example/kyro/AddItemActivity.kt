@@ -16,6 +16,7 @@ import androidx.cardview.widget.CardView
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.appbar.MaterialToolbar
 import io.github.jan.supabase.gotrue.auth
+import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.postgrest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -35,6 +36,10 @@ class AddItemActivity : AppCompatActivity() {
     private lateinit var calendarView: CalendarView
     private lateinit var cvCalendarContainer: CardView
 
+    private lateinit var spinnerAsignaturas: Spinner
+    private val asignaturasList = mutableListOf<Asignatura>()
+    private lateinit var asignaturasAdapter: ArrayAdapter<String>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_item)
@@ -51,7 +56,8 @@ class AddItemActivity : AppCompatActivity() {
             onBackPressedDispatcher.onBackPressed()
         }
 
-        val etAsignatura: EditText = findViewById(R.id.etAsignatura)
+        spinnerAsignaturas = findViewById(R.id.spinnerAsignaturas)
+        val etNombre: EditText = findViewById(R.id.etNombre)
         val etDescripcion: EditText = findViewById(R.id.etDescripcion)
         datePicker = findViewById(R.id.datePicker)
         calendarView = findViewById(R.id.calendarView)
@@ -62,6 +68,9 @@ class AddItemActivity : AppCompatActivity() {
         val btnGuardar: Button = findViewById(R.id.btnGuardar)
         val btnToggleCalendar: ImageButton = findViewById(R.id.btnToggleCalendar)
 
+        setupAsignaturasSpinner()
+        loadAsignaturas()
+
         val notificationOptions = listOf("No notificar", "En el momento del evento", "5 minutos antes", "10 minutos antes", "30 minutos antes", "1 hora antes", "1 día antes")
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, notificationOptions)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -71,7 +80,6 @@ class AddItemActivity : AppCompatActivity() {
         val sdfDate = SimpleDateFormat("yyyy-MM-dd", Locale.US)
         val sdfTime = SimpleDateFormat("HH:mm:00", Locale.US)
 
-        // Comprobar si se ha pasado una fecha seleccionada
         val selectedDateStr = intent.getStringExtra("selectedDate")
         if (selectedDateStr != null) {
             try {
@@ -80,7 +88,7 @@ class AddItemActivity : AppCompatActivity() {
                     calendar.time = date
                 }
             } catch (e: Exception) {
-                // En caso de error, usar la fecha actual
+                // Handle error
             }
         }
 
@@ -115,15 +123,15 @@ class AddItemActivity : AppCompatActivity() {
 
         if (isEditMode) {
             toolbar.title = if (type.equals("Examen", ignoreCase = true)) "Editar Examen" else "Editar Tarea"
-            val title = intent.getStringExtra("title")
-            val description = intent.getStringExtra("description")
+            val nombre = intent.getStringExtra("nombre")
+            val descripcion = intent.getStringExtra("descripcion")
             val dateStr = intent.getStringExtra("date")
             val timeStr = if (type.equals("Examen", ignoreCase = true)) intent.getStringExtra("hora_examen") else intent.getStringExtra("hora_entrega")
             val notif1 = intent.getStringExtra("notif1")
             val notif2 = intent.getStringExtra("notif2")
 
-            etAsignatura.setText(title)
-            etDescripcion.setText(description)
+            etNombre.setText(nombre)
+            etDescripcion.setText(descripcion)
 
             dateStr?.let {
                 try {
@@ -168,12 +176,18 @@ class AddItemActivity : AppCompatActivity() {
         }
 
         btnGuardar.setOnClickListener {
-            val asignatura = etAsignatura.text.toString().trim()
+            val selectedAsignaturaPosition = spinnerAsignaturas.selectedItemPosition
+            if (selectedAsignaturaPosition == 0) { // Asumiendo que la posición 0 es "Elige una asignatura"
+                Toast.makeText(this, "Por favor, selecciona una asignatura", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            val selectedAsignatura = asignaturasList[selectedAsignaturaPosition - 1] // Ajuste de índice
+            val nombre = etNombre.text.toString().trim()
             val descripcion = etDescripcion.text.toString().trim()
             val notificacion1 = spinnerNotificacion1.selectedItem.toString()
             val notificacion2 = spinnerNotificacion2.selectedItem.toString()
 
-            if (asignatura.isEmpty() || descripcion.isEmpty()) {
+            if (nombre.isEmpty()) {
                 Toast.makeText(this, "Por favor, rellena todos los campos", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
@@ -191,12 +205,15 @@ class AddItemActivity : AppCompatActivity() {
                     if (isEditMode) {
                         val tableName = if (type.equals("Examen", ignoreCase = true)) "examenes" else "tareas"
                         SupabaseClient.client.postgrest[tableName].update({
-                            set("nombre_asignatura", asignatura)
-                            set("descripcion", descripcion)
+                            set("asignatura_id", selectedAsignatura.id)
                             if (type.equals("Examen", ignoreCase = true)) {
+                                set("nombre_examen", nombre)
+                                set("descripcion", descripcion)
                                 set("fecha_examen", selectedDate)
                                 set("hora_examen", selectedTime)
                             } else {
+                                set("nombre_tarea", nombre)
+                                set("descripcion", descripcion)
                                 set("fecha_entrega", selectedDate)
                                 set("hora_entrega", selectedTime)
                             }
@@ -211,7 +228,8 @@ class AddItemActivity : AppCompatActivity() {
                         if (type.equals("Examen", ignoreCase = true)) {
                             val nuevoExamen = Examen(
                                 id_usuario = idUsuarioActual,
-                                nombre_asignatura = asignatura,
+                                asignatura_id = selectedAsignatura.id,
+                                nombre_examen = nombre,
                                 descripcion = descripcion,
                                 fecha_examen = selectedDate,
                                 hora_examen = selectedTime,
@@ -222,7 +240,8 @@ class AddItemActivity : AppCompatActivity() {
                         } else {
                             val nuevaTarea = Tarea(
                                 id_usuario = idUsuarioActual,
-                                nombre_asignatura = asignatura,
+                                asignatura_id = selectedAsignatura.id,
+                                nombre_tarea = nombre,
                                 descripcion = descripcion,
                                 fecha_entrega = selectedDate,
                                 hora_entrega = selectedTime,
@@ -242,6 +261,36 @@ class AddItemActivity : AppCompatActivity() {
                     withContext(Dispatchers.Main) {
                         Toast.makeText(applicationContext, "Error: ${e.message}", Toast.LENGTH_LONG).show()
                     }
+                }
+            }
+        }
+    }
+
+    private fun setupAsignaturasSpinner() {
+        asignaturasAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, mutableListOf("Elige una asignatura"))
+        asignaturasAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinnerAsignaturas.adapter = asignaturasAdapter
+    }
+
+    private fun loadAsignaturas() {
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val idUsuarioActual = SupabaseClient.client.auth.currentUserOrNull()?.id
+                if (idUsuarioActual != null) {
+                    val asignaturas = SupabaseClient.client.from("asignaturas").select { filter { eq("user_id", idUsuarioActual) } }.decodeList<Asignatura>()
+                    withContext(Dispatchers.Main) {
+                        asignaturasList.clear()
+                        asignaturasList.addAll(asignaturas)
+                        val asignaturaNombres = mutableListOf("Elige una asignatura")
+                        asignaturaNombres.addAll(asignaturas.map { it.titulo })
+                        asignaturasAdapter.clear()
+                        asignaturasAdapter.addAll(asignaturaNombres)
+                        asignaturasAdapter.notifyDataSetChanged()
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(applicationContext, "Error al cargar asignaturas: ${e.message}", Toast.LENGTH_LONG).show()
                 }
             }
         }

@@ -17,9 +17,9 @@
         android:title="@string/nav_ia" />
 
     <item
-        android:id="@+id/nav_syllabus"
+        android:id="@+id/nav_asignatura"
         android:icon="@drawable/ic_book"
-        android:title="@string/nav_temario" />
+        android:title="@string/nav_asignatura" />
 
     <item
         android:id="@+id/nav_settings"

@@ -185,7 +185,7 @@
                 </com.google.android.material.card.MaterialCardView>
 
                 <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/btnQuickSyllabus"
+                    android:id="@+id/btnQuickAsignaturas"
                     android:layout_width="0dp"
                     android:layout_height="100dp"
                     android:layout_marginStart="8dp"
@@ -211,7 +211,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
                             android:fontFamily="@font/poppins"
-                            android:text="Ver Temarios"
+                            android:text="Ver Asignaturas"
                             android:textStyle="bold" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>

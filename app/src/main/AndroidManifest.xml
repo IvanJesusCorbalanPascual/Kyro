@@ -53,15 +53,15 @@
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
 
         <activity
-            android:name=".TemarioActivity"
+            android:name=".AsignaturaActivity"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
 
         <activity
-            android:name=".TemarioSeleccionadoActivity"
+            android:name=".AsignaturaSeleccionadaActivity"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
 
         <activity
-            android:name=".ModificarTemarioActivity"
+            android:name=".ModificarAsignaturaActivity"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
 
         <activity

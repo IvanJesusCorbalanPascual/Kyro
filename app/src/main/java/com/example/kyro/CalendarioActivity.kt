@@ -141,8 +141,8 @@ class CalendarioActivity : AppCompatActivity() {
                 
                 // Convierte las tareas y examenes en una lista de eventos
                 val events = mutableListOf<Event>()
-                tareas.forEach { event -> event.id?.let { events.add(Event(it, "tarea", event.nombre_asignatura, event.descripcion, event.fecha_entrega, event.hora_entrega, event.completada, event.notificacion1, event.notificacion2)) } }
-                examenes.forEach { event -> event.id?.let { events.add(Event(it, "examen", event.nombre_asignatura, event.descripcion, event.fecha_examen, event.hora_examen, event.completada, event.notificacion1, event.notificacion2)) } }
+                tareas.forEach { event -> event.id?.let { events.add(Event(it, "tarea", event.nombre_tarea, event.descripcion, event.fecha_entrega, event.hora_entrega, event.completada, event.notificacion1, event.notificacion2)) } }
+                examenes.forEach { event -> event.id?.let { events.add(Event(it, "examen", event.nombre_examen, event.descripcion, event.fecha_examen, event.hora_examen, event.completada, event.notificacion1, event.notificacion2)) } }
                 allEvents = events
 
                 withContext(Dispatchers.Main) {
