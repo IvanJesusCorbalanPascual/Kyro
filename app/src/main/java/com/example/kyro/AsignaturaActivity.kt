@@ -1,13 +1,16 @@
 package com.example.kyro
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.OpenableColumns
 import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -28,7 +31,25 @@ class AsignaturaActivity : AppCompatActivity() {
     private lateinit var rvAsignaturas: RecyclerView
     private lateinit var barraProgreso: ProgressBar
     private lateinit var tvVacio: TextView
+
     private lateinit var btnAdjuntar: TextView
+
+    // Guarda la URI del archivo seleccionado
+    private var selectedFileUri: Uri? = null
+
+    // Bloque para abrir documentos
+    private val filePickerLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        // Si el usuario seleccionó un archivo correctamente
+        if (uri != null) {
+            selectedFileUri = uri
+            val fileName = getFileNameFromUri(uri)
+
+            // Actualiza el texto del botón visualmente
+            btnAdjuntar.text = "\uD83D\uDCC4 $fileName"
+            // Pone el color azul en caso de éxito
+            btnAdjuntar.setTextColor(getColor(R.color.b500))
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,11 +62,12 @@ class AsignaturaActivity : AppCompatActivity() {
         rvAsignaturas = findViewById(R.id.rvAsignaturas)
         tvVacio = findViewById(R.id.tvVacio)
         barraProgreso = findViewById(R.id.barraProgreso)
+        btnAdjuntar = findViewById(R.id.btnAdjuntarArchivo)
 
-        val btnAdjuntarClick = findViewById<View>(R.id.btnAdjuntarArchivo)
-
-        btnAdjuntarClick.setOnClickListener {
-            showKyroToast("Funcionalidad de adjuntar PDF esta en desarrollo")
+        // Configura el botón de adjuntar
+        btnAdjuntar.setOnClickListener {
+            // Lanza el selector para buscar PDFs
+            filePickerLauncher.launch("application/pdf")
         }
 
         // Carga la lista al entrar
@@ -59,6 +81,21 @@ class AsignaturaActivity : AppCompatActivity() {
         super.onResume()
         // Llama al Helper y le dice que ilumine asignatura
         NavigationHelper.setupBottomNavigation(this, R.id.nav_asignatura)
+    }
+
+    // Función auxiliar, ayuda a obtener el nombre real del archivo
+    private fun getFileNameFromUri(uri: Uri): String {
+        var name = "Archivo adjunto"
+        val cursor = contentResolver.query(uri, null, null, null, null)
+        cursor?.use {
+            if (it.moveToFirst()) {
+                val nameIndex = it.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                if (nameIndex != -1) {
+                    name = it.getString(nameIndex)
+                }
+            }
+        }
+        return name
     }
 
     // Carga los datos desde Supabase filtrando por usuario
@@ -137,10 +174,17 @@ class AsignaturaActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            // Estableciendo un minimo de 50 caracteres para evitar fallos o respuestas muy pobres
-            if (contenido.isEmpty() || contenido.length < 50) {
-                etContenidoNuevo.error = "Escribe al menos 50 caracteres para generar ejercicios"
-                Toast.makeText(this, "El contenido es muy corto para la IA", Toast.LENGTH_SHORT).show()
+            // Permite generar si hay contenido escrito o si hay un archivo adjunto
+            if (contenido.isEmpty() && selectedFileUri == null) {
+                etContenidoNuevo.error = "Escribe contenido o adjunta un PDF"
+                showKyroToast("Debes añadir contenido para generar ejercicios")
+                return@setOnClickListener
+            }
+
+            // Establece un minimo de 50 caracteres para evitar fallos o respuestas muy pobres
+            if (contenido.isNotEmpty() && contenido.length < 50) {
+                etContenidoNuevo.error = "Escribe al menos 50 caracteres o adjunta un PDF"
+                showKyroToast("El contenido es muy corto para la IA, 50 carácteres o más requeridos")
                 return@setOnClickListener
             }
 
@@ -162,12 +206,18 @@ class AsignaturaActivity : AppCompatActivity() {
 
                 // Si no hay usuario por alguna razón, corta sesión para evitar errores
                 if (usuarioActual == null) {
-                    Toast.makeText(this@AsignaturaActivity, "Error, La sesión no es valida", Toast.LENGTH_SHORT).show()
+                    showKyroToast("Error: La sesión no es válida")
                     return@launch
                 }
 
+                // Si hay un archivo adjunto, aqui leera su texto
+                var contenidoFinal = contenido
+                if (selectedFileUri != null && contenido.isEmpty()) {
+                    contenidoFinal = "Genera un examen tipo test sobre el tema '$titulo'. (Contexto adicional: Archivo adjunto ${getFileNameFromUri(selectedFileUri!!)})"
+                }
+
                 // Crea el objeto que se debe subir pasandole el id del usuarios
-                val nuevaAsignatura = Asignatura(titulo = titulo, contenido = contenido, user_id = usuarioActual.id)
+                val nuevaAsignatura = Asignatura(titulo = titulo, contenido = contenidoFinal, user_id = usuarioActual.id)
 
                 // Lo inserta en Supabase (y recuperamos el objeto guardado para tener su ID)
                 val asignaturaGuardada = SupabaseClient.client
@@ -177,11 +227,18 @@ class AsignaturaActivity : AppCompatActivity() {
                     }.decodeSingle<Asignatura>()
 
                 // Si no hay problemas, muestra al usuario que se ha guardado correctamente
-                Toast.makeText(this@AsignaturaActivity, "¡Guardado! Consultando a la IA...", Toast.LENGTH_SHORT).show()
+                showKyroToast("¡Guardado! Consultando a la IA...")
 
                 // Limpia ambos campos
                 etTituloNuevo.text.clear()
                 etContenidoNuevo.text.clear()
+
+                // Resetea el boton
+                btnAdjuntar.text = "Pulse aquí para adjuntar archivos"
+                // Resetea el color original
+                btnAdjuntar.setTextColor(getColor(R.color.black))
+                // Limpia la URI
+                selectedFileUri = null
 
                 // Quita el foco, hace que baje el teclado
                 etTituloNuevo.clearFocus()
@@ -189,7 +246,7 @@ class AsignaturaActivity : AppCompatActivity() {
 
                 // --- LÓGICA DE IA ---
                 val servicioIA = GeminiService()
-                val preguntasGeneradas = servicioIA.generarTestDeApuntes(contenido)
+                val preguntasGeneradas = servicioIA.generarTestDeApuntes(contenidoFinal)
 
                 if (preguntasGeneradas.isNotEmpty()) {
 
