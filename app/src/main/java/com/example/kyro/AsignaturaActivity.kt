@@ -195,16 +195,13 @@ class AsignaturaActivity : AppCompatActivity() {
 
     // Función que envia los datos a la nube
     private fun subirNuevaAsignaturaYGenerar(titulo: String, contenido: String) {
-        // Bloquea el botón para no pulsarse más veces
         btnGenerar.isEnabled = false
         btnGenerar.text = "Guardando y Generando..."
 
         lifecycleScope.launch {
             try {
-                // Identifica el usuario actual en la sesión
                 val usuarioActual = SupabaseClient.client.auth.currentUserOrNull()
 
-                // Si no hay usuario por alguna razón, corta sesión para evitar errores
                 if (usuarioActual == null) {
                     showKyroToast("Error: La sesión no es válida")
                     return@launch
@@ -218,18 +215,28 @@ class AsignaturaActivity : AppCompatActivity() {
 
                 // Crea el objeto que se debe subir pasandole el id del usuarios
                 val nuevaAsignatura = Asignatura(titulo = titulo, contenido = contenidoFinal, user_id = usuarioActual.id)
+                    showKyroToast("Error, La sesión no es válida")
+                    return@launch
+                }
 
-                // Lo inserta en Supabase (y recuperamos el objeto guardado para tener su ID)
+                // 1. CREAMOS LA ASIGNATURA (Esto sigue igual)
+                val nuevaAsignatura = Asignatura(
+                    titulo = titulo,
+                    contenido = contenido,
+                    user_id = usuarioActual.id
+                )
+
+                // Guardamos la asignatura y RECUPERAMOS SU ID (select())
                 val asignaturaGuardada = SupabaseClient.client
                     .from("asignaturas")
                     .insert(nuevaAsignatura) {
-                        select() // Importante: esto nos devuelve el ID generado
+                        select()
                     }.decodeSingle<Asignatura>()
 
                 // Si no hay problemas, muestra al usuario que se ha guardado correctamente
                 showKyroToast("¡Guardado! Consultando a la IA...")
 
-                // Limpia ambos campos
+                // Limpiamos campos
                 etTituloNuevo.text.clear()
                 etContenidoNuevo.text.clear()
 
@@ -244,44 +251,48 @@ class AsignaturaActivity : AppCompatActivity() {
                 etTituloNuevo.clearFocus()
                 etContenidoNuevo.clearFocus()
 
-                // --- LÓGICA DE IA ---
+                // 2. GENERAMOS EL TEST CON IA (Esto sigue igual, la IA ya funciona bien)
                 val servicioIA = GeminiService()
                 val preguntasGeneradas = servicioIA.generarTestDeApuntes(contenidoFinal)
 
                 if (preguntasGeneradas.isNotEmpty()) {
 
-                    // Guardamos las preguntas en Supabase para que no se pierdan
                     val gson = com.google.gson.Gson()
                     val preguntasJson = gson.toJson(preguntasGeneradas)
 
-                    SupabaseClient.client
-                        .from("asignaturas")
-                        .update({
-                            set("preguntas_json", preguntasJson)
-                        }) {
-                            filter {
-                                eq("id", asignaturaGuardada.id)
-                            }
-                        }
+                    // --- CAMBIO IMPORTANTE: AHORA GUARDAMOS EN LA TABLA 'ejercicios' ---
 
-                    // Si la IA funcionó, vamos directos al Quiz
+                    // Creamos el objeto para la nueva tabla
+                    val nuevoEjercicio = EjercicioIA(
+                        asignaturaId = asignaturaGuardada.id, // Aquí vinculamos con la asignatura que acabamos de crear
+                        nombre = "Test Generado con IA",
+                        preguntasJson = preguntasJson
+                    )
+
+                    // Insertamos en 'ejercicios' en lugar de hacer update en 'asignaturas'
+                    SupabaseClient.client
+                        .from("ejercicios")
+                        .insert(nuevoEjercicio)
+
+                    // ------------------------------------------------------------------
+
+                    // Vamos al juego
                     val intent = Intent(this@AsignaturaActivity, QuizActivity::class.java)
                     intent.putExtra("EXTRA_PREGUNTAS", ArrayList(preguntasGeneradas))
                     startActivity(intent)
+
                 } else {
                     showKyroToast("La IA no pudo generar preguntas. Revisa el texto.")
                 }
 
-                // Espera medio segundo para que la BD pueda procesar los datos
+                // Recargamos la lista
                 delay(500)
-                // Recarga la lista para que se actualice sola
                 cargarAsignaturas()
 
             } catch (e: Exception) {
                 Log.e("AsignaturaActivity", "Error al subir", e)
-               showKyroToast("Error al guardar o generar")
+                showKyroToast("Error: ${e.message}")
             } finally {
-                // Siempre, haya error o no, reactiva el botón y el texto del botón
                 btnGenerar.isEnabled = true
                 btnGenerar.text = "Generar Ejercicios con IA ✨"
             }

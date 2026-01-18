@@ -79,11 +79,15 @@ class EventDetailActivity : AppCompatActivity() {
                 .setNegativeButton("Cancelar", null)
                 .show()
         }
-        
+
         // Logica del boton para marcar como incompleto
-        val btnMarkAsIncomplete: Button = findViewById(R.id.btnMarkAsIncomplete)
+        val btnMarkAsIncomplete = findViewById<com.google.android.material.button.MaterialButton>(R.id.btnMarkAsIncomplete)
         if (type == "tarea" && completada) {
             btnMarkAsIncomplete.visibility = View.VISIBLE
+            btnMarkAsIncomplete.setIconResource(R.drawable.ic_cross)
+            btnMarkAsIncomplete.iconGravity = com.google.android.material.button.MaterialButton.ICON_GRAVITY_TEXT_START
+            btnMarkAsIncomplete.iconPadding = 40 // Espacio entre icono y texto
+
             btnMarkAsIncomplete.setOnClickListener {
                 markAsIncomplete(id)
             }

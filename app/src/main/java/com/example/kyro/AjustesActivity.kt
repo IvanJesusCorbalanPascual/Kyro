@@ -102,6 +102,11 @@ class AjustesActivity : AppCompatActivity() {
             // Aplica los cambios y cambia el tema
             androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(newMode)
         }
+        // Muestra un diálogo de advertencia para confirmar si el usuario quiere eliminar todos los datos de su cuenta
+        val btnBorrarDatos = findViewById<View>(R.id.btnBorrarDatos)
+        btnBorrarDatos.setOnClickListener {
+            mostrarDialogoBorrarDatos()
+        }
 
         // Muestra un diálogo de advertencia para confirmar si el usuario quiere cerrar sesión
         val btnCerrarSesion = findViewById<View>(R.id.btnCerrarSesion)
@@ -117,6 +122,67 @@ class AjustesActivity : AppCompatActivity() {
     }
 
     // --- Métodos para mostrar los diálogos ---
+
+    private fun mostrarDialogoBorrarDatos() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("¿Borrar todos los datos?")
+        builder.setMessage("Esto eliminará tus asignaturas, tareas, exámenes y archivos. Tu cuenta seguirá existiendo. \n\nEsta acción no se puede deshacer.")
+
+        builder.setPositiveButton("Borrar Todo") { _, _ ->
+            lifecycleScope.launch {
+                try {
+                    val userId = SupabaseClient.client.auth.currentUserOrNull()?.id
+                    if (userId == null) {
+                        showKyroToast("Error: No estás autenticado")
+                        return@launch
+                    }
+
+                    // Borramos datos de las tablas principales asociadas al usuario.
+                    // borramos primero las dependencias (Archivos, Tareas, Exámenes) y al final Asignaturas.
+
+                    withContext(Dispatchers.IO) {
+                        // Borrar Archivos
+                        SupabaseClient.client.from("archivos").delete {
+                            filter { eq("user_id", userId) }
+                        }
+                        // Borrar Tareas
+                        SupabaseClient.client.from("tareas").delete {
+                            filter { eq("id_usuario", userId) }
+                        }
+                        // Borrar Exámenes
+                        SupabaseClient.client.from("examenes").delete {
+                            filter { eq("id_usuario", userId) }
+                        }
+                        // Borrar Asignaturas
+                        SupabaseClient.client.from("asignaturas").delete {
+                            filter { eq("user_id", userId) }
+                        }
+                    }
+
+                    // Limpiar preferencias locales (Modo focus, etc)
+                    val sharedPref = getSharedPreferences("KyroPrefs", Context.MODE_PRIVATE)
+                    sharedPref.edit().clear().apply()
+
+                    // Feedback visual y reiniciar interruptores visuales
+                    showKyroToast("Datos borrados correctamente")
+                    setupFocusSwitch() // Reiniciamos el switch visualmente
+
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    showKyroToast("Error al borrar datos: ${e.message}")
+                }
+            }
+        }
+
+        builder.setNegativeButton("Cancelar") { dialog, _ ->
+            dialog.dismiss()
+        }
+
+        val dialog = builder.create()
+        dialog.show()
+        // Poner el botón en rojo para indicar peligro
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(resources.getColor(android.R.color.holo_red_dark, theme))
+    }
 
     private fun mostrarDialogoCerrarSesion() {
         val builder = AlertDialog.Builder(this)

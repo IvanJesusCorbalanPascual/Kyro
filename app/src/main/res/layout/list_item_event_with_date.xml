@@ -38,6 +38,7 @@
                 android:textStyle="bold"
                 android:textAllCaps="true"
                 tools:text="TAREA"
+                android:fontFamily="@font/poppins"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -74,6 +75,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/item_event_btn_completar"
+                android:fontFamily="@font/poppins"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
