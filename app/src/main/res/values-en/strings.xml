@@ -35,7 +35,7 @@
     <string name="home_prox_evento">Next Event</string>
     <string name="home_btn_repasar">Review now</string>
     <string name="home_btn_ia">Ask AI</string>
-    <string name="home_btn_temarios">View Syllabus</string>
+    <string name="home_btn_asignaturas">View Subjects</string>
     <string name="home_progreso_titulo">Your Progress</string>
     <string name="home_progreso_3dias">Tasks in the next 3 days</string>
     <string name="home_progreso_todas">All upcoming tasks</string>
@@ -95,18 +95,18 @@
     <string name="login_no_cuenta">Don\'t have an account? </string>
     <string name="login_link_registro">Sign up here</string>
 
-    <!-- MODIFICAR TEMARIO -->
-    <string name="mod_temario_titulo">Modify Selected Syllabus</string>
-    <string name="mod_temario_editar_contenido">Edit Content</string>
-    <string name="mod_temario_hint_titulo">Topic Title (e.g. Java OOP)</string>
-    <string name="mod_temario_desc_ia">Upload your notes, PDFs, or links. Our AI will process it and update the syllabus with the provided information.</string>
-    <string name="mod_temario_btn_adjuntar">Tap here to attach files</string>
-    <string name="mod_temario_hint_apuntes">You can also paste the syllabus text here...</string>
-    <string name="mod_temario_btn_guardar">Save Changes</string>
-    <string name="mod_temario_btn_eliminar">Delete Syllabus</string>
+    <!-- MODIFICAR ASIGNATURA -->
+    <string name="mod_asignatura_titulo">Modify Selected Subject</string>
+    <string name="mod_asignatura_editar_contenido">Edit Content</string>
+    <string name="mod_asignatura_hint_titulo">Subject Title (e.g. Java OOP)</string>
+    <string name="mod_asignatura_desc_ia">Upload your notes, PDFs, or links. Our AI will process it and update the subject with the provided information.</string>
+    <string name="mod_asignatura_btn_adjuntar">Tap here to attach files</string>
+    <string name="mod_asignatura_hint_apuntes">You can also paste the subject text here...</string>
+    <string name="mod_asignatura_btn_guardar">Save Changes</string>
+    <string name="mod_asignatura_btn_eliminar">Delete Subject</string>
 
-    <string name="mod_temario_placeholder_asignatura">Java OOP Advanced</string>
-    <string name="mod_temario_placeholder_ejercicios">12 exercises</string>
+    <string name="mod_asignatura_placeholder_asignatura">Java OOP Advanced</string>
+    <string name="mod_asignatura_placeholder_ejercicios">12 exercises</string>
 
     <!-- REGISTRO -->
     <string name="register_titulo">Welcome to Kyro!</string>
@@ -119,24 +119,24 @@
     <string name="register_ya_tengo_cuenta">Already have an account? </string>
     <string name="register_link_login">Log In</string>
 
-    <!-- TEMARIO -->
-    <string name="temario_titulo">Syllabus &amp; Content</string>
-    <string name="temario_subtitulo_lista">Syllabuses</string>
-    <string name="temario_lista_vacia">No saved syllabuses.</string>
-    <string name="temario_subtitulo_nuevo">Upload New Syllabus</string>
-    <string name="temario_desc_ia">Upload your notes, PDFs, or links. Our AI will process it and generate exercises.</string>
-    <string name="temario_hint_titulo_nuevo">Title (e.g. Java OOP Topic 1)</string>
-    <string name="temario_btn_adjuntar">Tap here to attach files</string>
-    <string name="temario_hint_contenido">You can also paste the syllabus text here...</string>
-    <string name="temario_btn_generar">Generate Exercises</string>
+    <!-- ASIGNATURA -->
+    <string name="asignatura_titulo">Subjects &amp; Content</string>
+    <string name="asignatura_subtitulo_lista">Subjects</string>
+    <string name="asignatura_lista_vacia">No saved subjects.</string>
+    <string name="asignatura_subtitulo_nuevo">Upload New Subject</string>
+    <string name="asignatura_desc_ia">Upload your notes, PDFs, or links. Our AI will process it and generate exercises.</string>
+    <string name="asignatura_hint_titulo_nuevo">Title (e.g. Java OOP Topic 1)</string>
+    <string name="asignatura_btn_adjuntar">Tap here to attach files</string>
+    <string name="asignatura_hint_contenido">You can also paste the subject text here...</string>
+    <string name="asignatura_btn_generar">Generate Exercises</string>
 
-    <!-- TEMARIO SELECCIONADO -->
-    <string name="temario_sel_titulo">Selected Syllabus</string>
-    <string name="temario_sel_btn_modificar">Modify</string>
-    <string name="temario_sel_subtitulo_ejercicios">Exercises</string>
+    <!-- ASIGNATURA SELECCIONADA -->
+    <string name="asignatura_sel_titulo">Selected Subject</string>
+    <string name="asignatura_sel_btn_modificar">Modify</string>
+    <string name="asignatura_sel_subtitulo_ejercicios">Exercises</string>
 
-    <string name="temario_sel_placeholder_asignatura">Java OOP Advanced</string>
-    <string name="temario_sel_placeholder_ejercicios">12 exercises</string>
+    <string name="asignatura_sel_placeholder_asignatura">Java OOP Advanced</string>
+    <string name="asignatura_sel_placeholder_ejercicios">12 exercises</string>
 
     <!-- USUARIO -->
     <string name="user_titulo">My Profile</string>
@@ -145,9 +145,9 @@
     <string name="user_hint_email">Email address</string>
     <string name="user_btn_guardar">Save Changes</string>
 
-    <!-- ITEM TEMARIO -->
-    <string name="item_temario_titulo">Topic Title</string>
-    <string name="item_temario_btn_estudiar">Study</string>
+    <!-- ITEM ASIGNATURA -->
+    <string name="item_asignatura_titulo">Subject Title</string>
+    <string name="item_asignatura_btn_estudiar">Study</string>
 
     <!-- ITEM EJERCICIO -->
     <string name="item_ejercicio_titulo">1. Exercise Title</string>
@@ -165,7 +165,7 @@
     <string name="nav_inicio">Home</string>
     <string name="nav_agenda">Calendar</string>
     <string name="nav_ia">Kyro AI</string>
-    <string name="nav_temario">Syllabus</string>
+    <string name="nav_asignatura">Subjects</string>
     <string name="nav_ajustes">Settings</string>
 
     <!-- TEXTO / POP UPS ADICIONALES DE HOME-->

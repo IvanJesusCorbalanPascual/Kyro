@@ -9,8 +9,10 @@ data class Examen(
     val id: Long? = null,
     // El identificador del usuario al que pertenece el examen
     val id_usuario: String,
-    // El nombre de la asignatura del examen
-    val nombre_asignatura: String,
+    // El identificador de la asignatura a la que pertenece el examen
+    val asignatura_id: Long,
+    // El nombre del examen
+    val nombre_examen: String,
     // Una descripcion detallada del examen
     val descripcion: String,
     // La fecha en que se realizara el examen

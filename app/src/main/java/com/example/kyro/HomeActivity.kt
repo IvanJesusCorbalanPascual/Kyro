@@ -9,6 +9,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Process
 import android.provider.Settings
+import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
@@ -18,6 +19,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.card.MaterialCardView
 import io.github.jan.supabase.gotrue.auth
+import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.postgrest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -61,6 +63,26 @@ class HomeActivity : AppCompatActivity() {
         }
         updateTaskProgress()
         updateNextEvent()
+        loadUserProfile()
+        updateDeliveredTasksProgress()
+    }
+
+    private fun loadUserProfile() {
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val userId = SupabaseClient.client.auth.currentUserOrNull()?.id ?: return@launch
+                val userProfile = SupabaseClient.client.from("profiles").select { filter { eq("id", userId) } }.decodeSingleOrNull<UserProfile>()
+
+                withContext(Dispatchers.Main) {
+                    userProfile?.let {
+                        val tvGreeting = findViewById<TextView>(R.id.tvGreeting)
+                        tvGreeting.text = "Hola, ${it.username}! 👋"
+                    }
+                }
+            } catch (e: Exception) {
+                // Handle error
+            }
+        }
     }
 
     private fun updateNextEvent() {
@@ -77,13 +99,13 @@ class HomeActivity : AppCompatActivity() {
                     .select { filter { eq("id_usuario", userId); eq("completada", false) } }
                     .decodeList<Tarea>()
                     .filter { LocalDate.parse(it.fecha_entrega).isAfter(today.minusDays(1)) }
-                    .map { Event(it.nombre_asignatura, it.fecha_entrega) }
+                    .map { Event(it.nombre_tarea, it.fecha_entrega) }
 
                 val upcomingExams = SupabaseClient.client.postgrest["examenes"]
                     .select { filter { eq("id_usuario", userId); eq("completada", false) } }
                     .decodeList<Examen>()
                     .filter { LocalDate.parse(it.fecha_examen).isAfter(today.minusDays(1)) }
-                    .map { Event(it.nombre_asignatura, it.fecha_examen) }
+                    .map { Event(it.nombre_examen, it.fecha_examen) }
 
                 val allUpcomingEvents = (upcomingTasks + upcomingExams).sortedBy { it.date }
 
@@ -157,10 +179,9 @@ class HomeActivity : AppCompatActivity() {
                     tvTasksPercentage.text = "$percentage3Days%"
                     pbTasks.progress = percentage3Days
                     if (totalTasks3Days > 0) {
-                        // Buscado desde strings para poder ser traducido correctamente
-                        tvTasksCompleted.text = getString(R.string.home_status_progreso, completedTasks3Days, totalTasks3Days)
+                        tvTasksCompleted.text = "Has completado $completedTasks3Days de $totalTasks3Days tareas"
                     } else {
-                        tvTasksCompleted.text = getString(R.string.home_sin_tareas_3dias)
+                        tvTasksCompleted.text = "No tienes tareas en los próximos 3 días"
                     }
                 }
 
@@ -178,9 +199,9 @@ class HomeActivity : AppCompatActivity() {
                     tvAllTasksPercentage.text = "$percentageAll%"
                     pbAllTasks.progress = percentageAll
                     if (totalAllTasks > 0) {
-                        tvAllTasksCompleted.text = getString(R.string.home_status_progreso, completedAllTasks, totalAllTasks)
+                        tvAllTasksCompleted.text = "Has completado $completedAllTasks de $totalAllTasks tareas"
                     } else {
-                        tvAllTasksCompleted.text = getString(R.string.home_sin_tareas_proximas)
+                        tvAllTasksCompleted.text = "No tienes tareas próximas"
                     }
                 }
 
@@ -190,18 +211,66 @@ class HomeActivity : AppCompatActivity() {
         }
     }
 
+    private fun updateDeliveredTasksProgress() {
+        val tvPercentage: TextView = findViewById(R.id.tvDeliveredTasksPercentage)
+        val pb: ProgressBar = findViewById(R.id.pbDeliveredTasks)
+        val tvCompleted: TextView = findViewById(R.id.tvDeliveredTasksCompleted)
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val userId = SupabaseClient.client.auth.currentUserOrNull()?.id ?: return@launch
+                val today = LocalDate.now()
+
+                val allTasks = SupabaseClient.client.from("tareas").select {
+                    filter {
+                        eq("id_usuario", userId)
+                    }
+                }.decodeList<Tarea>()
+
+                val relevantTasks = allTasks.filter { it.completada || LocalDate.parse(it.fecha_entrega).isBefore(today) }
+                val deliveredCount = relevantTasks.count { it.completada }
+                val totalRelevantTasks = relevantTasks.size
+
+                val percentage = if (totalRelevantTasks > 0) {
+                    (deliveredCount * 100) / totalRelevantTasks
+                } else {
+                    0
+                }
+
+                withContext(Dispatchers.Main) {
+                    tvPercentage.visibility = View.VISIBLE
+                    pb.visibility = View.VISIBLE
+                    tvPercentage.text = "$percentage%"
+                    pb.progress = percentage
+                    if (totalRelevantTasks > 0) {
+                        tvCompleted.text = "$deliveredCount de $totalRelevantTasks tareas finalizadas"
+                    } else {
+                        tvCompleted.text = "No hay tareas entregadas o caducadas."
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    tvCompleted.text = "Error al cargar las tareas."
+                    tvPercentage.visibility = View.GONE
+                    pb.visibility = View.GONE
+                }
+            }
+        }
+    }
+
+
     // Configuracion de los botones de las tarjetas
     private fun setupQuickActions() {
         val btnQuickAI = findViewById<MaterialCardView>(R.id.btnQuickAI)
         btnQuickAI.setOnClickListener {
             //Toast.makeText(this, "Abriendo Kyro IA...", Toast.LENGTH_SHORT).show()
-            showKyroToast(getString(R.string.toast_abriendo_ia))
+            showKyroToast("Abriendo Kyro IA...")
         }
 
-        // Botón para ir a temario
-        val btnQuickSyllabus = findViewById<MaterialCardView>(R.id.btnQuickSyllabus)
-        btnQuickSyllabus.setOnClickListener {
-            startActivity(Intent(this, TemarioActivity::class.java))
+        // Botón para ir a asignatura
+        val btnQuickAsignatura = findViewById<MaterialCardView>(R.id.btnQuickAsignaturas)
+        btnQuickAsignatura.setOnClickListener {
+            startActivity(Intent(this, AsignaturaActivity::class.java))
         }
     }
 
@@ -246,12 +315,11 @@ class HomeActivity : AppCompatActivity() {
         if (!comprobarPermisoDeUso()) {
             // Crea una alerta visual para avisar al usuario de porque necesita la app dichos permisos, obligatorio por Google Play
             val builder = AlertDialog.Builder(this)
-            // El texto lo uso desde los strings para poder traducir los mensajes a otros idiomas
-            builder.setTitle(getString(R.string.dialog_focus_titulo))
-            builder.setMessage(getString(R.string.dialog_focus_mensaje))
+            builder.setTitle("Activar Modo Focus")
+            builder.setMessage("Para que Kyro te pueda ayudar a concentrarte y evitar distracciones, necesita permiso para detectar qué apps usas.\n\nBusca 'Kyro' en la siguiente lista y activa el permiso si estás de acuerdo.")
 
             // Lleva al usuario a la configuración de Android si selecciona esta opción
-            builder.setPositiveButton(getString(R.string.btn_ir_ajustes)) { dialog, _ ->
+            builder.setPositiveButton("Ir a Ajustes") { dialog, _ ->
                 // Abre la lista de "Acceso a datos de uso" del sistema
                 startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))
                 // Cierra el dialogo
@@ -259,7 +327,7 @@ class HomeActivity : AppCompatActivity() {
             }
 
             // En caso de ser negativo, cierra el diálogo
-            builder.setNegativeButton(getString(R.string.btn_mas_tarde)) { dialog, _ ->
+            builder.setNegativeButton("Más tarde") { dialog, _ ->
                 dialog.dismiss()
             }
 

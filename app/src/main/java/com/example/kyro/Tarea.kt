@@ -9,8 +9,10 @@ data class Tarea(
     val id: Long? = null,
     // El identificador del usuario al que pertenece la tarea
     val id_usuario: String,
-    // El nombre de la asignatura de la tarea
-    val nombre_asignatura: String,
+    // El identificador de la asignatura a la que pertenece la tarea
+    val asignatura_id: Long,
+    // El nombre de la tarea
+    val nombre_tarea: String,
     // Una descripcion detallada de la tarea
     val descripcion: String,
     // La fecha de entrega de la tarea

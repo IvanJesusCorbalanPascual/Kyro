@@ -12,11 +12,11 @@ import io.github.jan.supabase.postgrest.from
 import kotlinx.coroutines.launch
 
 
-class ModificarTemarioActivity : AppCompatActivity() {
+class ModificarAsignaturaActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_modificar_temario)
+        setContentView(R.layout.activity_modificar_asignatura)
 
         // Conenexiones de elementos, los busca en el XML por id para usarlos en la lógica
         val etContenido = findViewById<EditText>(R.id.etContenidoApuntes)
@@ -59,7 +59,7 @@ class ModificarTemarioActivity : AppCompatActivity() {
                 mostrarMensaje("Falta el título")
             } else if (contenidoTexto.isEmpty()) {
                 // Marca un error visual en la caja si no hay texto y avisa al usuario
-                etContenido.error = "Debes pegar el texto del temario aquí"
+                etContenido.error = "Debes pegar el texto de la asignatura aquí"
                 mostrarMensaje("El campo de texto está vacío")
             // Ha funcionado correctamente habiendo detectado que había texto
             } else {
@@ -72,9 +72,9 @@ class ModificarTemarioActivity : AppCompatActivity() {
 
                 lifecycleScope.launch {
                     try {
-                        // Lógica para actualizar el contenido en la tabla "apuntes_usuario"
+                        // Lógica para actualizar el contenido en la tabla "asignaturas"
                         SupabaseClient.client
-                            .from("apuntes_usuario")
+                            .from("asignaturas")
                             .update(
                                 {
                                     // Que columna cambia y con que valor
@@ -88,7 +88,7 @@ class ModificarTemarioActivity : AppCompatActivity() {
                                 }
                             }
 
-                        mostrarMensaje("¡Temario actualizado!")
+                        mostrarMensaje("¡Asignatura actualizada!")
 
                         volverALaLista()
 
@@ -106,25 +106,25 @@ class ModificarTemarioActivity : AppCompatActivity() {
             }
         }
 
-        // Lógica del botón eliminar temario
+        // Lógica del botón eliminar asignatura
         btnEliminar.setOnClickListener {
             confirmarEliminacion(idRecibido)
         }
 
-        // Ilumina el icono de "Temario" indicando que estamos aquí
-        NavigationHelper.setupBottomNavigation(this, R.id.nav_syllabus)
+        // Ilumina el icono de "Asignatura" indicando que estamos aquí
+        NavigationHelper.setupBottomNavigation(this, R.id.nav_asignatura)
 
     }
 
     // Abre una ventana de confirmación para que el usuario afirme si esta seguro
     private fun confirmarEliminacion(id: Long) {
         val builder = AlertDialog.Builder(this)
-        builder.setTitle("¿Eliminar temario?")
-        builder.setMessage("Esta acción borrará el temario permanentemente. ¿Estás seguro?")
+        builder.setTitle("¿Eliminar asignatura?")
+        builder.setMessage("Esta acción borrará la asignatura permanentemente. ¿Estás seguro?")
 
-        // En caso de elegir eliminar, borra el temario de Supabase y se cierra el diálogo
+        // En caso de elegir eliminar, borra la asignatura de Supabase y se cierra el diálogo
         builder.setPositiveButton("Eliminar") { dialog, _ ->
-            borrarTemarioDeSupabase(id)
+            borrarAsignaturaDeSupabase(id)
             dialog.dismiss()
         }
 
@@ -140,8 +140,8 @@ class ModificarTemarioActivity : AppCompatActivity() {
         alert.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(resources.getColor(android.R.color.holo_red_dark, theme))
     }
 
-    // Conexión con supabase para borrar el temario
-    private fun borrarTemarioDeSupabase(id: Long) {
+    // Conexión con supabase para borrar la asignatura
+    private fun borrarAsignaturaDeSupabase(id: Long) {
         val btnEliminar = findViewById<MaterialButton>(R.id.btnEliminar)
         // Se desactiva el botón para evitar presionarlo más veces
         btnEliminar.isEnabled = false
@@ -152,7 +152,7 @@ class ModificarTemarioActivity : AppCompatActivity() {
             try {
                 // Lo elimina en Supabase
                 SupabaseClient.client
-                    .from("apuntes_usuario")
+                    .from("asignaturas")
                     .delete {
                         filter {
                             // Filtra y solo borra este ID
@@ -160,21 +160,21 @@ class ModificarTemarioActivity : AppCompatActivity() {
                         }
                     }
 
-                mostrarMensaje("Temario eliminado")
+                mostrarMensaje("Asignatura eliminada")
                 volverALaLista()
 
             } catch (e: Exception) {
                 mostrarMensaje("Error al eliminar: ${e.message}")
                 btnEliminar.isEnabled = true
-                btnEliminar.text = "Eliminar Temario"
+                btnEliminar.text = "Eliminar Asignatura"
             }
         }
     }
 
     // Ayuda a volver a la lista evitando errores
     private fun volverALaLista() {
-        // Prepara la navegación a la pantalla principal de temario
-        val intent = Intent(this, TemarioActivity::class.java)
+        // Prepara la navegación a la pantalla principal de asignatura
+        val intent = Intent(this, AsignaturaActivity::class.java)
         // Elimina el historial de navegación y refresca la pantalla principal
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
 

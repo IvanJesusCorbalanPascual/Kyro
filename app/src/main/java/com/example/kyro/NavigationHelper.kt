@@ -24,7 +24,7 @@ object NavigationHelper {
             val targetActivity: Class<*>? = when (item.itemId) {
                 R.id.nav_home -> HomeActivity::class.java
                 R.id.nav_calendar -> CalendarioActivity::class.java
-                R.id.nav_syllabus -> TemarioActivity::class.java
+                R.id.nav_asignatura -> AsignaturaActivity::class.java
                 R.id.nav_settings -> AjustesActivity::class.java
                 R.id.nav_ai_chat -> {
                     Toast.makeText(activity, "Próximamente: Chat IA", Toast.LENGTH_SHORT).show()

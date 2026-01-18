@@ -72,22 +72,30 @@ class RegisterActivity : AppCompatActivity() {
             // REGISTRO EN SUPABASE
             lifecycleScope.launch(Dispatchers.IO) {
                 try {
-                    // Creando el nuevo usuario enviando 'full_name' en los metadatos y activando el trigger en SQL
+                    // Creando el usuario en Auth (Authentication).
+                    // Un trigger en la base de datos de Supabase debería encargarse de crear el perfil.
                     SupabaseClient.client.auth.signUpWith(Email) {
                         this.email = email
                         this.password = password
-                        this.data = buildJsonObject {
-                            put("full_name", name) // Usamos 'full_name' estándar
+                        this.data = buildJsonObject{
+                            put("display_name", name)
+                            put("username", name)
                         }
                     }
 
+                    // Volver al hilo principal para cambiar de pantalla
                     withContext(Dispatchers.Main) {
-                        showKyroToast("¡Registro exitoso! Por favor confirma tu email.")
+                        Toast.makeText(
+                            applicationContext,
+                            "¡Registro exitoso! Por favor confirma tu email.",
+                            Toast.LENGTH_LONG
+                        ).show()
+
+                        // Navegar al Login
                         val intent = Intent(this@RegisterActivity, LoginActivity::class.java)
                         startActivity(intent)
                         finish()
                     }
-
                 } catch (e: Exception) {
                     withContext(Dispatchers.Main) {
                         val errorMsg = if (e.message?.contains("already registered") == true)

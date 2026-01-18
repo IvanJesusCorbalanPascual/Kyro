@@ -25,7 +25,7 @@
                 android:id="@+id/tvTitulo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/temario_titulo"
+                android:text="@string/asignatura_titulo"
                 android:textColor="#000000"
                 android:textSize="24sp"
                 android:textStyle="bold"
@@ -33,9 +33,9 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"/>
 
-            <!-- Contenedor superior con los temarios -->
+            <!-- Contenedor superior con los asignaturas -->
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/contenedorTemarios"
+                android:id="@+id/contenedorAsignaturas"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
@@ -54,7 +54,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/temario_subtitulo_lista"
+                        android:text="@string/asignatura_subtitulo_lista"
                         android:textColor="#000000"
                         android:textSize="18sp"
                         android:textStyle="bold"
@@ -62,7 +62,7 @@
 
 
                     <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rvTemarios"
+                        android:id="@+id/rvAsignaturas"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:nestedScrollingEnabled="false" />
@@ -78,7 +78,7 @@
                         android:id="@+id/tvVacio"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/temario_lista_vacia"
+                        android:text="@string/asignatura_lista_vacia"
                         android:gravity="center"
                         android:textColor="#555555"
                         android:padding="20dp"
@@ -87,9 +87,9 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Contenedor inferior para cargar nuevos temarios -->
+            <!-- Contenedor inferior para cargar nuevos asignaturas -->
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardContainerCargarTemario"
+                android:id="@+id/cardContainerCargarAsignatura"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
@@ -98,7 +98,7 @@
                 app:cardElevation="0dp"
                 app:strokeWidth="0dp"
                 app:cardBackgroundColor="#BDE0F0"
-                app:layout_constraintTop_toBottomOf="@id/contenedorTemarios"
+                app:layout_constraintTop_toBottomOf="@id/contenedorAsignaturas"
                 app:layout_constraintBottom_toBottomOf="parent">
 
                 <LinearLayout
@@ -110,7 +110,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/temario_subtitulo_nuevo"
+                        android:text="@string/asignatura_subtitulo_nuevo"
                         android:textColor="#000000"
                         android:textSize="18sp"
                         android:textStyle="bold" />
@@ -119,19 +119,19 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="@string/temario_desc_ia"
+                        android:text="@string/asignatura_desc_ia"
                         android:textColor="#000000"
                         android:textSize="13sp"
                         android:lineSpacingExtra="2dp"/>
 
                     <EditText
-                        android:id="@+id/etTituloNuevoTemario"
+                        android:id="@+id/etTituloNuevoAsignatura"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
                         android:background="@drawable/bg_blanco_redondeado"
                         android:padding="12dp"
-                        android:hint="@string/temario_hint_titulo_nuevo"
+                        android:hint="@string/asignatura_hint_titulo_nuevo"
                         android:inputType="textCapSentences"
                         android:maxLines="1"
                         android:textColorHint="#808080"
@@ -154,7 +154,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:gravity="center"
-                            android:text="@string/temario_btn_adjuntar"
+                            android:text="@string/asignatura_btn_adjuntar"
                             android:textColor="#1A1A1A"
                             android:textSize="13sp"
                             android:textStyle="bold"
@@ -164,14 +164,14 @@
 
                     <!-- EditText para que el usuario pueda escribir -->
                     <EditText
-                        android:id="@+id/etContenidoNuevoTemario"
+                        android:id="@+id/etContenidoNuevoAsignatura"
                         android:layout_width="match_parent"
                         android:layout_height="80dp"
                         android:layout_marginTop="12dp"
                         android:background="@drawable/bg_blanco_redondeado"
                         android:gravity="top|start"
                         android:padding="16dp"
-                        android:hint="@string/temario_hint_contenido"
+                        android:hint="@string/asignatura_hint_contenido"
                         android:textColorHint="#808080"
                         android:textColor="#1A1A1A"
                         android:textSize="13sp" />
@@ -182,7 +182,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
-                        android:text="@string/temario_btn_generar"
+                        android:text="@string/asignatura_btn_generar"
                         android:textStyle="bold"
                         android:textColor="#FFFFFF"
                         app:backgroundTint="#00A8E8"

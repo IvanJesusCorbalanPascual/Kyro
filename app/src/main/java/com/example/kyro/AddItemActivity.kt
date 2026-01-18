@@ -5,15 +5,18 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.Button
-import android.widget.CalendarView
+import android.widget.DatePicker
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.Spinner
 import android.widget.TimePicker
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.appbar.MaterialToolbar
 import io.github.jan.supabase.gotrue.auth
+import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.postgrest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -21,116 +24,138 @@ import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
+import android.widget.CalendarView
 
-// Esta clase gestiona la logica para anadir o editar un nuevo elemento sea Tarea o Examen
 class AddItemActivity : AppCompatActivity() {
 
-    // Variables para almacenar la fecha y hora seleccionadas
     private var selectedDate: String = ""
     private var selectedTime: String = ""
+    private lateinit var calendar: Calendar
 
-    // Funcion que se ejecuta al crear la actividad
+    private lateinit var datePicker: DatePicker
+    private lateinit var calendarView: CalendarView
+    private lateinit var cvCalendarContainer: CardView
+
+    private lateinit var spinnerAsignaturas: Spinner
+    private val asignaturasList = mutableListOf<Asignatura>()
+    private lateinit var asignaturasAdapter: ArrayAdapter<String>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_item)
 
-        // Obtiene el tipo de elemento a anadir Tarea o Examen
+        calendar = Calendar.getInstance()
+
         val type = intent.getStringExtra("type") ?: "Tarea"
 
-        // --- Toolbar ---
-        // Configura la barra de herramientas superior
         val toolbar: MaterialToolbar = findViewById(R.id.topAppBar)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        toolbar.title = if (type == "Examen") "Anadir Examen" else "Anadir Tarea"
-        // Configura el boton para volver atras
+        toolbar.title = if (type.equals("Examen", ignoreCase = true)) "Añadir Examen" else "Añadir Tarea"
         toolbar.setNavigationOnClickListener {
             onBackPressedDispatcher.onBackPressed()
         }
 
-        // --- Vistas ---
-        // Inicializa las vistas de la interfaz de usuario
-        val etAsignatura: EditText = findViewById(R.id.etAsignatura)
+        spinnerAsignaturas = findViewById(R.id.spinnerAsignaturas)
+        val etNombre: EditText = findViewById(R.id.etNombre)
         val etDescripcion: EditText = findViewById(R.id.etDescripcion)
-        val calendarView: CalendarView = findViewById(R.id.calendarView)
+        datePicker = findViewById(R.id.datePicker)
+        calendarView = findViewById(R.id.calendarView)
+        cvCalendarContainer = findViewById(R.id.cvCalendarContainer)
         val timePicker: TimePicker = findViewById(R.id.timePicker)
         val spinnerNotificacion1: Spinner = findViewById(R.id.spinnerNotificacion1)
         val spinnerNotificacion2: Spinner = findViewById(R.id.spinnerNotificacion2)
         val btnGuardar: Button = findViewById(R.id.btnGuardar)
+        val btnToggleCalendar: ImageButton = findViewById(R.id.btnToggleCalendar)
 
-        // --- Spinner Adapter ---
-        // Configura las opciones para los spinners de notificacion
-        val notificationOptions = listOf("No notificar", "En el momento del evento", "5 minutos antes", "10 minutos antes", "30 minutos antes", "1 hora antes", "1 dia antes")
+        setupAsignaturasSpinner()
+        loadAsignaturas()
+
+        val notificationOptions = listOf("No notificar", "En el momento del evento", "5 minutos antes", "10 minutos antes", "30 minutos antes", "1 hora antes", "1 día antes")
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, notificationOptions)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerNotificacion1.adapter = adapter
         spinnerNotificacion2.adapter = adapter
 
-        // Obtiene el ID del evento si se esta editando
-        val eventId = intent.getLongExtra("id", -1)
-        val isEditMode = eventId != -1L
-        val navigateToCalendar = intent.getBooleanExtra("NAVIGATE_TO_CALENDAR", false)
-
-        // Inicializa la fecha y hora seleccionadas con la fecha y hora actuales
-        val calendar = Calendar.getInstance()
         val sdfDate = SimpleDateFormat("yyyy-MM-dd", Locale.US)
-        val sdfTime = SimpleDateFormat("HH:mm", Locale.US)
+        val sdfTime = SimpleDateFormat("HH:mm:00", Locale.US)
+
+        val selectedDateStr = intent.getStringExtra("selectedDate")
+        if (selectedDateStr != null) {
+            try {
+                val date = SimpleDateFormat("yyyy-MM-dd", Locale.US).parse(selectedDateStr)
+                if (date != null) {
+                    calendar.time = date
+                }
+            } catch (e: Exception) {
+                // Handle error
+            }
+        }
+
         selectedDate = sdfDate.format(calendar.time)
         selectedTime = sdfTime.format(calendar.time)
 
-        // Listener para cuando cambia la fecha en el CalendarView
+        datePicker.init(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)) { _, year, monthOfYear, dayOfMonth ->
+            calendar.set(year, monthOfYear, dayOfMonth)
+            selectedDate = sdfDate.format(calendar.time)
+            calendarView.date = calendar.timeInMillis
+        }
+
         calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
             calendar.set(year, month, dayOfMonth)
             selectedDate = sdfDate.format(calendar.time)
+            datePicker.updateDate(year, month, dayOfMonth)
         }
 
-        // Listener para cuando cambia la hora en el TimePicker
         timePicker.setOnTimeChangedListener { _, hourOfDay, minute ->
             calendar.set(Calendar.HOUR_OF_DAY, hourOfDay)
             calendar.set(Calendar.MINUTE, minute)
+            calendar.set(Calendar.SECOND, 0)
             selectedTime = sdfTime.format(calendar.time)
         }
-        
-        // Si esta en modo edicion rellena los campos con los datos del evento
+
+        btnToggleCalendar.setOnClickListener {
+            cvCalendarContainer.visibility = if (cvCalendarContainer.visibility == View.VISIBLE) View.GONE else View.VISIBLE
+        }
+
+        val eventId = intent.getLongExtra("id", -1)
+        val isEditMode = eventId != -1L
+
         if (isEditMode) {
-            // Modo Edicion
-            toolbar.title = if (type == "Examen") "Editar Examen" else "Editar Tarea"
-            val title = intent.getStringExtra("title")
-            val description = intent.getStringExtra("description")
-            val date = intent.getStringExtra("date")
-            val time = intent.getStringExtra("hora_entrega")
+            toolbar.title = if (type.equals("Examen", ignoreCase = true)) "Editar Examen" else "Editar Tarea"
+            val nombre = intent.getStringExtra("nombre")
+            val descripcion = intent.getStringExtra("descripcion")
+            val dateStr = intent.getStringExtra("date")
+            val timeStr = if (type.equals("Examen", ignoreCase = true)) intent.getStringExtra("hora_examen") else intent.getStringExtra("hora_entrega")
             val notif1 = intent.getStringExtra("notif1")
             val notif2 = intent.getStringExtra("notif2")
 
-            etAsignatura.setText(title)
-            etDescripcion.setText(description)
-            date?.let {
+            etNombre.setText(nombre)
+            etDescripcion.setText(descripcion)
+
+            dateStr?.let {
                 try {
-                    val dateCalendar = Calendar.getInstance()
-                    sdfDate.parse(it)?.let { parsedDate ->
-                        dateCalendar.time = parsedDate
-                        calendarView.date = dateCalendar.timeInMillis
-                        selectedDate = it
+                    val date = sdfDate.parse(it)
+                    if (date != null) {
+                        val cal = Calendar.getInstance()
+                        cal.time = date
+                        datePicker.updateDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH))
+                        calendarView.date = cal.timeInMillis
                     }
-                } catch (e: Exception) {
-                    // Maneja el error de parseo de fecha
-                }
+                } catch (e: Exception) { /* Handle parse exception */ }
             }
-            time?.let {
+
+            timeStr?.let {
                 try {
-                    val timeCalendar = Calendar.getInstance()
-                    sdfTime.parse(it)?.let { parsedTime ->
-                        timeCalendar.time = parsedTime
-                        timePicker.hour = timeCalendar.get(Calendar.HOUR_OF_DAY)
-                        timePicker.minute = timeCalendar.get(Calendar.MINUTE)
-                        selectedTime = it
+                    val parsedTime = SimpleDateFormat("HH:mm:ss", Locale.US).parse(it)
+                    if(parsedTime != null) {
+                        val timeCal = Calendar.getInstance().apply { time = parsedTime }
+                        timePicker.hour = timeCal.get(Calendar.HOUR_OF_DAY)
+                        timePicker.minute = timeCal.get(Calendar.MINUTE)
                     }
-                } catch (e: Exception) {
-                    // Maneja el error de parseo de hora
-                }
+                } catch (e: Exception) { /* Handle parse exception */ }
             }
-            
-            // Establece la seleccion de los spinners de notificacion
+
             if (notif1 != null) {
                 val notif1Position = adapter.getPosition(notif1)
                 if (notif1Position >= 0) {
@@ -150,51 +175,61 @@ class AddItemActivity : AppCompatActivity() {
             }
         }
 
-        // Listener para el boton de guardar
         btnGuardar.setOnClickListener {
-            val asignatura = etAsignatura.text.toString().trim()
+            val selectedAsignaturaPosition = spinnerAsignaturas.selectedItemPosition
+            if (selectedAsignaturaPosition == 0) { // Asumiendo que la posición 0 es "Elige una asignatura"
+                Toast.makeText(this, "Por favor, selecciona una asignatura", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            val selectedAsignatura = asignaturasList[selectedAsignaturaPosition - 1] // Ajuste de índice
+            val nombre = etNombre.text.toString().trim()
             val descripcion = etDescripcion.text.toString().trim()
             val notificacion1 = spinnerNotificacion1.selectedItem.toString()
             val notificacion2 = spinnerNotificacion2.selectedItem.toString()
-            
-            // Comprueba que los campos no esten vacios
-            if (asignatura.isEmpty() || descripcion.isEmpty() || selectedDate.isEmpty()) {
+
+            if (nombre.isEmpty()) {
                 Toast.makeText(this, "Por favor, rellena todos los campos", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            
-            // Obtiene el ID del usuario actual
-            val idUsuarioActual = SupabaseClient.client.auth.currentUserOrNull()?.id
-            if (idUsuarioActual == null) {
-                Toast.makeText(this, "Error: sesion no valida.", Toast.LENGTH_LONG).show()
-                return@setOnClickListener
-            }
-            
-            // Lanza una corrutina para realizar la operacion en la base de datos
+
             lifecycleScope.launch(Dispatchers.IO) {
                 try {
-                    val tableName = if (type == "Examen") "examenes" else "tareas"
+                    val idUsuarioActual = SupabaseClient.client.auth.currentUserOrNull()?.id
+                    if (idUsuarioActual == null) {
+                        withContext(Dispatchers.Main) {
+                            Toast.makeText(applicationContext, "Error: Sesion no valida. Por favor, inicie sesion de nuevo.", Toast.LENGTH_LONG).show()
+                        }
+                        return@launch
+                    }
+
                     if (isEditMode) {
-                        // Actualiza el evento en la base de datos
+                        val tableName = if (type.equals("Examen", ignoreCase = true)) "examenes" else "tareas"
                         SupabaseClient.client.postgrest[tableName].update({
-                            set("nombre_asignatura", asignatura)
-                            set("descripcion", descripcion)
-                            if (type == "Examen") {
+                            set("asignatura_id", selectedAsignatura.id)
+                            if (type.equals("Examen", ignoreCase = true)) {
+                                set("nombre_examen", nombre)
+                                set("descripcion", descripcion)
                                 set("fecha_examen", selectedDate)
                                 set("hora_examen", selectedTime)
                             } else {
+                                set("nombre_tarea", nombre)
+                                set("descripcion", descripcion)
                                 set("fecha_entrega", selectedDate)
                                 set("hora_entrega", selectedTime)
                             }
                             set("notificacion1", notificacion1)
                             set("notificacion2", notificacion2)
-                        }) { filter { eq("id", eventId) } }
+                        }) { filter {
+                            eq("id", eventId)
+                            eq("id_usuario", idUsuarioActual)
+                        } }
                     } else {
-                        // Inserta un nuevo evento en la base de datos
-                        if (type == "Examen") {
+                        val tableName = if (type.equals("Examen", ignoreCase = true)) "examenes" else "tareas"
+                        if (type.equals("Examen", ignoreCase = true)) {
                             val nuevoExamen = Examen(
                                 id_usuario = idUsuarioActual,
-                                nombre_asignatura = asignatura,
+                                asignatura_id = selectedAsignatura.id,
+                                nombre_examen = nombre,
                                 descripcion = descripcion,
                                 fecha_examen = selectedDate,
                                 hora_examen = selectedTime,
@@ -205,7 +240,8 @@ class AddItemActivity : AppCompatActivity() {
                         } else {
                             val nuevaTarea = Tarea(
                                 id_usuario = idUsuarioActual,
-                                nombre_asignatura = asignatura,
+                                asignatura_id = selectedAsignatura.id,
+                                nombre_tarea = nombre,
                                 descripcion = descripcion,
                                 fecha_entrega = selectedDate,
                                 hora_entrega = selectedTime,
@@ -215,24 +251,46 @@ class AddItemActivity : AppCompatActivity() {
                             SupabaseClient.client.postgrest[tableName].insert(nuevaTarea)
                         }
                     }
-                    
-                    // Muestra un mensaje de exito y cierra la actividad
+
                     withContext(Dispatchers.Main) {
                         val message = if (isEditMode) "$type actualizado" else "$type guardado"
                         Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
-
-                        if (navigateToCalendar && isEditMode) {
-                            val intent = Intent(this@AddItemActivity, CalendarioActivity::class.java)
-                            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
-                            startActivity(intent)
-                        }
-                        finish() // Cierra AddItemActivity
+                        finish()
                     }
                 } catch (e: Exception) {
-                    // Muestra un mensaje de error
                     withContext(Dispatchers.Main) {
                         Toast.makeText(applicationContext, "Error: ${e.message}", Toast.LENGTH_LONG).show()
                     }
+                }
+            }
+        }
+    }
+
+    private fun setupAsignaturasSpinner() {
+        asignaturasAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, mutableListOf("Elige una asignatura"))
+        asignaturasAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinnerAsignaturas.adapter = asignaturasAdapter
+    }
+
+    private fun loadAsignaturas() {
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val idUsuarioActual = SupabaseClient.client.auth.currentUserOrNull()?.id
+                if (idUsuarioActual != null) {
+                    val asignaturas = SupabaseClient.client.from("asignaturas").select { filter { eq("user_id", idUsuarioActual) } }.decodeList<Asignatura>()
+                    withContext(Dispatchers.Main) {
+                        asignaturasList.clear()
+                        asignaturasList.addAll(asignaturas)
+                        val asignaturaNombres = mutableListOf("Elige una asignatura")
+                        asignaturaNombres.addAll(asignaturas.map { it.titulo })
+                        asignaturasAdapter.clear()
+                        asignaturasAdapter.addAll(asignaturaNombres)
+                        asignaturasAdapter.notifyDataSetChanged()
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(applicationContext, "Error al cargar asignaturas: ${e.message}", Toast.LENGTH_LONG).show()
                 }
             }
         }
