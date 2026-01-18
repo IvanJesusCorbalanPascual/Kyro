@@ -1,13 +1,16 @@
 package com.example.kyro
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.OpenableColumns
 import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -28,7 +31,25 @@ class AsignaturaActivity : AppCompatActivity() {
     private lateinit var rvAsignaturas: RecyclerView
     private lateinit var barraProgreso: ProgressBar
     private lateinit var tvVacio: TextView
+
     private lateinit var btnAdjuntar: TextView
+
+    // Guarda la URI del archivo seleccionado
+    private var selectedFileUri: Uri? = null
+
+    // Bloque para abrir documentos
+    private val filePickerLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        // Si el usuario seleccionó un archivo correctamente
+        if (uri != null) {
+            selectedFileUri = uri
+            val fileName = getFileNameFromUri(uri)
+
+            // Actualiza el texto del botón visualmente
+            btnAdjuntar.text = "\uD83D\uDCC4 $fileName"
+            // Pone el color azul en caso de éxito
+            btnAdjuntar.setTextColor(getColor(R.color.b500))
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,11 +62,12 @@ class AsignaturaActivity : AppCompatActivity() {
         rvAsignaturas = findViewById(R.id.rvAsignaturas)
         tvVacio = findViewById(R.id.tvVacio)
         barraProgreso = findViewById(R.id.barraProgreso)
+        btnAdjuntar = findViewById(R.id.btnAdjuntarArchivo)
 
-        val btnAdjuntarClick = findViewById<View>(R.id.btnAdjuntarArchivo)
-
-        btnAdjuntarClick.setOnClickListener {
-            showKyroToast("Funcionalidad de adjuntar PDF esta en desarrollo")
+        // Configura el botón de adjuntar
+        btnAdjuntar.setOnClickListener {
+            // Lanza el selector para buscar PDFs
+            filePickerLauncher.launch("application/pdf")
         }
 
         // Carga la lista al entrar
@@ -59,6 +81,21 @@ class AsignaturaActivity : AppCompatActivity() {
         super.onResume()
         // Llama al Helper y le dice que ilumine asignatura
         NavigationHelper.setupBottomNavigation(this, R.id.nav_asignatura)
+    }
+
+    // Función auxiliar, ayuda a obtener el nombre real del archivo
+    private fun getFileNameFromUri(uri: Uri): String {
+        var name = "Archivo adjunto"
+        val cursor = contentResolver.query(uri, null, null, null, null)
+        cursor?.use {
+            if (it.moveToFirst()) {
+                val nameIndex = it.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                if (nameIndex != -1) {
+                    name = it.getString(nameIndex)
+                }
+            }
+        }
+        return name
     }
 
     // Carga los datos desde Supabase filtrando por usuario
@@ -137,10 +174,17 @@ class AsignaturaActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            // Estableciendo un minimo de 50 caracteres para evitar fallos o respuestas muy pobres
-            if (contenido.isEmpty() || contenido.length < 50) {
-                etContenidoNuevo.error = "Escribe al menos 50 caracteres para generar ejercicios"
-                Toast.makeText(this, "El contenido es muy corto para la IA", Toast.LENGTH_SHORT).show()
+            // Permite generar si hay contenido escrito o si hay un archivo adjunto
+            if (contenido.isEmpty() && selectedFileUri == null) {
+                etContenidoNuevo.error = "Escribe contenido o adjunta un PDF"
+                showKyroToast("Debes añadir contenido para generar ejercicios")
+                return@setOnClickListener
+            }
+
+            // Establece un minimo de 50 caracteres para evitar fallos o respuestas muy pobres
+            if (contenido.isNotEmpty() && contenido.length < 50) {
+                etContenidoNuevo.error = "Escribe al menos 50 caracteres o adjunta un PDF"
+                showKyroToast("El contenido es muy corto para la IA, 50 carácteres o más requeridos")
                 return@setOnClickListener
             }
 
@@ -151,82 +195,94 @@ class AsignaturaActivity : AppCompatActivity() {
 
     // Función que envia los datos a la nube
     private fun subirNuevaAsignaturaYGenerar(titulo: String, contenido: String) {
+        // Bloquea el botón para no pulsarse más veces
         btnGenerar.isEnabled = false
         btnGenerar.text = "Guardando y Generando..."
 
         lifecycleScope.launch {
             try {
+                // Identifica el usuario actual en la sesión
                 val usuarioActual = SupabaseClient.client.auth.currentUserOrNull()
 
+                // Si no hay usuario por alguna razón, corta sesión para evitar errores
                 if (usuarioActual == null) {
-                    showKyroToast("Error, La sesión no es válida")
+                    showKyroToast("Error: La sesión no es válida")
                     return@launch
                 }
 
-                // 1. CREAMOS LA ASIGNATURA (Esto sigue igual)
-                val nuevaAsignatura = Asignatura(
-                    titulo = titulo,
-                    contenido = contenido,
-                    user_id = usuarioActual.id
-                )
+                // Si hay un archivo adjunto, aqui leera su texto
+                var contenidoFinal = contenido
+                if (selectedFileUri != null && contenido.isEmpty()) {
+                    contenidoFinal = "Genera un examen tipo test sobre el tema '$titulo'. (Contexto adicional: Archivo adjunto ${getFileNameFromUri(selectedFileUri!!)})"
+                }
 
-                // Guardamos la asignatura y RECUPERAMOS SU ID (select())
+                // Crea el objeto que se debe subir pasandole el id del usuarios
+                val nuevaAsignatura = Asignatura(titulo = titulo, contenido = contenidoFinal, user_id = usuarioActual.id)
+
+                // Lo inserta en Supabase (y recuperamos el objeto guardado para tener su ID)
                 val asignaturaGuardada = SupabaseClient.client
                     .from("asignaturas")
                     .insert(nuevaAsignatura) {
-                        select()
+                        select() // Importante: esto nos devuelve el ID generado
                     }.decodeSingle<Asignatura>()
 
-                showKyroToast("¡Asignatura guardada! Consultando a la IA...")
+                // Si no hay problemas, muestra al usuario que se ha guardado correctamente
+                showKyroToast("¡Guardado! Consultando a la IA...")
 
-                // Limpiamos campos
+                // Limpia ambos campos
                 etTituloNuevo.text.clear()
                 etContenidoNuevo.text.clear()
+
+                // Resetea el boton
+                btnAdjuntar.text = "Pulse aquí para adjuntar archivos"
+                // Resetea el color original
+                btnAdjuntar.setTextColor(getColor(R.color.black))
+                // Limpia la URI
+                selectedFileUri = null
+
+                // Quita el foco, hace que baje el teclado
                 etTituloNuevo.clearFocus()
                 etContenidoNuevo.clearFocus()
 
-                // 2. GENERAMOS EL TEST CON IA (Esto sigue igual, la IA ya funciona bien)
+                // --- LÓGICA DE IA ---
                 val servicioIA = GeminiService()
-                val preguntasGeneradas = servicioIA.generarTestDeApuntes(contenido)
+                val preguntasGeneradas = servicioIA.generarTestDeApuntes(contenidoFinal)
 
                 if (preguntasGeneradas.isNotEmpty()) {
 
+                    // Guardamos las preguntas en Supabase para que no se pierdan
                     val gson = com.google.gson.Gson()
                     val preguntasJson = gson.toJson(preguntasGeneradas)
 
-                    // --- CAMBIO IMPORTANTE: AHORA GUARDAMOS EN LA TABLA 'ejercicios' ---
-
-                    // Creamos el objeto para la nueva tabla
+                    // Usa la clase ejercicioIA
                     val nuevoEjercicio = EjercicioIA(
-                        asignaturaId = asignaturaGuardada.id, // Aquí vinculamos con la asignatura que acabamos de crear
+                        // Id de la asignatura
+                        asignatura_id = asignaturaGuardada.id,
                         nombre = "Test Generado con IA",
-                        preguntasJson = preguntasJson
+                        preguntas_json = preguntasJson
                     )
-
-                    // Insertamos en 'ejercicios' en lugar de hacer update en 'asignaturas'
                     SupabaseClient.client
                         .from("ejercicios")
                         .insert(nuevoEjercicio)
 
-                    // ------------------------------------------------------------------
-
-                    // Vamos al juego
+                    // Si la IA funcionó, vamos directos al Quiz
                     val intent = Intent(this@AsignaturaActivity, QuizActivity::class.java)
                     intent.putExtra("EXTRA_PREGUNTAS", ArrayList(preguntasGeneradas))
                     startActivity(intent)
-
                 } else {
                     showKyroToast("La IA no pudo generar preguntas. Revisa el texto.")
                 }
 
-                // Recargamos la lista
+                // Espera medio segundo para que la BD pueda procesar los datos
                 delay(500)
+                // Recarga la lista para que se actualice sola
                 cargarAsignaturas()
 
             } catch (e: Exception) {
                 Log.e("AsignaturaActivity", "Error al subir", e)
-                showKyroToast("Error: ${e.message}")
+               showKyroToast("Error al guardar o generar")
             } finally {
+                // Siempre, haya error o no, reactiva el botón y el texto del botón
                 btnGenerar.isEnabled = true
                 btnGenerar.text = "Generar Ejercicios con IA ✨"
             }

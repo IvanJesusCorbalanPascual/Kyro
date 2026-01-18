@@ -3,6 +3,7 @@ package com.example.kyro
 import android.content.Intent
 import android.os.Bundle
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.card.MaterialCardView
 import com.google.gson.Gson
@@ -46,12 +47,12 @@ class AsignaturaSeleccionadaActivity: AppCompatActivity() {
                     startActivity(intent)
 
                 } catch (e: Exception) {
-                    showKyroToast("Error al cargar el test guardado")
+                    Toast.makeText(this, "Error al cargar el test guardado", Toast.LENGTH_SHORT).show()
                     e.printStackTrace()
                 }
             } else {
                 // Si no hay test guardado (porque es un tema antiguo o falló la IA)
-                showKyroToast("Este tema no tiene ejercicios generados aún.")
+                Toast.makeText(this, "Esta asignatura no tiene ejercicios generados aún.", Toast.LENGTH_LONG).show()
             }
         }
 

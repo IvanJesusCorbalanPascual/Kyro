@@ -57,7 +57,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="26sp"
-                        android:fontFamily="@font/poppins"
                         android:textStyle="bold"
                         tools:text="Nombre de la Asignatura" />
 
@@ -81,7 +80,6 @@
                         android:drawablePadding="8dp"
                         android:gravity="center_vertical"
                         android:textSize="16sp"
-                        android:fontFamily="@font/poppins"
                         app:drawableStartCompat="@drawable/ic_calendar"
                         tools:text="YYYY-MM-DD" />
                 </LinearLayout>
@@ -108,7 +106,6 @@
                         android:gravity="center_vertical"
                         android:text="@string/event_detail_label_desc"
                         android:textSize="18sp"
-                        android:fontFamily="@font/poppins"
                         android:textStyle="bold"
                         app:drawableStartCompat="@drawable/ic_task" />
 
@@ -117,7 +114,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:lineSpacingExtra="4dp"
-                        android:fontFamily="@font/poppins"
                         tools:text="Descripción detallada del evento..." />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -143,7 +139,6 @@
                         android:gravity="center_vertical"
                         android:text="@string/event_detail_label_recordatorios"
                         android:textSize="18sp"
-                        android:fontFamily="@font/poppins"
                         android:textStyle="bold"
                         app:drawableStartCompat="@drawable/ic_notifications" />
 
@@ -152,14 +147,12 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="4dp"
-                        android:fontFamily="@font/poppins"
                         tools:text="Recordatorio 1: ..." />
 
                     <TextView
                         android:id="@+id/tvDetailNotif2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/poppins"
                         tools:text="Recordatorio 2: ..." />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -200,7 +193,6 @@
                     app:backgroundTint="#0085FF"
                     app:cornerRadius="20dp"
                     android:textSize="16sp"
-                    android:fontFamily="@font/poppins"
                     app:icon="@drawable/ic_edit" />
 
                 <com.google.android.material.button.MaterialButton
@@ -216,7 +208,6 @@
                     app:backgroundTint="@android:color/holo_red_dark"
                     app:cornerRadius="20dp"
                     android:textSize="16sp"
-                    android:fontFamily="@font/poppins"
                     app:icon="@drawable/ic_delete" />
             </LinearLayout>
 
