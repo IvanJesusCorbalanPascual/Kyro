@@ -61,10 +61,17 @@ data class PreguntaGenerada(
 ) : Serializable
 
 // Clase para manejar los ejercicios de cada asignatura
+// En Models.kt
 @kotlinx.serialization.Serializable
 data class EjercicioIA(
     val id: Long = 0,
-    val asignatura_id: Long, // Vincula con la asignatura padre
-    val nombre: String,  // Ej: "Test Generado 1"
-    val preguntas_json: String // Aquí va el array de preguntas
-)
+    val created_at: String = "",
+
+    @kotlinx.serialization.SerialName("asignatura_id")
+    val asignaturaId: Long,
+
+    val nombre: String = "",
+
+    @kotlinx.serialization.SerialName("preguntas_json")
+    val preguntasJson: String = ""
+) : java.io.Serializable

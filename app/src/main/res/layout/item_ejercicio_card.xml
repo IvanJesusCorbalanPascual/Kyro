@@ -22,6 +22,7 @@
             android:layout_height="wrap_content"
             android:text="@string/item_ejercicio_titulo"
             android:textColor="#000000"
+            android:fontFamily="@font/poppins"
             android:textSize="14sp"
             android:textStyle="bold" />
 
@@ -32,6 +33,7 @@
             android:layout_marginTop="4dp"
             android:text="@string/item_ejercicio_desc"
             android:textColor="#808080"
+            android:fontFamily="@font/poppins"
             android:textSize="12sp" />
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>
