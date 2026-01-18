@@ -254,15 +254,16 @@ class AsignaturaActivity : AppCompatActivity() {
                     val gson = com.google.gson.Gson()
                     val preguntasJson = gson.toJson(preguntasGeneradas)
 
+                    // Usa la clase ejercicioIA
+                    val nuevoEjercicio = EjercicioIA(
+                        // Id de la asignatura
+                        asignatura_id = asignaturaGuardada.id,
+                        nombre = "Test Generado con IA",
+                        preguntas_json = preguntasJson
+                    )
                     SupabaseClient.client
-                        .from("asignaturas")
-                        .update({
-                            set("preguntas_json", preguntasJson)
-                        }) {
-                            filter {
-                                eq("id", asignaturaGuardada.id)
-                            }
-                        }
+                        .from("ejercicios")
+                        .insert(nuevoEjercicio)
 
                     // Si la IA funcionó, vamos directos al Quiz
                     val intent = Intent(this@AsignaturaActivity, QuizActivity::class.java)
