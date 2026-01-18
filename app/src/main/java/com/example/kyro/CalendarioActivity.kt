@@ -102,15 +102,19 @@ class CalendarioActivity : AppCompatActivity() {
 
         // Listener para el boton de anadir examen
         btnAddExam.setOnClickListener {
-            val intent = Intent(this, AddItemActivity::class.java)
-            intent.putExtra("type", "Examen")
+            val intent = Intent(this, AddItemActivity::class.java).apply {
+                putExtra("type", "Examen")
+                putExtra("selectedDate", selectedDate.toString())
+            }
             startActivity(intent)
         }
         
         // Listener para el boton de anadir tarea
         btnAddTask.setOnClickListener {
-            val intent = Intent(this, AddItemActivity::class.java)
-            intent.putExtra("type", "Tarea")
+            val intent = Intent(this, AddItemActivity::class.java).apply {
+                putExtra("type", "Tarea")
+                putExtra("selectedDate", selectedDate.toString())
+            }
             startActivity(intent)
         }
     }
