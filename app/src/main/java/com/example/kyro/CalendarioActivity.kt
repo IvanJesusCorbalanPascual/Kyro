@@ -248,7 +248,7 @@ class CalendarioActivity : AppCompatActivity() {
                 }
             } else { // "examen"
                 eventType.text = getString(R.string.tipo_examen)
-                eventType.setTextColor(ContextCompat.getColor(this, R.color.purple_500))
+                eventType.setTextColor(ContextCompat.getColor(this, R.color.b400))
                 icon.setImageResource(R.drawable.ic_book)
                 completeButton.visibility = View.GONE
 
@@ -328,7 +328,7 @@ fun Calendar(events: List<CalendarioActivity.Event>, onDateSelected: (LocalDate)
     var selectedDate by remember { mutableStateOf(LocalDate.now()) }
     val eventMap = events.groupBy { it.date }
 
-    Column(modifier = Modifier.padding(8.dp)) { // Padding reducido
+    Column(modifier = Modifier.padding(4.dp)) { // Padding reducido
         // Cabecera con navegacion de mes
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -341,14 +341,14 @@ fun Calendar(events: List<CalendarioActivity.Event>, onDateSelected: (LocalDate)
             Text(
                 text = "${currentMonth.month.getDisplayName(TextStyle.FULL, Locale.getDefault())} ${currentMonth.year}",
                 fontWeight = FontWeight.Bold,
-                fontSize = 18.sp, // Tamano de fuente reducido
+                fontSize = 16.sp, // Tamano de fuente reducido
                 textAlign = TextAlign.Center
             )
             IconButton(onClick = { currentMonth = currentMonth.plusMonths(1) }) {
                 Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "Mes siguiente")
             }
         }
-        Spacer(modifier = Modifier.height(8.dp)) // Espaciador reducido
+        Spacer(modifier = Modifier.height(6.dp)) // Espaciador reducido
 
         // Cabecera de los dias de la semana
         Row(modifier = Modifier.fillMaxWidth()) {
@@ -359,11 +359,11 @@ fun Calendar(events: List<CalendarioActivity.Event>, onDateSelected: (LocalDate)
                     modifier = Modifier.weight(1f),
                     textAlign = TextAlign.Center,
                     fontWeight = FontWeight.Medium,
-                    fontSize = 12.sp // Tamano de fuente reducido
+                    fontSize = 11.sp // Tamano de fuente reducido
                 )
             }
         }
-        Spacer(modifier = Modifier.height(4.dp)) // Espaciador reducido
+        Spacer(modifier = Modifier.height(3.dp)) // Espaciador reducido
 
         // Cuadricula de los dias del mes
         val firstDayOfMonth = currentMonth.atDay(1).dayOfWeek
@@ -389,7 +389,7 @@ fun Calendar(events: List<CalendarioActivity.Event>, onDateSelected: (LocalDate)
                     }
                 }
             }
-            Spacer(modifier = Modifier.height(2.dp)) // Espaciador reducido
+            Spacer(modifier = Modifier.height(1.dp)) // Espaciador reducido
         }
     }
 }
@@ -413,7 +413,7 @@ fun RowScope.DayCell(
             modifier = Modifier
                 .weight(1f)
                 .aspectRatio(1f)
-                .padding(2.dp) // Padding reducido
+                .padding(1.dp) // Padding reducido
                 .clip(CircleShape)
                 .background(if (isSelected) Color.LightGray else Color.Transparent)
                 .clickable { onDateSelected(date) },
@@ -426,9 +426,9 @@ fun RowScope.DayCell(
                 Text(
                     text = day.toString(),
                     fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-                    fontSize = 14.sp, // Tamano de fuente reducido
+                    fontSize = 13.sp, // Tamano de fuente reducido
                     color = when {
-                        isToday -> Color.Blue
+                        isToday -> Color(0xFF409EFF)
                         date.month == currentMonth.month -> Color.Black
                         else -> Color.Gray
                     }
@@ -439,7 +439,7 @@ fun RowScope.DayCell(
                         eventsOnDate.take(3).forEach { event ->
                             val dotColor = when {
                                 event.completada -> Color(0xFF4CAF50)
-                                event.type == "examen" -> Color.Blue
+                                event.type == "examen" -> Color(0xFF409EFF)
                                 event.type == "tarea" -> {
                                     val isExpired = if (event.time != null) {
                                         try {
@@ -462,7 +462,7 @@ fun RowScope.DayCell(
                             Box(
                                 modifier = Modifier
                                     .padding(horizontal = 1.dp)
-                                    .size(4.dp) // Tamano reducido
+                                    .size(3.dp) // Tamano reducido
                                     .clip(CircleShape)
                                     .background(dotColor)
                             )

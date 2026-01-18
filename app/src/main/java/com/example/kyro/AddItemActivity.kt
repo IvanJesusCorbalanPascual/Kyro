@@ -167,6 +167,12 @@ class AddItemActivity : AppCompatActivity() {
             lifecycleScope.launch(Dispatchers.IO) {
                 try {
                     val idUsuarioActual = SupabaseClient.client.auth.currentUserOrNull()?.id
+                    if (idUsuarioActual == null) {
+                        withContext(Dispatchers.Main) {
+                            Toast.makeText(applicationContext, "Error: Sesion no valida. Por favor, inicie sesion de nuevo.", Toast.LENGTH_LONG).show()
+                        }
+                        return@launch
+                    }
 
                     if (isEditMode) {
                         // Actualiza el evento usando el método de actualización directa
@@ -185,14 +191,14 @@ class AddItemActivity : AppCompatActivity() {
                             set("notificacion2", notificacion2)
                         }) { filter {
                             eq("id", eventId)
-                            eq("id_usuario", idUsuarioActual!!)
+                            eq("id_usuario", idUsuarioActual)
                         } }
                     } else {
                         // La logica para insertar un nuevo elemento no cambia
                         val tableName = if (type.equals("Examen", ignoreCase = true)) "examenes" else "tareas"
                         if (type.equals("Examen", ignoreCase = true)) {
                             val nuevoExamen = Examen(
-                                id_usuario = idUsuarioActual!!,
+                                id_usuario = idUsuarioActual,
                                 nombre_asignatura = asignatura,
                                 descripcion = descripcion,
                                 fecha_examen = selectedDate,
@@ -203,7 +209,7 @@ class AddItemActivity : AppCompatActivity() {
                             SupabaseClient.client.postgrest[tableName].insert(nuevoExamen)
                         } else {
                             val nuevaTarea = Tarea(
-                                id_usuario = idUsuarioActual!!,
+                                id_usuario = idUsuarioActual,
                                 nombre_asignatura = asignatura,
                                 descripcion = descripcion,
                                 fecha_entrega = selectedDate,

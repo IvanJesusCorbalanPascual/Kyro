@@ -202,7 +202,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnIdioma"
-                    style="@style/Widget.Material3.Button.TextButton"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
                     android:text="@string/idioma"
@@ -224,7 +224,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnTema"
-                    style="@style/Widget.Material3.Button.TextButton"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
                     android:text="@string/apariencia"
@@ -261,7 +261,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnBorrarDatos"
-                    style="@style/Widget.Material3.Button.TextButton"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:text="@string/borrar_datos"
@@ -283,7 +283,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnCerrarSesion"
-                    style="@style/Widget.Material3.Button.TextButton"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:text="@string/cerrar_sesion"
@@ -305,7 +305,7 @@
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnEliminarCuenta"
-                    style="@style/Widget.Material3.Button.TextButton"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:text="@string/eliminar_cuenta"
