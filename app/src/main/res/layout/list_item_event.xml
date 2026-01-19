@@ -42,6 +42,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/item_event_titulo"
+                    android:fontFamily="@font/poppins"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -49,7 +50,8 @@
                     android:id="@+id/tvEventDescription"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/item_event_desc" />
+                    android:text="@string/item_event_desc"
+                    android:fontFamily="@font/poppins"/>
 
             </LinearLayout>
 

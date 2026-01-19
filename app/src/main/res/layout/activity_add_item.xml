@@ -42,6 +42,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Nombre de la tarea/examen"
+                    android:fontFamily="@font/poppins"
                     android:minLines="1" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -65,6 +66,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="top"
                     android:hint="@string/add_task_hint_desc"
+                    android:fontFamily="@font/poppins"
                     android:minLines="3" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -73,6 +75,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:text="@string/add_task_label_fecha"
+                android:fontFamily="@font/poppins"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -123,6 +126,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:text="@string/add_task_label_hora"
+                android:fontFamily="@font/poppins"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -141,6 +145,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:text="@string/add_task_label_recordatorios"
+                android:fontFamily="@font/poppins"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -162,6 +167,7 @@
                 android:layout_height="wrap_content"
                 android:padding="12dp"
                 android:text="@string/add_task_btn_guardar"
+                android:fontFamily="@font/poppins"
                 app:cornerRadius="20dp" />
 
         </LinearLayout>

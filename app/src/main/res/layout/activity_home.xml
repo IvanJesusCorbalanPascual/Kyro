@@ -155,12 +155,13 @@
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/btnQuickAI"
                     android:layout_width="0dp"
-                    android:layout_height="100dp"
-                    android:layout_marginEnd="8dp"
+                    android:layout_height="110dp"
+                    android:layout_marginEnd="10dp"
                     android:layout_weight="1"
-                    app:cardBackgroundColor="#FFFFFF"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="2dp">
+                    app:cardBackgroundColor="@color/b400"
+                    app:cardCornerRadius="24dp"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="0dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -169,17 +170,19 @@
                         android:orientation="vertical">
 
                         <ImageView
-                            android:layout_width="32dp"
-                            android:layout_height="32dp"
-                            android:src="@drawable/ic_star"
-                            app:tint="#00A8E8" />
+                            android:layout_width="38dp"
+                            android:layout_height="38dp"
+                            android:src="@drawable/logo_kyro_no_bg"
+                            app:tint="@color/b900" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
+                            android:layout_marginTop="12dp"
                             android:fontFamily="@font/poppins"
-                            android:text="Preguntar a IA"
+                            android:text="KyroIA"
+                            android:textColor="@color/b900"
+                            android:textSize="15sp"
                             android:textStyle="bold" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
@@ -187,12 +190,13 @@
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/btnQuickAsignaturas"
                     android:layout_width="0dp"
-                    android:layout_height="100dp"
-                    android:layout_marginStart="8dp"
+                    android:layout_height="110dp"
+                    android:layout_marginStart="10dp"
                     android:layout_weight="1"
-                    app:cardBackgroundColor="#FFFFFF"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="2dp">
+                    app:cardBackgroundColor="#FF9800"
+                    app:cardCornerRadius="24dp"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="0dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -201,17 +205,19 @@
                         android:orientation="vertical">
 
                         <ImageView
-                            android:layout_width="32dp"
-                            android:layout_height="32dp"
+                            android:layout_width="38dp"
+                            android:layout_height="38dp"
                             android:src="@drawable/ic_book"
-                            app:tint="#FF9800" />
+                            app:tint="#FFFFFF" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
+                            android:layout_marginTop="12dp"
                             android:fontFamily="@font/poppins"
-                            android:text="Ver Asignaturas"
+                            android:text="Asignaturas"
+                            android:textColor="#FFFFFF"
+                            android:textSize="15sp"
                             android:textStyle="bold" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>

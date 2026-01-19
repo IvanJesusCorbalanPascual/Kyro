@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.EditText
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -189,8 +188,8 @@ class ModificarAsignaturaActivity : AppCompatActivity() {
         finish()
     }
 
-    // Función para mostrar los mensajes y no tener que escribir Toast.makeText constantemente
+    // Función para mostrar los mensajes y no tener que escribir showKyroToast constantemente
     private fun mostrarMensaje(mensaje: String) {
-        Toast.makeText(this, mensaje, Toast.LENGTH_SHORT).show()
+        showKyroToast(mensaje)
     }
 }

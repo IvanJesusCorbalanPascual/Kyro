@@ -1,6 +1,5 @@
 package com.example.kyro
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
@@ -9,9 +8,7 @@ import android.widget.DatePicker
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.Spinner
-import android.widget.TextView
 import android.widget.TimePicker
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.lifecycle.lifecycleScope
@@ -199,7 +196,7 @@ class AddItemActivity : AppCompatActivity() {
         btnGuardar.setOnClickListener {
             val selectedAsignaturaPosition = spinnerAsignaturas.selectedItemPosition
             if (selectedAsignaturaPosition == 0) { // Asumiendo que la posición 0 es "Elige una asignatura"
-                Toast.makeText(this, "Por favor, selecciona una asignatura", Toast.LENGTH_SHORT).show()
+               showKyroToast("Por favor, selecciona una asignatura")
                 return@setOnClickListener
             }
             val selectedAsignatura = asignaturasList[selectedAsignaturaPosition - 1]
@@ -209,7 +206,7 @@ class AddItemActivity : AppCompatActivity() {
             val notificacion2 = spinnerNotificacion2.selectedItem.toString()
 
             if (nombre.isEmpty()) {
-                Toast.makeText(this, "Por favor, rellena el nombre", Toast.LENGTH_SHORT).show()
+               showKyroToast("Por favor, rellena el nombre")
                 return@setOnClickListener
             }
 
@@ -218,7 +215,7 @@ class AddItemActivity : AppCompatActivity() {
                     val idUsuarioActual = SupabaseClient.client.auth.currentUserOrNull()?.id
                     if (idUsuarioActual == null) {
                         withContext(Dispatchers.Main) {
-                            Toast.makeText(applicationContext, "Error: Sesion no valida. Por favor, inicie sesion de nuevo.", Toast.LENGTH_LONG).show()
+                           showKyroToast("Error: Sesion no valida. Por favor, inicie sesion de nuevo.")
                         }
                         return@launch
                     }
@@ -275,12 +272,12 @@ class AddItemActivity : AppCompatActivity() {
 
                     withContext(Dispatchers.Main) {
                         val message = if (isEditMode) "$type actualizado" else "$type guardado"
-                        Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
+                        showKyroToast(message)
                         finish()
                     }
                 } catch (e: Exception) {
                     withContext(Dispatchers.Main) {
-                        Toast.makeText(applicationContext, "Error: ${e.message}", Toast.LENGTH_LONG).show()
+                        showKyroToast( "Error: ${e.message}")
                     }
                 }
             }
@@ -321,7 +318,7 @@ class AddItemActivity : AppCompatActivity() {
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(applicationContext, "Error al cargar asignaturas: ${e.message}", Toast.LENGTH_LONG).show()
+                    showKyroToast("Error al cargar asignaturas: ${e.message}")
                 }
             }
         }

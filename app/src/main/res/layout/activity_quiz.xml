@@ -14,9 +14,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Pregunta 1 de 5"
+        android:fontFamily="@font/poppins"
         android:textColor="#757575"
         android:textSize="16sp"
-        android:fontFamily="sans-serif-medium"
         android:layout_marginBottom="32dp"/>
 
     <TextView
@@ -24,6 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Cargando pregunta..."
+        android:fontFamily="@font/poppins"
         android:textColor="#000000"
         android:textSize="22sp"
         android:textStyle="bold"
@@ -35,6 +36,7 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:text="Opción A"
+        android:fontFamily="@font/poppins"
         android:background="@drawable/bg_azul_oscuro_kyro"
         app:backgroundTint="@null"
         android:textColor="#FFFFFF"
@@ -45,6 +47,7 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:text="Opción B"
+        android:fontFamily="@font/poppins"
         android:background="@drawable/bg_azul_oscuro_kyro"
         app:backgroundTint="@null"
         android:textColor="#FFFFFF"
@@ -55,6 +58,7 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:text="Opción C"
+        android:fontFamily="@font/poppins"
         android:background="@drawable/bg_azul_oscuro_kyro"
         app:backgroundTint="@null"
         android:textColor="#FFFFFF"
@@ -65,6 +69,7 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:text="Opción D"
+        android:fontFamily="@font/poppins"
         android:background="@drawable/bg_azul_oscuro_kyro"
         app:backgroundTint="@null"
         android:textColor="#FFFFFF"/>

@@ -94,6 +94,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Usuario Kyro"
+                            android:fontFamily="@font/poppins"
                             android:textColor="#FFFFFF"
                             android:textSize="18sp"
                             android:textStyle="bold" />
@@ -103,6 +104,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
                             android:text="@string/gestionar_cuenta"
+                            android:fontFamily="@font/poppins"
                             android:textColor="#E0E0E0"
                             android:textSize="14sp" />
                     </LinearLayout>
@@ -121,6 +123,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/bienestar_digital"
+                android:fontFamily="@font/poppins"
                 android:textColor="#757575"
                 android:textSize="14sp"
                 android:textStyle="bold"
@@ -150,6 +153,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/modo_focus"
+                            android:fontFamily="@font/poppins"
                             android:textColor="#000000"
                             android:textSize="16sp"
                             android:textStyle="bold"/>
@@ -158,6 +162,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/modo_focus_subtitulo"
+                            android:fontFamily="@font/poppins"
                             android:textColor="#757575"
                             android:textSize="12sp"/>
                     </LinearLayout>
@@ -175,6 +180,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:text="@string/modo_focus_desc"
+                    android:fontFamily="@font/poppins"
                     android:textColor="#FF9800"
                     android:textSize="12sp"
                     android:alpha="0.9"/>
@@ -187,6 +193,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/general"
+                android:fontFamily="@font/poppins"
                 android:textColor="#757575"
                 android:textSize="14sp"
                 android:textStyle="bold"
@@ -206,6 +213,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
                     android:text="@string/idioma"
+                    android:fontFamily="@font/poppins"
                     android:textColor="#333333"
                     android:textSize="16sp"
                     android:textAlignment="viewStart"
@@ -228,6 +236,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
                     android:text="@string/apariencia"
+                    android:fontFamily="@font/poppins"
                     android:textColor="#333333"
                     android:textSize="16sp"
                     android:textAlignment="viewStart"
@@ -245,6 +254,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/zona_peligro"
+                android:fontFamily="@font/poppins"
                 android:textColor="#FF5252"
                 android:textSize="14sp"
                 android:textStyle="bold"
@@ -265,6 +275,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:text="@string/borrar_datos"
+                    android:fontFamily="@font/poppins"
                     android:textColor="#D32F2F"
                     android:textSize="16sp"
                     android:textStyle="bold"
@@ -287,6 +298,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:text="@string/cerrar_sesion"
+                    android:fontFamily="@font/poppins"
                     android:textColor="#D32F2F"
                     android:textSize="16sp"
                     android:textStyle="bold"
@@ -309,6 +321,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:text="@string/eliminar_cuenta"
+                    android:fontFamily="@font/poppins"
                     android:textColor="#D32F2F"
                     android:textSize="16sp"
                     android:textStyle="bold"

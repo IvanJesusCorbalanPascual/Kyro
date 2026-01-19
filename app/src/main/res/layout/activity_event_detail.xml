@@ -58,7 +58,8 @@
                         android:layout_height="wrap_content"
                         android:textSize="26sp"
                         android:textStyle="bold"
-                        tools:text="Nombre de la Asignatura" />
+                        tools:text="Nombre de la Asignatura"
+                        android:fontFamily="@font/poppins"/>
 
                     <TextView
                         android:id="@+id/tvDetailAsignatura"
@@ -68,9 +69,9 @@
                         android:drawablePadding="8dp"
                         android:gravity="center_vertical"
                         android:textSize="16sp"
-                        android:fontFamily="@font/poppins"
                         app:drawableStartCompat="@drawable/ic_book"
-                        tools:text="Asignatura" />
+                        tools:text="Asignatura"
+                        android:fontFamily="@font/poppins"/>
 
                     <TextView
                         android:id="@+id/tvDetailDate"
@@ -107,14 +108,16 @@
                         android:text="@string/event_detail_label_desc"
                         android:textSize="18sp"
                         android:textStyle="bold"
-                        app:drawableStartCompat="@drawable/ic_task" />
+                        app:drawableStartCompat="@drawable/ic_task"
+                        android:fontFamily="@font/poppins"/>
 
                     <TextView
                         android:id="@+id/tvDetailDescription"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:lineSpacingExtra="4dp"
-                        tools:text="Descripción detallada del evento..." />
+                        tools:text="Descripción detallada del evento..."
+                        android:fontFamily="@font/poppins"/>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -138,6 +141,7 @@
                         android:drawablePadding="8dp"
                         android:gravity="center_vertical"
                         android:text="@string/event_detail_label_recordatorios"
+                        android:fontFamily="@font/poppins"
                         android:textSize="18sp"
                         android:textStyle="bold"
                         app:drawableStartCompat="@drawable/ic_notifications" />
@@ -147,13 +151,15 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="4dp"
-                        tools:text="Recordatorio 1: ..." />
+                        tools:text="Recordatorio 1: ..."
+                        android:fontFamily="@font/poppins"/>
 
                     <TextView
                         android:id="@+id/tvDetailNotif2"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        tools:text="Recordatorio 2: ..." />
+                        tools:text="Recordatorio 2: ..."
+                        android:fontFamily="@font/poppins"/>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -189,6 +195,7 @@
                     android:layout_marginEnd="8dp"
                     android:padding="12dp"
                     android:text="@string/event_detail_btn_editar"
+                    android:fontFamily="@font/poppins"
                     android:textColor="@android:color/white"
                     app:backgroundTint="#0085FF"
                     app:cornerRadius="20dp"
@@ -204,11 +211,12 @@
                     android:layout_marginStart="8dp"
                     android:padding="12dp"
                     android:text="@string/event_detail_btn_eliminar"
+                    android:fontFamily="@font/poppins"
                     android:textColor="@android:color/white"
                     app:backgroundTint="@android:color/holo_red_dark"
                     app:cornerRadius="20dp"
                     android:textSize="16sp"
-                    app:icon="@drawable/ic_delete" />
+                    app:icon="@drawable/ic_delete"/>
             </LinearLayout>
 
         </LinearLayout>
