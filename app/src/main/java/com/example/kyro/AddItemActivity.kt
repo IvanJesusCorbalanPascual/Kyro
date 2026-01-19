@@ -84,6 +84,12 @@ class AddItemActivity : AppCompatActivity() {
             if (type.equals("Examen", ignoreCase = true)) "Añadir Examen" else "Añadir Tarea"
         }
 
+        btnGuardar.text = if (isEditMode) {
+            "Guardar Cambios"
+        } else {
+            if (type.equals("Examen", ignoreCase = true)) "Añadir Examen" else "Añadir Tarea"
+        }
+
         setupAsignaturasSpinner()
         loadAsignaturas()
 
