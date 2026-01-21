@@ -19,6 +19,8 @@ import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.gotrue.auth
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import io.github.jan.supabase.storage.storage
+import io.github.jan.supabase.storage.upload
 import java.util.ArrayList // Necesario para pasar la lista
 
 class AsignaturaActivity : AppCompatActivity() {
@@ -54,6 +56,9 @@ class AsignaturaActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_asignatura)
 
+        // Inicia la librería de PDF, para que se pueden cargar sus recursos
+        com.tom_roush.pdfbox.android.PDFBoxResourceLoader.init(applicationContext)
+
         // Variables vinculadas con los IDs del XML
         etTituloNuevo = findViewById(R.id.etTituloNuevoAsignatura)
         etContenidoNuevo = findViewById(R.id.etContenidoNuevoAsignatura)
@@ -66,7 +71,7 @@ class AsignaturaActivity : AppCompatActivity() {
         // Configura el botón de adjuntar
         btnAdjuntar.setOnClickListener {
             // Lanza el selector para buscar PDFs
-            filePickerLauncher.launch("application/pdf")
+            filePickerLauncher.launch("*/*")
         }
 
         // Carga la lista al entrar
@@ -196,7 +201,7 @@ class AsignaturaActivity : AppCompatActivity() {
     private fun subirNuevaAsignaturaYGenerar(titulo: String, contenido: String) {
         // Bloquea el botón para no pulsarse más veces
         btnGenerar.isEnabled = false
-        btnGenerar.text = "Guardando y Generando..."
+        btnGenerar.text = "Subiendo y analizando..."
 
         lifecycleScope.launch {
             try {
@@ -209,21 +214,63 @@ class AsignaturaActivity : AppCompatActivity() {
                     return@launch
                 }
 
-                // Si hay un archivo adjunto, aqui leera su texto
-                var contenidoFinal = contenido
-                if (selectedFileUri != null && contenido.isEmpty()) {
-                    contenidoFinal = "Genera un examen tipo test sobre el tema '$titulo'. (Contexto adicional: Archivo adjunto ${getFileNameFromUri(selectedFileUri!!)})"
+                // Si el usuario deja el texto vacío, lo rellena automáticamente para evitar fallos en la BD
+                val contenidoParaGuardar = contenido.ifEmpty {
+                    "📁 Archivo adjunto: ${getFileNameFromUri(selectedFileUri ?: Uri.EMPTY)}"
                 }
+                // Guarda la asignatura primero, para obtener su ID y poder vincular el archivo despues
+                val nuevaAsignatura = Asignatura(titulo = titulo, contenido = contenidoParaGuardar, user_id = usuarioActual.id)
 
-                // Crea el objeto que se debe subir pasandole el id del usuarios
-                val nuevaAsignatura = Asignatura(titulo = titulo, contenido = contenidoFinal, user_id = usuarioActual.id)
-
-                // Lo inserta en Supabase (y recuperamos el objeto guardado para tener su ID)
                 val asignaturaGuardada = SupabaseClient.client
                     .from("asignaturas")
                     .insert(nuevaAsignatura) {
-                        select() // Importante: esto nos devuelve el ID generado
+                        select()
                     }.decodeSingle<Asignatura>()
+
+                // Si hay un archivo adjunto, aqui leera su texto
+                var textoParaLaIA = contenido
+
+                if (selectedFileUri != null) {
+                    // Lee el archivo para subirlo a la nube de Supabase
+                    val nombreArchivo = getFileNameFromUri(selectedFileUri!!)
+                    val datosArchivo = contentResolver.openInputStream(selectedFileUri!!)?.readBytes()
+
+                    if (datosArchivo != null) {
+
+                        // Limpia el nomnbre del archivo antes de usarlo
+                        val nombreLimpio = arreglarNombreArchivo(nombreArchivo)
+
+                        // Prepara para subir a Supabase Storage en el bucket "Apuntes" con una ruta unica
+                        val nombreEnNube = "${usuarioActual.id}/${System.currentTimeMillis()}_$nombreLimpio"
+
+                        val bucket = SupabaseClient.client.storage.from("Apuntes")
+
+                        // Aquí se sube de verdad a la BD
+                        bucket.upload(nombreEnNube, datosArchivo, upsert = false)
+
+                        // Obtiene la URL pública
+                        val urlPublica = bucket.publicUrl(nombreEnNube)
+
+                        val nuevoArchivo = Archivo(
+                            userId = usuarioActual.id,
+                            asignaturaId = asignaturaGuardada.id,
+                            nombre = nombreArchivo,
+                            url = urlPublica
+                        )
+                        SupabaseClient.client.from("archivos").insert(nuevoArchivo)
+
+                        // Lee el texto del PDF para la IA usando FileTextExtractor
+                        val textoDelPDF = FileTextExtractor.leerContenidoArchivo(this@AsignaturaActivity, selectedFileUri!!)
+
+                        if (textoDelPDF.isNotEmpty()) {
+                            // Si detecta texto, lo añade a lo que se envia a la IA
+                            textoParaLaIA += "\n\n--- TEXTO EXTRAÍDO DEL ARCHIVO ADJUNTO ($nombreArchivo) ---\n$textoDelPDF"
+                        } else {
+                            // Si es una imagen o no puede leerlo, avisa
+                            textoParaLaIA += "\n(El usuario adjuntó el archivo $nombreArchivo pero no tiene texto seleccionable. Usa tus conocimientos sobre '$titulo'.)"
+                        }
+                    }
+                }
 
                 // Si no hay problemas, muestra al usuario que se ha guardado correctamente
                 showKyroToast("¡Guardado! Consultando a la IA...")
@@ -245,7 +292,7 @@ class AsignaturaActivity : AppCompatActivity() {
 
                 // --- LÓGICA DE IA ---
                 val servicioIA = GeminiService()
-                val preguntasGeneradas = servicioIA.generarTestDeApuntes(contenidoFinal)
+                val preguntasGeneradas = servicioIA.generarTestDeApuntes(textoParaLaIA)
 
                 if (preguntasGeneradas.isNotEmpty()) {
 
@@ -286,6 +333,15 @@ class AsignaturaActivity : AppCompatActivity() {
                 btnGenerar.text = "Generar Ejercicios con IA ✨"
             }
         }
+    }
+
+    // Función para limpiar nombres de archivo que den problemas a Supabase
+    private fun arreglarNombreArchivo(nombreOriginal: String): String {
+        return nombreOriginal
+            // Cambia los espacios por guiones bajos
+            .replace(" ", "_")
+            // Elimina lo que no sea letra, numeros, puntos o guiones.
+            .replace(Regex("[^a-zA-Z0-9._-]"), "")
     }
 
     // Función que permite ir a la vista detallada pasando datos

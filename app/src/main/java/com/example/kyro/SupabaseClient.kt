@@ -3,6 +3,7 @@ package com.example.kyro
 import io.github.jan.supabase.createSupabaseClient
 import io.github.jan.supabase.gotrue.Auth
 import io.github.jan.supabase.postgrest.Postgrest
+import io.github.jan.supabase.storage.Storage
 import io.github.jan.supabase.serializer.KotlinXSerializer
 import kotlinx.serialization.json.Json
 // Conexion con Supabase mediante nuestro cliente
@@ -13,6 +14,7 @@ object SupabaseClient {
     ) {
         install(Auth)
         install(Postgrest)
+        install(Storage)
 
         defaultSerializer = KotlinXSerializer(Json{
             ignoreUnknownKeys = true
