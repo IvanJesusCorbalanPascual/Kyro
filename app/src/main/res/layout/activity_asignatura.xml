@@ -25,7 +25,7 @@
                 android:id="@+id/tvTitulo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/asignatura_titulo"
+                android:text="Mis Asignaturas"
                 android:fontFamily="@font/poppins"
                 android:textColor="#000000"
                 android:textSize="24sp"
@@ -34,7 +34,6 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"/>
 
-            <!-- Contenedor superior con los asignaturas -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/contenedorAsignaturas"
                 android:layout_width="match_parent"
@@ -55,13 +54,12 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/asignatura_subtitulo_lista"
+                        android:text="Lista de Asignaturas"
                         android:fontFamily="@font/poppins"
                         android:textColor="#000000"
                         android:textSize="18sp"
                         android:textStyle="bold"
                         android:layout_marginBottom="12dp"/>
-
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rvAsignaturas"
@@ -80,7 +78,7 @@
                         android:id="@+id/tvVacio"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/asignatura_lista_vacia"
+                        android:text="No tienes asignaturas creadas aún."
                         android:gravity="center"
                         android:textColor="#555555"
                         android:padding="20dp"
@@ -89,7 +87,6 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Contenedor inferior para cargar nuevos asignaturas -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardContainerCargarAsignatura"
                 android:layout_width="match_parent"
@@ -99,7 +96,7 @@
                 app:cardCornerRadius="20dp"
                 app:cardElevation="0dp"
                 app:strokeWidth="0dp"
-                app:cardBackgroundColor="#BDE0F0"
+                app:cardBackgroundColor="#FFFFFF"
                 app:layout_constraintTop_toBottomOf="@id/contenedorAsignaturas"
                 app:layout_constraintBottom_toBottomOf="parent">
 
@@ -112,7 +109,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/asignatura_subtitulo_nuevo"
+                        android:text="Crear Nueva Asignatura"
                         android:fontFamily="@font/poppins"
                         android:textColor="#000000"
                         android:textSize="18sp"
@@ -122,9 +119,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:text="@string/asignatura_desc_ia"
+                        android:text="Añade tus apuntes aquí para tenerlos organizados. Después podrás pedirle a la IA que cree tests sobre ellos."
                         android:fontFamily="@font/poppins"
-                        android:textColor="#000000"
+                        android:textColor="#666666"
                         android:textSize="13sp"
                         android:lineSpacingExtra="2dp"/>
 
@@ -134,8 +131,9 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
                         android:background="@drawable/bg_blanco_redondeado"
+                        android:backgroundTint="#F5F5F5"
                         android:padding="12dp"
-                        android:hint="@string/asignatura_hint_titulo_nuevo"
+                        android:hint="Nombre de la asignatura (ej: Historia)"
                         android:fontFamily="@font/poppins"
                         android:inputType="textCapSentences"
                         android:maxLines="1"
@@ -143,53 +141,51 @@
                         android:textColor="#1A1A1A"
                         android:textSize="14sp" />
 
-
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="match_parent"
-                        android:layout_height="80dp"
+                        android:layout_height="60dp"
                         android:layout_marginTop="16dp"
                         app:cardCornerRadius="12dp"
                         app:cardElevation="0dp"
-                        app:strokeWidth="0dp"
-                        app:cardBackgroundColor="#FFFFFF">
+                        app:strokeWidth="1dp"
+                        app:strokeColor="#E0E0E0"
+                        app:cardBackgroundColor="#F9F9F9">
 
-                        <!-- Aquí el usuario podra adjuntar archivos en el futuro -->
                         <TextView
                             android:id="@+id/btnAdjuntarArchivo"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:gravity="center"
-                            android:text="@string/asignatura_btn_adjuntar"
+                            android:text="📎 Adjuntar PDF (Opcional)"
                             android:fontFamily="@font/poppins"
                             android:textColor="#1A1A1A"
                             android:textSize="13sp"
                             android:textStyle="bold"
                             android:padding="8dp"/>
-
                     </com.google.android.material.card.MaterialCardView>
 
-                    <!-- EditText para que el usuario pueda escribir -->
                     <EditText
                         android:id="@+id/etContenidoNuevoAsignatura"
                         android:layout_width="match_parent"
-                        android:layout_height="80dp"
+                        android:layout_height="100dp"
                         android:layout_marginTop="12dp"
                         android:background="@drawable/bg_blanco_redondeado"
+                        android:backgroundTint="#F5F5F5"
                         android:gravity="top|start"
                         android:padding="16dp"
-                        android:hint="@string/asignatura_hint_contenido"
+                        android:hint="O pega tus apuntes aquí..."
                         android:fontFamily="@font/poppins"
                         android:textColorHint="#808080"
                         android:textColor="#1A1A1A"
                         android:textSize="13sp" />
 
-                    <!-- Botón para generar ejercicios -->
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnGenerar"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:text="@string/asignatura_btn_generar"
+                        android:layout_height="56dp"
+                        android:layout_marginTop="24dp"
+                        android:text="Guardar Asignatura"
+                        android:fontFamily="@font/poppins"
                         android:textStyle="bold"
                         android:textColor="#FFFFFF"
                         app:backgroundTint="#00A8E8"
@@ -201,7 +197,7 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <!-- MENÚ INFERIOR -->
+    <!-- MENU INFERIOR -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
         android:layout_width="0dp"

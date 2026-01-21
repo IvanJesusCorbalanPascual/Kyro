@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F5F5F5">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <TextView
+                android:text="Crear Test con KyroIA"
+                android:fontFamily="@font/poppins"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:layout_marginBottom="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilNombreTest"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Nombre del Test (ej: Repaso Tema 1)"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                app:boxBackgroundColor="@android:color/white"
+                app:boxCornerRadiusTopStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusBottomEnd="12dp"
+                android:layout_marginBottom="16dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etNombreTest"
+                    android:fontFamily="@font/poppins"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textCapSentences"
+                    android:maxLength="30"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/tvLabelPreguntas"
+                android:fontFamily="@font/poppins"
+                android:text="Número de preguntas:"
+                android:textStyle="bold"
+                android:layout_marginBottom="4dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <com.google.android.material.slider.Slider
+                android:id="@+id/sliderPreguntas"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:valueFrom="5"
+                android:valueTo="20"
+                android:stepSize="1"
+                android:value="5"
+                app:thumbColor="#00A8E8"
+                app:trackColorActive="#00A8E8"/>
+
+            <TextView
+                android:text="Dificultad:"
+                android:fontFamily="@font/poppins"
+                android:textStyle="bold"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipGroupDificultad"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:singleSelection="true"
+                app:selectionRequired="true"
+                android:layout_marginBottom="16dp">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipFacil"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Fácil"
+                    android:fontFamily="@font/poppins"
+                    android:textColor="@color/text_chip_state_list"
+                    app:chipBackgroundColor="@color/bg_chip_state_list"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipMedio"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Medio"
+                    android:checked="true"
+                    android:fontFamily="@font/poppins"
+                    android:textColor="@color/text_chip_state_list"
+                    app:chipBackgroundColor="@color/bg_chip_state_list"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chipDificil"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Difícil"
+                    android:fontFamily="@font/poppins"
+                    android:textColor="@color/text_chip_state_list"
+                    app:chipBackgroundColor="@color/bg_chip_state_list"/>
+            </com.google.android.material.chip.ChipGroup>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#E0E0E0"
+                android:layout_marginVertical="8dp"/>
+
+            <TextView
+                android:text="Fuentes de información:"
+                android:fontFamily="@font/poppins"
+                android:textStyle="bold"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <CheckBox
+                android:id="@+id/cbContenidoBase"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Incluir descripción de asignatura"
+                android:fontFamily="@font/poppins"
+                android:checked="true"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvSeleccionArchivos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"/>
+
+            <TextView
+                android:id="@+id/tvSinArchivos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="No hay archivos subidos."
+                android:visibility="gone"
+                android:padding="10dp"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnGenerarTestFinal"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="Generar Test ✨"
+                android:fontFamily="@font/poppins"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                app:backgroundTint="#00A8E8"
+                app:cornerRadius="12dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="24dp"/>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</LinearLayout>

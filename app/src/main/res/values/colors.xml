@@ -17,7 +17,13 @@
     <color name="grey">#808080</color>
     
     <!-- Paleta de azules -->
-    <color name="b400">#409EFF</color>
-    <color name="b500">#0085FF</color>
-    <color name="b900">#0059B2</color>
+    <color name="b100">#BBDEFB</color>
+    <color name="b200">#90CAF9</color>
+    <color name="b300">#64B5F6</color>
+    <color name="b400">#42A5F5</color>
+    <color name="b500">#2196F3</color>
+    <color name="b600">#1E88E5</color>
+    <color name="b700">#1976D2</color>
+    <color name="b800">#1565C0</color>
+    <color name="b900">#0D47A1</color>
 </resources>

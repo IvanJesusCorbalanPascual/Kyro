@@ -1,187 +1,236 @@
 package com.example.kyro
 
-import android.content.res.ColorStateList
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.widget.Button
+import android.view.View
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-
-/**
- * Clase que se encarga de recrear un Quiz tipo test con las preguntas generadas por la IA
- */
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.progressindicator.LinearProgressIndicator
+import com.google.android.material.snackbar.Snackbar
 
 class QuizActivity : AppCompatActivity() {
 
-    // Variables de la vista
+    // Vistas de texto y progreso
     private lateinit var tvContador: TextView
     private lateinit var tvPregunta: TextView
-    private lateinit var btnOpcion1: Button
-    private lateinit var btnOpcion2: Button
-    private lateinit var btnOpcion3: Button
-    private lateinit var btnOpcion4: Button
+    private lateinit var progressBar: LinearProgressIndicator
+    private lateinit var btnSubmit: MaterialButton
+    private lateinit var btnClose: View
+
+    // Layouts de las opciones (las tarjetas)
+    private lateinit var layoutA: LinearLayout
+    private lateinit var layoutB: LinearLayout
+    private lateinit var layoutC: LinearLayout
+    private lateinit var layoutD: LinearLayout
+
+    // Textos de las opciones
+    private lateinit var tvA: TextView
+    private lateinit var tvB: TextView
+    private lateinit var tvC: TextView
+    private lateinit var tvD: TextView
 
     // Variables lógicas
     private var listaPreguntas: ArrayList<PreguntaGenerada> = ArrayList()
     private var posicionActual = 0
     private var aciertos = 0
-    private var botonesBloqueados = false // Para evitar doble click rápido
+    private var opcionSeleccionada: String? = null // Guarda "A", "B", "C" o "D"
+    private var revisandoRespuesta = false // Indica si estamos viendo el resultado (verde/rojo)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_quiz)
 
-        // Vinculando vistas
-        tvContador = findViewById(R.id.tvContador)
-        tvPregunta = findViewById(R.id.tvPregunta)
-        btnOpcion1 = findViewById(R.id.btnOpcion1)
-        btnOpcion2 = findViewById(R.id.btnOpcion2)
-        btnOpcion3 = findViewById(R.id.btnOpcion3)
-        btnOpcion4 = findViewById(R.id.btnOpcion4)
+        initViews()
 
-        // Recibe los datos de TemarioActivity y los almacena en el array de listaPreguntas
+        // Recibir datos
         @Suppress("DEPRECATION")
         listaPreguntas = intent.getSerializableExtra("EXTRA_PREGUNTAS") as? ArrayList<PreguntaGenerada> ?: ArrayList()
 
-        // Manejo de errores
         if (listaPreguntas.isEmpty()) {
-            showKyroToast("Error: No llegaron preguntas")
             finish()
             return
         }
 
-        // Configurar clicks de botones
-        // Mapeando los botones a las letras A, B, C, D
-        btnOpcion1.setOnClickListener { verificarRespuesta("A", btnOpcion1) }
-        btnOpcion2.setOnClickListener { verificarRespuesta("B", btnOpcion2) }
-        btnOpcion3.setOnClickListener { verificarRespuesta("C", btnOpcion3) }
-        btnOpcion4.setOnClickListener { verificarRespuesta("D", btnOpcion4) }
-
-        // Mostrando la primera pregunta
+        setupListeners()
         mostrarPregunta()
     }
 
-    private fun mostrarPregunta() {
-        // Desbloqueamos botones para la nueva ronda
-        botonesBloqueados = false
+    private fun initViews() {
+        tvContador = findViewById(R.id.tvContador)
+        tvPregunta = findViewById(R.id.tvPregunta)
+        progressBar = findViewById(R.id.progressBarQuiz)
+        btnSubmit = findViewById(R.id.btnComprobar)
+        btnClose = findViewById(R.id.btnCloseQuiz)
 
-        // Obtenemos la pregunta actual
-        val preguntaActual = listaPreguntas[posicionActual]
+        layoutA = findViewById(R.id.layoutOpcionA)
+        layoutB = findViewById(R.id.layoutOpcionB)
+        layoutC = findViewById(R.id.layoutOpcionC)
+        layoutD = findViewById(R.id.layoutOpcionD)
 
-        // Actualizamos textos
-        tvContador.text = "Pregunta ${posicionActual + 1} de ${listaPreguntas.size}"
-        tvPregunta.text = preguntaActual.pregunta
-
-        // Asignamos las opciones a los botones
-        // Aseguramos que haya suficientes opciones (la IA a veces manda 3 o 5)
-        val botones = listOf(btnOpcion1, btnOpcion2, btnOpcion3, btnOpcion4)
-
-        // Reseteamos el estilo visual (Color azul original)
-        restaurarEstiloBotones(botones)
-
-        // Este bucle se encarga de mostrar las opciones y ocultar las que no sean necesarias
-        for (i in botones.indices) {
-            if (i < preguntaActual.opciones.size) {
-                botones[i].text = preguntaActual.opciones[i]
-                botones[i].visibility = android.view.View.VISIBLE
-            } else {
-                botones[i].visibility = android.view.View.GONE
-            }
-        }
+        tvA = findViewById(R.id.tvOpcionA)
+        tvB = findViewById(R.id.tvOpcionB)
+        tvC = findViewById(R.id.tvOpcionC)
+        tvD = findViewById(R.id.tvOpcionD)
     }
 
-    private fun verificarRespuesta(letraSeleccionada: String, botonPulsado: Button) {
-        if (botonesBloqueados) return // Si ya pulsó, no hacemos nada
-        botonesBloqueados = true
+    private fun setupListeners() {
+        // Al hacer clic en una tarjeta, se selecciona
+        layoutA.setOnClickListener { marcarOpcion("A") }
+        layoutB.setOnClickListener { marcarOpcion("B") }
+        layoutC.setOnClickListener { marcarOpcion("C") }
+        layoutD.setOnClickListener { marcarOpcion("D") }
 
-        val preguntaActual = listaPreguntas[posicionActual]
+        btnClose.setOnClickListener { finish() }
 
-        // Comparamos ignorando mayúsculas/minúsculas ("A" vs "a")
-        val esCorrecta = letraSeleccionada.equals(preguntaActual.respuestaCorrecta, ignoreCase = true)
-
-        if (esCorrecta) {
-            aciertos++
-            showKyroToast("¡Correcto!")
-            // Pintar verde
-            pintarBoton(botonPulsado, R.color.verde_completado) // Necesitas definir este color o usar uno de sistema
-        } else {
-            showKyroToast("Fallaste...")
-            // Pintar rojo el pulsado
-            pintarBoton(botonPulsado, R.color.rojo_expirado)
-
-            // Pintar verde el que ERA correcto para que el usuario lo sepa
-            iluminarRespuestaCorrecta(preguntaActual.respuestaCorrecta)
-
-            // Mostrando la explicación de la IA en un SnackBar largo
-            if (preguntaActual.explicacion.isNotEmpty()) {
-                // Busca la vista raíz para anclar el mensaje a la pantalla actual
-                val vistaRaiz = findViewById<android.view.View>(android.R.id.content)
-
-                com.google.android.material.snackbar.Snackbar.make(
-                    vistaRaiz,
-                    preguntaActual.explicacion,
-                    8000 // Duración en milisegundos (8 segundos)
-                ).apply {
-                    setAction("OK") { dismiss() } // Botón para cerrarlo antes
-                    setTextMaxLines(5) // Permite hasta 5 líneas de texto
-                    show()
+        btnSubmit.setOnClickListener {
+            if (revisandoRespuesta) {
+                // Si ya comprobamos, vamos a la siguiente pregunta
+                posicionActual++
+                if (posicionActual < listaPreguntas.size) {
+                    mostrarPregunta()
+                } else {
+                    finalizarQuiz()
+                }
+            } else {
+                // Si no hemos comprobado, verificamos la selección
+                if (opcionSeleccionada == null) {
+                    showKyroToast("Por favor, selecciona una respuesta")
+                } else {
+                    verificarRespuesta()
                 }
             }
         }
-
-        // Esperar 1.5 segundos y pasar a la siguiente
-        Handler(Looper.getMainLooper()).postDelayed({
-            posicionActual++
-            if (posicionActual < listaPreguntas.size) {
-                mostrarPregunta()
-            } else {
-                finalizarQuiz()
-            }
-        }, 1500)
     }
 
-    private fun iluminarRespuestaCorrecta(letraCorrecta: String) {
-        when (letraCorrecta.uppercase()) {
-            "A" -> pintarBoton(btnOpcion1, R.color.verde_completado)
-            "B" -> pintarBoton(btnOpcion2, R.color.verde_completado)
-            "C" -> pintarBoton(btnOpcion3, R.color.verde_completado)
-            "D" -> pintarBoton(btnOpcion4, R.color.verde_completado)
+    private fun marcarOpcion(letra: String) {
+        if (revisandoRespuesta) return // Evita cambiar la selección si ya se mostró si era correcta
+
+        opcionSeleccionada = letra
+
+        // Al poner 'true', el XML 'bg_answer_card' cambia al color azul instantáneamente
+        layoutA.isSelected = (letra == "A")
+        layoutB.isSelected = (letra == "B")
+        layoutC.isSelected = (letra == "C")
+        layoutD.isSelected = (letra == "D")
+
+        // Opcional: Habilitar el botón de comprobar solo cuando haya algo seleccionado
+        btnSubmit.isEnabled = true
+        btnSubmit.alpha = 1.0f
+    }
+
+    private fun mostrarPregunta() {
+        revisandoRespuesta = false
+        opcionSeleccionada = null
+        btnSubmit.text = "Comprobar Respuesta"
+
+        val preguntaActual = listaPreguntas[posicionActual]
+
+        // Actualizar Progreso
+        tvContador.text = "Pregunta ${posicionActual + 1} de ${listaPreguntas.size}"
+        val progreso = ((posicionActual + 1).toFloat() / listaPreguntas.size * 100).toInt()
+        progressBar.setProgress(progreso, true)
+
+        // Limpiar estilos y asignar textos
+        resetEstilosTarjetas()
+        tvPregunta.text = preguntaActual.pregunta
+        tvA.text = preguntaActual.opciones.getOrNull(0) ?: ""
+        tvB.text = preguntaActual.opciones.getOrNull(1) ?: ""
+        tvC.text = preguntaActual.opciones.getOrNull(2) ?: ""
+        tvD.text = preguntaActual.opciones.getOrNull(3) ?: ""
+    }
+
+    private fun verificarRespuesta() {
+        revisandoRespuesta = true
+        val preguntaActual = listaPreguntas[posicionActual]
+        val esCorrecta = opcionSeleccionada.equals(preguntaActual.respuestaCorrecta, ignoreCase = true)
+
+        if (esCorrecta) {
+            aciertos++
+            pintarResultado(opcionSeleccionada!!, true)
+        } else {
+            pintarResultado(opcionSeleccionada!!, false) // El que marcó el usuario en rojo
+            pintarResultado(preguntaActual.respuestaCorrecta, true) // La correcta en verde
+
+            // Mostrar explicación
+            if (preguntaActual.explicacion.isNotEmpty()) {
+                val snackbar = Snackbar.make(btnSubmit, preguntaActual.explicacion, Snackbar.LENGTH_INDEFINITE)
+                snackbar.setAction("Cerrar") { snackbar.dismiss() }
+                snackbar.show()
+            }
+        }
+
+        btnSubmit.text = if (posicionActual + 1 < listaPreguntas.size) "Siguiente Pregunta" else "Finalizar"
+    }
+
+
+    private fun pintarResultado(letra: String, correcta: Boolean) {
+        val layout = when (letra.uppercase()) {
+            "A" -> layoutA
+            "B" -> layoutB
+            "C" -> layoutC
+            "D" -> layoutD
+            else -> null
+        }
+
+        // Determinamos qué drawable (fondo redondeado) usar
+        val drawableResId = if (correcta) {
+            R.drawable.bg_answer_correct // El fondo verde redondeado
+        } else {
+            R.drawable.bg_answer_incorrect // El fondo rojo redondeado
+        }
+
+        // Al pintar el resultado, quitamos la selección azul primero
+        layout?.isSelected = false
+
+        // Fondo Redondeado
+        layout?.setBackgroundResource(drawableResId)
+
+        // Si el fondo es oscuro, forzamos el texto a blanco para que se lea bien
+        if (layout != null) {
+            setOptionsTextColor(layout, Color.WHITE)
+        }
+    }
+
+    // Función auxiliar para cambiar el color del texto dentro de un layout de opción
+    private fun setOptionsTextColor(layout: LinearLayout, color: Int) {
+        for (i in 0 until layout.childCount) {
+            val view = layout.getChildAt(i)
+            if (view is TextView) {
+                view.setTextColor(color)
+            }
+        }
+    }
+
+    private fun resetEstilosTarjetas() {
+        // Lista de los contenedores (los LinearLayouts)
+        val layouts = listOf(layoutA, layoutB, layoutC, layoutD)
+
+        for (layout in layouts) {
+            // 1. Quitamos selección y ponemos fondo blanco
+            layout.isSelected = false
+            layout.setBackgroundResource(R.drawable.bg_blanco_redondeado)
+
+            // Bucle que recorre todos los elementos dentro de la tarjeta (Para el texto y las letras A, B, C y D)
+            for (i in 0 until layout.childCount) {
+                val child = layout.getChildAt(i)
+                if (child is TextView) {
+                    child.setTextColor(ContextCompat.getColor(this, R.color.b500))
+                }
+            }
         }
     }
 
     private fun finalizarQuiz() {
         val builder = AlertDialog.Builder(this)
-        builder.setTitle("¡Entrenamiento completado!")
-        builder.setMessage("Has acertado $aciertos de ${listaPreguntas.size} preguntas.")
-        builder.setCancelable(false) // Obliga a pulsar el botón
-
-        builder.setPositiveButton("Volver al temario") { _, _ ->
-            finish() // Cierra esta pantalla y vuelve a la anterior
-        }
-
+        builder.setTitle("¡Test finalizado!")
+        builder.setMessage("Resultado: $aciertos de ${listaPreguntas.size}")
+        builder.setCancelable(false)
+        builder.setPositiveButton("Volver") { _, _ -> finish() }
         builder.show()
-    }
-
-    // Funciones auxiliares de diseño
-
-    private fun restaurarEstiloBotones(botones: List<Button>) {
-        // Recorre los botones y les quita los colores de la anterior ronda (Verde / Rojo) y les vuelve a poner el azul Kyro
-        for (btn in botones) {
-            btn.setBackgroundColor(R.color.b900) // Color Kyro oscuro
-            btn.isEnabled = true
-        }
-    }
-
-    // Pinta el boton dependiendo de si es acierto o error
-    private fun pintarBoton(boton: Button, colorResId: Int) {
-        val colorReal = if (colorResId == R.color.verde_completado) Color.parseColor("#4CAF50")
-        else if (colorResId == R.color.rojo_expirado) Color.parseColor("#F44336")
-        else ContextCompat.getColor(this, colorResId)
-
-        boton.setBackgroundColor(colorReal)
     }
 }

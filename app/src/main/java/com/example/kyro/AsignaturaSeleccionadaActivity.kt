@@ -11,8 +11,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
-import com.google.android.material.card.MaterialCardView
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.github.jan.supabase.gotrue.auth
@@ -25,56 +26,69 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
-class AsignaturaSeleccionadaActivity: AppCompatActivity() {
+/**
+ * Maneja la funcionalidad de la vista de asignatura seleccionada
+ * Muestra tod0 lo relacionado con esta asignatura: Examenes, Tareas y Ejercicios generados con IA
+ */
+class AsignaturaSeleccionadaActivity : AppCompatActivity() {
 
     private var asignaturaId: Long = -1
+    private var contenidoAsignatura: String = ""
     private lateinit var allEvents: List<Event>
+
+    // Contenedores existentes
     private lateinit var tasksContainer: LinearLayout
     private lateinit var examsContainer: LinearLayout
     private lateinit var containerTareas: LinearLayout
     private lateinit var containerExamenes: LinearLayout
 
+    // Para ejercicios
+    private lateinit var containerEjercicios: LinearLayout
+    private lateinit var rvEjercicios: RecyclerView
+    private lateinit var adaptadorEjercicios: EjerciciosAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_asignatura_seleccionada)
 
+        // Inicializar Vistas
         val tvTituloAsignatura = findViewById<TextView>(R.id.tvNombreAsignatura)
         val btnModificar = findViewById<TextView>(R.id.btnModificar)
+        val btnGenerarMas = findViewById<MaterialButton>(R.id.btnGenerarMasEjercicios)
+
         tasksContainer = findViewById(R.id.tasksContainer)
         examsContainer = findViewById(R.id.examsContainer)
         containerTareas = findViewById(R.id.containerTareas)
         containerExamenes = findViewById(R.id.containerExamenes)
 
-        val cardEjercicios = findViewById<MaterialCardView>(R.id.cardEjercicios)
+        // Vistas de Ejercicios
+        containerEjercicios = findViewById(R.id.containerEjercicios)
+        rvEjercicios = findViewById(R.id.rvEjercicios)
 
+        // Configurar RecyclerView de Ejercicios
+        rvEjercicios.layoutManager = LinearLayoutManager(this)
+        adaptadorEjercicios = EjerciciosAdapter(emptyList()) { ejercicio ->
+            abrirQuiz(ejercicio)
+        }
+        rvEjercicios.adapter = adaptadorEjercicios
+
+        // Recibir Datos del Intent
         val tituloRecibido = intent.getStringExtra("EXTRA_TITULO") ?: "Sin Título"
         val contenidoRecibido = intent.getStringExtra("EXTRA_CONTENIDO") ?: ""
-        val preguntasJson = intent.getStringExtra("EXTRA_JSON_PREGUNTAS")
         asignaturaId = intent.getLongExtra("EXTRA_ID", -1)
 
         tvTituloAsignatura.text = tituloRecibido
 
-        cardEjercicios.setOnClickListener {
-            if (!preguntasJson.isNullOrEmpty()) {
-                try {
-                    val gson = Gson()
-                    val tipoLista = object : TypeToken<List<PreguntaGenerada>>() {}.type
-                    val listaPreguntas: List<PreguntaGenerada> = gson.fromJson(preguntasJson, tipoLista)
-
-                    val intent = Intent(this, QuizActivity::class.java)
-                    intent.putExtra("EXTRA_PREGUNTAS", ArrayList(listaPreguntas))
-                    startActivity(intent)
-
-                } catch (e: Exception) {
-                    showKyroToast( "Error al cargar el test guardado")
-                    e.printStackTrace()
-                }
-            } else {
-                // Si no hay test guardado (porque es un tema antiguo o falló la IA)
-                showKyroToast("Esta asignatura no tiene ejercicios generados aún.")
-            }
+        // Botón generar ejercicios con IA con el id y el contenido base
+        btnGenerarMas.setOnClickListener {
+            val intent = Intent(this, GenerarTestActivity::class.java)
+            intent.putExtra("ASIGNATURA_ID", asignaturaId)
+            // Pasamos el contenido base por si el usuario quiere usarlo también
+            intent.putExtra("CONTENIDO_BASE", intent.getStringExtra("EXTRA_CONTENIDO"))
+            startActivity(intent)
         }
 
+        // Botón Modificar
         btnModificar.setOnClickListener {
             val intent = Intent(this, ModificarAsignaturaActivity::class.java)
             intent.putExtra("EXTRA_TITULO", tituloRecibido)
@@ -88,8 +102,68 @@ class AsignaturaSeleccionadaActivity: AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        // Cargamos tod0 al volver a la pantalla: Los Examenes, Tareas y ejercicios
         loadTasksAndExams()
+        cargarEjerciciosDeLaAsignatura()
     }
+
+    // --- LÓGICA DE EJERCICIOS ---
+
+    private fun cargarEjerciciosDeLaAsignatura() {
+        if (asignaturaId == -1L) return
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                // Descargar ejercicios donde asignatura_id coincida
+                val listaEjercicios = SupabaseClient.client
+                    .from("ejercicios")
+                    .select {
+                        filter {
+                            eq("asignatura_id", asignaturaId)
+                        }
+                    }
+                    .decodeList<EjercicioIA>()
+
+                withContext(Dispatchers.Main) {
+                    if (listaEjercicios.isNotEmpty()) {
+                        // Si hay ejercicios, mostramos el contenedor
+                        containerEjercicios.visibility = View.VISIBLE
+                        rvEjercicios.visibility = View.VISIBLE
+
+                        // Actualizar adaptador
+                        adaptadorEjercicios.actualizarLista(listaEjercicios)
+                    } else {
+                        // Si no hay ejercicios, ocultamos el bloque azul completo
+                        containerEjercicios.visibility = View.GONE
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    private fun abrirQuiz(ejercicio: EjercicioIA) {
+        try {
+            val gson = Gson()
+            val tipoLista = object : TypeToken<List<PreguntaGenerada>>() {}.type
+            // Usamos 'preguntas_json' (snake_case)
+            val preguntas: List<PreguntaGenerada> = gson.fromJson(ejercicio.preguntas_json, tipoLista)
+
+            if (preguntas.isNotEmpty()) {
+                val intent = Intent(this, QuizActivity::class.java)
+                intent.putExtra("EXTRA_PREGUNTAS", ArrayList(preguntas))
+                startActivity(intent)
+            } else {
+                showKyroToast("Este ejercicio parece estar vacío")
+            }
+        } catch (e: Exception) {
+            showKyroToast("Error al abrir el test")
+            e.printStackTrace()
+        }
+    }
+
+    // --- LÓGICA DE TAREAS Y EXÁMENES ---
 
     private fun loadTasksAndExams() {
         lifecycleScope.launch(Dispatchers.IO) {
@@ -119,13 +193,13 @@ class AsignaturaSeleccionadaActivity: AppCompatActivity() {
                     displayEvents(allEvents)
                 }
             } catch (e: Exception) {
-                // Maneja el error
+                // Maneja el error silenciosamente
             }
         }
     }
 
     private fun displayEvents(events: List<Event>) {
-        tasksContainer.removeAllViews()
+        tasksContainer.removeAllViews() // para evitar duplicados
         examsContainer.removeAllViews()
         val inflater = LayoutInflater.from(this)
 
@@ -275,6 +349,10 @@ class AsignaturaSeleccionadaActivity: AppCompatActivity() {
                 // Maneja el error
             }
         }
+    }
+
+    private fun showKyroToast(message: String) {
+        android.widget.Toast.makeText(this, message, android.widget.Toast.LENGTH_SHORT).show()
     }
 
     data class Event(

@@ -30,7 +30,7 @@ class GeminiService {
                 val textoSeguro = textoApuntes.take(10000)
 
                 val prompt = """
-                    Eres un profesor experto. Genera 5 preguntas tipo test basadas en este texto.
+                    Eres un profesor experto. Genera preguntas tipo test basadas en este texto.
                     
                     TEXTO:
                     "$textoSeguro"

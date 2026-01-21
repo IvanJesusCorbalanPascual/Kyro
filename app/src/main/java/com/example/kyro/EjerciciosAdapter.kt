@@ -7,9 +7,15 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 class EjerciciosAdapter(
-    private val listaEjercicios: List<Ejercicio>,
-    private val onItemClicked: (Ejercicio) -> Unit
+    private var listaEjercicios: List<EjercicioIA>,
+    private val onClick: (EjercicioIA) -> Unit
 ) : RecyclerView.Adapter<EjerciciosAdapter.EjercicioViewHolder>() {
+
+    // Recarga la lista cuando se actualizan los ejercicios desde la BD
+    fun actualizarLista(nuevaLista: List<EjercicioIA>) {
+        listaEjercicios = nuevaLista
+        notifyDataSetChanged()
+    }
 
     // Prepara el diseño del XML
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EjercicioViewHolder {
@@ -22,12 +28,11 @@ class EjerciciosAdapter(
     override fun onBindViewHolder(holder: EjercicioViewHolder, position: Int) {
         val ejercicio = listaEjercicios[position]
 
-        holder.tvTitulo.text = ejercicio.titulo
-        holder.tvDescripcion.text = ejercicio.descripcion
-
+        holder.tvTitulo.text = if (ejercicio.nombre.isNotEmpty()) ejercicio.nombre else "Test Generado ${position + 1}"
+        holder.tvDescripcion.text = "Toca para realizar este test"
         // Define la acción al hacer clic en un elemento
         holder.itemView.setOnClickListener {
-            onItemClicked(ejercicio)
+            onClick(ejercicio)
         }
     }
 

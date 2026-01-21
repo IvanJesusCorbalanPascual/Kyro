@@ -126,11 +126,11 @@
     <string name="asignatura_subtitulo_lista">Asignaturas</string>
     <string name="asignatura_lista_vacia">No hay asignaturas guardadas.</string>
     <string name="asignatura_subtitulo_nuevo">Cargar Nueva Asignatura</string>
-    <string name="asignatura_desc_ia">Sube tus apuntes, PDFs o enlaces, nuestra IA lo procesará y generará ejercicios.</string>
+    <string name="asignatura_desc_ia">Sube tus apuntes, PDFs o enlaces a tu asignatura.</string>
     <string name="asignatura_hint_titulo_nuevo">Título (Ej: Java POO Tema 1)</string>
     <string name="asignatura_btn_adjuntar">Pulse aquí para adjuntar archivos</string>
     <string name="asignatura_hint_contenido">También puedes pegar el texto de la asignatura aquí...</string>
-    <string name="asignatura_btn_generar">Generar Ejercicios</string>
+    <string name="asignatura_btn_generar">Guardar Asignatura</string>
 
     <!-- ASIGNATURA SELECCIONADA -->
     <string name="asignatura_sel_titulo">Asignatura Seleccionada</string>

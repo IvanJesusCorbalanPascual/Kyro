@@ -124,7 +124,7 @@
     <string name="asignatura_subtitulo_lista">Subjects</string>
     <string name="asignatura_lista_vacia">No saved subjects.</string>
     <string name="asignatura_subtitulo_nuevo">Upload New Subject</string>
-    <string name="asignatura_desc_ia">Upload your notes, PDFs, or links. Our AI will process it and generate exercises.</string>
+    <string name="asignatura_desc_ia">Upload your notes, PDFs, or links to your subject.</string>
     <string name="asignatura_hint_titulo_nuevo">Title (e.g. Java OOP Topic 1)</string>
     <string name="asignatura_btn_adjuntar">Tap here to attach files</string>
     <string name="asignatura_hint_contenido">You can also paste the subject text here...</string>

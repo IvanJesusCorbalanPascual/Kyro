@@ -1,77 +1,239 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:padding="24dp"
-    android:gravity="center_horizontal"
-    android:background="#F8F9FA"
-    android:fitsSystemWindows="true">
+    android:background="#F5F5F5"
+    android:padding="24dp">
+
+    <ImageButton
+        android:id="@+id/btnCloseQuiz"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/ic_cross"
+        app:tint="#757575"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
+    <TextView
+        android:id="@+id/tvQuizTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins"
+        android:text="Quiz"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/btnCloseQuiz"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/btnCloseQuiz" />
 
     <TextView
         android:id="@+id/tvContador"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Pregunta 1 de 5"
+        android:layout_marginTop="24dp"
         android:fontFamily="@font/poppins"
+        android:text="Pregunta 1 de 5"
         android:textColor="#757575"
-        android:textSize="16sp"
-        android:layout_marginBottom="32dp"/>
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvQuizTitle" />
 
-    <TextView
-        android:id="@+id/tvPregunta"
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/progressBarQuiz"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Cargando pregunta..."
+        android:layout_marginTop="8dp"
+        android:progress="20"
+        app:indicatorColor="#00A8E8"
+        app:trackColor="#E0E0E0"
+        app:trackCornerRadius="4dp"
+        app:layout_constraintTop_toBottomOf="@+id/tvContador" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardQuestion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        app:cardBackgroundColor="@android:color/white"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="4dp"
+        app:strokeWidth="0dp"
+        app:layout_constraintTop_toBottomOf="@+id/progressBarQuiz">
+
+        <TextView
+            android:id="@+id/tvPregunta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins"
+            android:padding="24dp"
+            android:text="Cargando pregunta..."
+            android:textColor="#212121"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:lineSpacingExtra="4dp"/>
+    </com.google.android.material.card.MaterialCardView>
+
+    <LinearLayout
+        android:id="@+id/layoutOptions"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="16dp"
+        android:orientation="vertical"
+        android:gravity="center_vertical"
+        app:layout_constraintBottom_toTopOf="@+id/btnComprobar"
+        app:layout_constraintTop_toBottomOf="@+id/cardQuestion">
+
+        <LinearLayout
+            android:id="@+id/layoutOpcionA"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/bg_blanco_redondeado"
+            android:orientation="horizontal"
+            android:padding="16dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:animateLayoutChanges="true">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins"
+                android:text="A)"
+                android:textColor="@color/b500"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvOpcionA"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:fontFamily="@font/poppins"
+                android:text="Opción A"
+                android:textColor="@color/b500"
+                android:textSize="16sp"
+                android:duplicateParentState="true"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutOpcionB"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/bg_blanco_redondeado"
+            android:orientation="horizontal"
+            android:padding="16dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:animateLayoutChanges="true">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins"
+                android:text="B)"
+                android:textColor="@color/b500"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvOpcionB"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:fontFamily="@font/poppins"
+                android:text="Opción B"
+                android:textColor="@color/b500"
+                android:textSize="16sp"
+                android:duplicateParentState="true"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutOpcionC"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:background="@drawable/bg_blanco_redondeado"
+            android:orientation="horizontal"
+            android:padding="16dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:animateLayoutChanges="true">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins"
+                android:text="C)"
+                android:textColor="@color/b500"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvOpcionC"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:fontFamily="@font/poppins"
+                android:text="Opción C"
+                android:textColor="@color/b500"
+                android:textSize="16sp"
+                android:duplicateParentState="true"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutOpcionD"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_blanco_redondeado"
+            android:orientation="horizontal"
+            android:padding="16dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:animateLayoutChanges="true">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins"
+                android:text="D)"
+                android:textColor="@color/b500"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvOpcionD"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:fontFamily="@font/poppins"
+                android:text="Opción D"
+                android:textColor="@color/b500"
+                android:textSize="16sp"
+                android:duplicateParentState="true"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnComprobar"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
         android:fontFamily="@font/poppins"
-        android:textColor="#000000"
-        android:textSize="22sp"
+        android:text="Comprobar"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
         android:textStyle="bold"
-        android:textAlignment="center"
-        android:layout_marginBottom="48dp"/>
+        app:backgroundTint="#00A8E8"
+        app:cornerRadius="12dp"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
-    <Button
-        android:id="@+id/btnOpcion1"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:text="Opción A"
-        android:fontFamily="@font/poppins"
-        android:background="@drawable/bg_azul_oscuro_kyro"
-        app:backgroundTint="@null"
-        android:textColor="#FFFFFF"
-        android:layout_marginBottom="20dp"/>
-
-    <Button
-        android:id="@+id/btnOpcion2"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:text="Opción B"
-        android:fontFamily="@font/poppins"
-        android:background="@drawable/bg_azul_oscuro_kyro"
-        app:backgroundTint="@null"
-        android:textColor="#FFFFFF"
-        android:layout_marginBottom="20dp"/>
-
-    <Button
-        android:id="@+id/btnOpcion3"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:text="Opción C"
-        android:fontFamily="@font/poppins"
-        android:background="@drawable/bg_azul_oscuro_kyro"
-        app:backgroundTint="@null"
-        android:textColor="#FFFFFF"
-        android:layout_marginBottom="20dp"/>
-
-    <Button
-        android:id="@+id/btnOpcion4"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:text="Opción D"
-        android:fontFamily="@font/poppins"
-        android:background="@drawable/bg_azul_oscuro_kyro"
-        app:backgroundTint="@null"
-        android:textColor="#FFFFFF"/>
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

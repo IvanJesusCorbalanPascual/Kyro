@@ -296,7 +296,6 @@ class AsignaturaActivity : AppCompatActivity() {
         intent.putExtra("EXTRA_TITULO", asignatura.titulo)
         intent.putExtra("EXTRA_CONTENIDO", asignatura.contenido)
         intent.putExtra("EXTRA_ID", asignatura.id)
-        intent.putExtra("EXTRA_JSON_PREGUNTAS", asignatura.preguntas_json)
 
         startActivity(intent)
     }
