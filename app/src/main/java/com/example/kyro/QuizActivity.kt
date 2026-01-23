@@ -41,6 +41,8 @@ class QuizActivity : AppCompatActivity() {
     private var opcionSeleccionada: String? = null // Guarda "A", "B", "C" o "D"
     private var revisandoRespuesta = false // Indica si estamos viendo el resultado (verde/rojo)
 
+    private lateinit var tvExplanation: TextView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_quiz)
@@ -66,6 +68,7 @@ class QuizActivity : AppCompatActivity() {
         progressBar = findViewById(R.id.progressBarQuiz)
         btnSubmit = findViewById(R.id.btnComprobar)
         btnClose = findViewById(R.id.btnCloseQuiz)
+        tvExplanation = findViewById(R.id.tvExplanation)
 
         layoutA = findViewById(R.id.layoutOpcionA)
         layoutB = findViewById(R.id.layoutOpcionB)
@@ -87,7 +90,7 @@ class QuizActivity : AppCompatActivity() {
 
         btnClose.setOnClickListener { finish() }
 
-        btnSubmit.setOnClickListener {
+        btnSubmit.setOnClickListener  {
             if (revisandoRespuesta) {
                 // Si ya comprobamos, vamos a la siguiente pregunta
                 posicionActual++
@@ -118,7 +121,7 @@ class QuizActivity : AppCompatActivity() {
         layoutC.isSelected = (letra == "C")
         layoutD.isSelected = (letra == "D")
 
-        // Opcional: Habilitar el botón de comprobar solo cuando haya algo seleccionado
+        // Activando el botón de comprobar solo cuando haya una opcion seleccionada
         btnSubmit.isEnabled = true
         btnSubmit.alpha = 1.0f
     }
@@ -127,6 +130,8 @@ class QuizActivity : AppCompatActivity() {
         revisandoRespuesta = false
         opcionSeleccionada = null
         btnSubmit.text = "Comprobar Respuesta"
+
+        tvExplanation.visibility = View.GONE
 
         val preguntaActual = listaPreguntas[posicionActual]
 
@@ -152,15 +157,15 @@ class QuizActivity : AppCompatActivity() {
         if (esCorrecta) {
             aciertos++
             pintarResultado(opcionSeleccionada!!, true)
+            showKyroToast("Correcto!")
         } else {
             pintarResultado(opcionSeleccionada!!, false) // El que marcó el usuario en rojo
             pintarResultado(preguntaActual.respuestaCorrecta, true) // La correcta en verde
 
-            // Mostrar explicación
+            // Mostrando explicación
             if (preguntaActual.explicacion.isNotEmpty()) {
-                val snackbar = Snackbar.make(btnSubmit, preguntaActual.explicacion, Snackbar.LENGTH_INDEFINITE)
-                snackbar.setAction("Cerrar") { snackbar.dismiss() }
-                snackbar.show()
+                tvExplanation.text = "Explicación: ${preguntaActual.explicacion}"
+                tvExplanation.visibility = View.VISIBLE
             }
         }
 
@@ -211,7 +216,7 @@ class QuizActivity : AppCompatActivity() {
         val layouts = listOf(layoutA, layoutB, layoutC, layoutD)
 
         for (layout in layouts) {
-            // 1. Quitamos selección y ponemos fondo blanco
+            // Quitamos selección y ponemos fondo blanco
             layout.isSelected = false
             layout.setBackgroundResource(R.drawable.bg_blanco_redondeado)
 

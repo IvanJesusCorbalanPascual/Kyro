@@ -94,6 +94,11 @@
             android:exported="false"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".KyroAiActivity"
+            android:screenOrientation="fullSensor"
+            android:windowSoftInputMode="adjustResize" />
+
         <service
             android:name=".MonitorService"
             android:enabled="true"

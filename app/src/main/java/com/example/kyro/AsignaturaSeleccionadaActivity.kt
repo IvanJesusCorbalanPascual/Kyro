@@ -27,13 +27,12 @@ import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
 /**
- * Maneja la funcionalidad de la vista de asignatura seleccionada
- * Muestra tod0 lo relacionado con esta asignatura: Examenes, Tareas y Ejercicios generados con IA
+ * Maneja la funcionalidad de la vista de asignatura seleccionada.
+ * Muestra todos los elementos de la Asignatura: Exámenes, Tareas y Ejercicios.
  */
 class AsignaturaSeleccionadaActivity : AppCompatActivity() {
 
     private var asignaturaId: Long = -1
-    private var contenidoAsignatura: String = ""
     private lateinit var allEvents: List<Event>
 
     // Contenedores existentes
@@ -46,6 +45,7 @@ class AsignaturaSeleccionadaActivity : AppCompatActivity() {
     private lateinit var containerEjercicios: LinearLayout
     private lateinit var rvEjercicios: RecyclerView
     private lateinit var adaptadorEjercicios: EjerciciosAdapter
+    private lateinit var tvSinEjercicios: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,6 +64,7 @@ class AsignaturaSeleccionadaActivity : AppCompatActivity() {
         // Vistas de Ejercicios
         containerEjercicios = findViewById(R.id.containerEjercicios)
         rvEjercicios = findViewById(R.id.rvEjercicios)
+        tvSinEjercicios = findViewById(R.id.tvSinEjercicios)
 
         // Configurar RecyclerView de Ejercicios
         rvEjercicios.layoutManager = LinearLayoutManager(this)
@@ -79,12 +80,11 @@ class AsignaturaSeleccionadaActivity : AppCompatActivity() {
 
         tvTituloAsignatura.text = tituloRecibido
 
-        // Botón generar ejercicios con IA con el id y el contenido base
+        // Botón generar ejercicios con IA
         btnGenerarMas.setOnClickListener {
             val intent = Intent(this, GenerarTestActivity::class.java)
             intent.putExtra("ASIGNATURA_ID", asignaturaId)
-            // Pasamos el contenido base por si el usuario quiere usarlo también
-            intent.putExtra("CONTENIDO_BASE", intent.getStringExtra("EXTRA_CONTENIDO"))
+            intent.putExtra("CONTENIDO_BASE", contenidoRecibido)
             startActivity(intent)
         }
 
@@ -102,7 +102,6 @@ class AsignaturaSeleccionadaActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        // Cargamos tod0 al volver a la pantalla: Los Examenes, Tareas y ejercicios
         loadTasksAndExams()
         cargarEjerciciosDeLaAsignatura()
     }
@@ -114,7 +113,7 @@ class AsignaturaSeleccionadaActivity : AppCompatActivity() {
 
         lifecycleScope.launch(Dispatchers.IO) {
             try {
-                // Descargar ejercicios donde asignatura_id coincida
+                // Descargar ejercicios de Supabase
                 val listaEjercicios = SupabaseClient.client
                     .from("ejercicios")
                     .select {
@@ -125,16 +124,19 @@ class AsignaturaSeleccionadaActivity : AppCompatActivity() {
                     .decodeList<EjercicioIA>()
 
                 withContext(Dispatchers.Main) {
-                    if (listaEjercicios.isNotEmpty()) {
-                        // Si hay ejercicios, mostramos el contenedor
-                        containerEjercicios.visibility = View.VISIBLE
-                        rvEjercicios.visibility = View.VISIBLE
 
-                        // Actualizar adaptador
+                    // El contenedor siempre está visible para que el botón de GENERAR MAS EJERCICIOS se vea.
+                    containerEjercicios.visibility = View.VISIBLE
+
+                    if (listaEjercicios.isNotEmpty()) {
+                        // Si hay ejercicios: mostramos lista, ocultamos mensaje "vacío"
+                        rvEjercicios.visibility = View.VISIBLE
+                        tvSinEjercicios.visibility = View.GONE
                         adaptadorEjercicios.actualizarLista(listaEjercicios)
                     } else {
-                        // Si no hay ejercicios, ocultamos el bloque azul completo
-                        containerEjercicios.visibility = View.GONE
+                        // Si NO hay ejercicios: ocultamos lista, mostramos mensaje "vacío"
+                        rvEjercicios.visibility = View.GONE
+                        tvSinEjercicios.visibility = View.VISIBLE
                     }
                 }
             } catch (e: Exception) {
@@ -147,7 +149,6 @@ class AsignaturaSeleccionadaActivity : AppCompatActivity() {
         try {
             val gson = Gson()
             val tipoLista = object : TypeToken<List<PreguntaGenerada>>() {}.type
-            // Usamos 'preguntas_json' (snake_case)
             val preguntas: List<PreguntaGenerada> = gson.fromJson(ejercicio.preguntas_json, tipoLista)
 
             if (preguntas.isNotEmpty()) {
@@ -185,21 +186,32 @@ class AsignaturaSeleccionadaActivity : AppCompatActivity() {
                 }.decodeList<Examen>()
 
                 val events = mutableListOf<Event>()
-                tareas.forEach { event -> event.id?.let { events.add(Event(it, "tarea", event.nombre_tarea, event.descripcion, event.fecha_entrega, event.hora_entrega, event.completada, event.notificacion1, event.notificacion2, "")) } }
-                examenes.forEach { event -> event.id?.let { events.add(Event(it, "examen", event.nombre_examen, event.descripcion, event.fecha_examen, event.hora_examen, event.completada, event.notificacion1, event.notificacion2, "")) } }
+
+                // Conversión segura de IDs a Long para evitar errores de tipo
+                tareas.forEach { event ->
+                    event.id?.let { idVal ->
+                        events.add(Event(idVal.toString().toLong(), "tarea", event.nombre_tarea, event.descripcion, event.fecha_entrega, event.hora_entrega, event.completada, event.notificacion1, event.notificacion2, ""))
+                    }
+                }
+                examenes.forEach { event ->
+                    event.id?.let { idVal ->
+                        events.add(Event(idVal.toString().toLong(), "examen", event.nombre_examen, event.descripcion, event.fecha_examen, event.hora_examen, event.completada, event.notificacion1, event.notificacion2, ""))
+                    }
+                }
+
                 allEvents = events
 
                 withContext(Dispatchers.Main) {
                     displayEvents(allEvents)
                 }
             } catch (e: Exception) {
-                // Maneja el error silenciosamente
+                // Error silencioso
             }
         }
     }
 
     private fun displayEvents(events: List<Event>) {
-        tasksContainer.removeAllViews() // para evitar duplicados
+        tasksContainer.removeAllViews()
         examsContainer.removeAllViews()
         val inflater = LayoutInflater.from(this)
 
@@ -355,6 +367,7 @@ class AsignaturaSeleccionadaActivity : AppCompatActivity() {
         android.widget.Toast.makeText(this, message, android.widget.Toast.LENGTH_SHORT).show()
     }
 
+    // Definición de Event interna para evitar conflictos de clases si no usas Models.kt
     data class Event(
         val id: Long,
         val type: String,

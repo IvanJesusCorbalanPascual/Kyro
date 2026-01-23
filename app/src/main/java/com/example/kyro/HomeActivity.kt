@@ -297,8 +297,7 @@ class HomeActivity : AppCompatActivity() {
     private fun setupQuickActions() {
         val btnQuickAI = findViewById<MaterialCardView>(R.id.btnQuickAI)
         btnQuickAI.setOnClickListener {
-            //Toast.makeText(this, "Abriendo Kyro IA...", Toast.LENGTH_SHORT).show()
-            showKyroToast("Abriendo Kyro IA...")
+            startActivity(Intent(this, KyroAiActivity::class.java))
         }
 
         // Botón para ir a asignatura

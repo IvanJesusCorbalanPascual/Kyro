@@ -12,7 +12,7 @@
         android:title="@string/nav_agenda" />
 
     <item
-        android:id="@+id/nav_ai_chat"
+        android:id="@+id/nav_kyro_ai"
         android:icon="@drawable/logo_kyro_no_bg"
         android:title="@string/nav_ia" />
 

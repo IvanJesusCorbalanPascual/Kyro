@@ -3,7 +3,6 @@ package com.example.kyro
 import android.os.Bundle
 import android.widget.CheckBox
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,6 +18,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+/**
+ * Clase que se encarga de recolectar los archivos seleccionados por el usuario, pasarselo a la clase GeminiService
+ * para que esta genere el prompt y se lo pase a la IA para que esta genera las preguntas tipo test.
+ * Luego recoge estas preguntas y genera el tipo test con una vista didactica para el usuario.
+ */
 class GenerarTestActivity : AppCompatActivity() {
 
     private var asignaturaId: Long = -1
@@ -85,7 +89,8 @@ class GenerarTestActivity : AppCompatActivity() {
                         adapter = SeleccionArchivosAdapter(listaArchivos)
                         rvArchivos.adapter = adapter
                     } else {
-                        findViewById<TextView>(R.id.tvSinArchivos).visibility = android.view.View.VISIBLE
+                        findViewById<TextView>(R.id.tvSinArchivos).visibility =
+                            android.view.View.VISIBLE
                         rvArchivos.visibility = android.view.View.GONE
                         adapter = SeleccionArchivosAdapter(emptyList())
                     }
@@ -110,7 +115,7 @@ class GenerarTestActivity : AppCompatActivity() {
         }
 
         if (!usarBase && archivosSeleccionados.isEmpty()) {
-            Toast.makeText(this, "Selecciona al menos una fuente (apuntes o archivos)", Toast.LENGTH_SHORT).show()
+            showKyroToast("Selecciona al menos una fuente (apuntes o archivos)")
             return
         }
 
@@ -154,14 +159,12 @@ class GenerarTestActivity : AppCompatActivity() {
     }
 
     private fun generarTestConIA(nombreTest: String, archivos: List<Archivo>, usarBase: Boolean) {
-        // Recoger valores de la UI
         val numPreguntas = sliderPreguntas.value.toInt()
 
-        // Obtener dificultad del Chip seleccionado
         val dificultad = when (chipGroupDificultad.checkedChipId) {
-            R.id.chipFacil -> "Fácil, para principiantes"
-            R.id.chipMedio -> "Intermedia, nivel estándar universitario"
-            R.id.chipDificil -> "Difícil, con preguntas complejas y de razonamiento"
+            R.id.chipFacil -> "Fácil (principiante)"
+            R.id.chipMedio -> "Media (estándar universitario)"
+            R.id.chipDificil -> "Difícil (análisis complejo)"
             else -> "Media"
         }
 
@@ -169,58 +172,58 @@ class GenerarTestActivity : AppCompatActivity() {
 
         lifecycleScope.launch(Dispatchers.IO) {
             try {
-                // CONSTRUCCIÓN DEL PROMPT MEJORADO
-                val promptBuilder = StringBuilder()
-                promptBuilder.append("Genera un examen tipo test.\n")
-                promptBuilder.append("Configuración obligatoria:\n")
-                promptBuilder.append("- Cantidad de preguntas: $numPreguntas\n")
-                promptBuilder.append("- Nivel de dificultad: $dificultad\n")
-                promptBuilder.append("- Formato de salida: JSON Array estricto.\n\n")
-
-                promptBuilder.append("Material de estudio:\n")
+                // Preparando el contenido de estudio con el que hacer las preguntas
+                val contenidoBuilder = StringBuilder()
 
                 if (usarBase && contenidoBaseAsignatura.isNotEmpty()) {
-                    promptBuilder.append("--- Apuntes Generales ---\n$contenidoBaseAsignatura\n\n")
+                    contenidoBuilder.append("APUNTES DE LA ASIGNATURA:\n$contenidoBaseAsignatura\n\n")
                 }
 
-                archivos.forEach { archivo ->
-                    promptBuilder.append("--- Archivo: ${archivo.nombre} ---\n")
-                    // Aquí iría el contenido real si tuvieras OCR.
-                    // Por ahora la IA intentará inferir por el nombre o contexto previo.
+                if (archivos.isNotEmpty()) {
+                    contenidoBuilder.append("TEMAS ADICIONALES:\n")
+                    archivos.forEach { archivo ->
+                        // --- POR ARREGLAR ---
+                        // OJO: Aquí solo estamos pasando el nombre del archivo.
+                        // Si no tienes OCR o lectura de PDF, la IA inventará preguntas basándose solo en el título.
+                        contenidoBuilder.append("- TEMA/ARCHIVO: ${archivo.nombre}\n")
+                    }
                 }
 
-                // Llamada a Gemini
+                // LLamar a GeminiService la cual se encargará de hacer la consulta con la IA
                 val servicioIA = GeminiService()
-                // Nota: Asegúrate de que tu función generarTestDeApuntes en GeminiService
-                // NO tenga hardcodeado el número de preguntas, o pásale el prompt completo.
-                val preguntasGeneradas = servicioIA.generarTestDeApuntes(promptBuilder.toString())
+
+                val preguntasGeneradas = servicioIA.generarTestDeApuntes(
+                    textoApuntes = contenidoBuilder.toString(),
+                    dificultad = dificultad,
+                    cantidad = numPreguntas
+                )
 
                 if (preguntasGeneradas.isNotEmpty()) {
+                    // Guardar en Supabase igual que antes
                     val gson = Gson()
                     val preguntasJson = gson.toJson(preguntasGeneradas)
 
                     val nuevoEjercicio = EjercicioIA(
                         asignatura_id = asignaturaId,
-                        nombre = nombreTest, // Usamos el nombre que puso el usuario
+                        nombre = nombreTest,
                         preguntas_json = preguntasJson
                     )
-
                     SupabaseClient.client.from("ejercicios").insert(nuevoEjercicio)
 
                     withContext(Dispatchers.Main) {
-                        Toast.makeText(this@GenerarTestActivity, "¡Test '$nombreTest' creado!", Toast.LENGTH_SHORT).show()
+                        showKyroToast("¡Test creado!")
                         finish()
                     }
                 } else {
                     withContext(Dispatchers.Main) {
-                        Toast.makeText(this@GenerarTestActivity, "Error al generar preguntas", Toast.LENGTH_SHORT).show()
+                        showKyroToast("La IA no generó preguntas válidas")
                     }
                 }
 
             } catch (e: Exception) {
                 e.printStackTrace()
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(this@GenerarTestActivity, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                    showKyroToast("Error: ${e.message}")
                 }
             } finally {
                 withContext(Dispatchers.Main) {

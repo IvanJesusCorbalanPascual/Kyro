@@ -9,83 +9,123 @@ import kotlinx.coroutines.withContext
 
 /**
  * Clase que se encarga de crear y hablar con un modelo de IA (En este caso Gemini 2-5 flash)
- * para generar preguntas tipo test basadas en un texto de apuntes y devolverlas en un JSON
+ *
+ * TEST: generar una cantidad de preguntas tipo test definida por el usuasrio, así como la dificultad de estas,
+ * basadas en un texto de apuntes y devolverlas en un JSON
  * para ser convertidas mas tarde en un tipo test didactico para el usuario
+ *
+ * ASISTENTE KYRO AI: Resumir, Explicar o Esquematizar un texto pasado por el usuario
  */
 class GeminiService {
 
-    // Extrayendo la API_KEY de local.properties
     private val apiKey = BuildConfig.API_KEY
-
-    // Creando el modelo Generativo de IA con la API_KEY y definiendo su modelo
     private val generativeModel = GenerativeModel(
         modelName = "gemini-2.5-flash",
         apiKey = apiKey
     )
 
-    suspend fun generarTestDeApuntes(textoApuntes: String): List<PreguntaGenerada> {
+    /** Aqui es donde ocurre la Magia, este metodo recoge la informacion pasada por el usuario,
+     * así como los parametros de dificultad y cantidad de preguntas, y genera unos ejercicios tipo test
+     * en forma de JSON para que pueda ser convertido en un tipo test didactico para el usuario*/
+
+    suspend fun generarTestDeApuntes(
+        textoApuntes: String,
+        dificultad: String,
+        cantidad: Int
+    ): List<PreguntaGenerada> {
         return withContext(Dispatchers.IO) {
             try {
-                // Limitamos el texto para no saturar el token limit si el apunte es enorme
-                val textoSeguro = textoApuntes.take(10000)
+                // Limitamos el texto por seguridad (Token limit)
+                val textoSeguro = textoApuntes.take(20000)
 
+                // CONSTRUIMOS EL PROMPT AQUÍ, USANDO LOS PARÁMETROS
                 val prompt = """
-                    Eres un profesor experto. Genera preguntas tipo test basadas en este texto.
+                    TU ROL:
+                    Eres un profesor veterano, bueno, inteligente y experto creando test.
+                    Llevas muchos años en el mundo de la enseñanza, sabes lo que necesitas los alumnos y 
+                    eres capaz de crear estos test de manera tan eficiente que los estudiantes pueden aprender de ellos.
+                    Ademas te gusta optimizar tanto tus preguntas como tus respuestas basándote en la dificultad que se te exige:
+                    - Facil: Preguntas sencillas, faciles de entender, que no sean demasiado largas, el estudiante no tiene mucho conocimiento sobre el tema
+                    - Medio: Preguntas normales, lonfitud normal, ni muy faciles ni demasiado complicadas, el estudiante tiene una idea sobre el tema y le gustaria que lo apliquen
+                    - Dificil: Preguntas para un estudiante que quiere ponerse a prueba, sabe mucho del tema y quiere preguntas que no cualquiera sabría responder, que sean un poco enrevesadas,
+                      puedes hacer tanto las preguntas como las respeustas largas, pero tampoco superemos las 30 palabras.
                     
-                    TEXTO:
+                    TU TAREA:
+                    Genera un examen tipo test de $cantidad preguntas.
+                    Nivel de dificultad: $dificultad.
+                    Basado estrictamente en el tema del siguiente contenido el cual ha sido escrito por un estudiante 
+                    (OJO, no cogas literalmente este texto y hagas preguntas de el, sino que cogas el contenido, lo analices en profundidad
+                    y luego haz preguntas variadas sobre él):
+                    
+                    --- INICIO CONTENIDO ---
                     "$textoSeguro"
+                    --- FIN CONTENIDO ---
                     
-                    REGLAS OBLIGATORIAS:
-                    1. Responde ÚNICAMENTE con un JSON Array válido.
+                    REGLAS OBLIGATORIAS DE FORMATO:
+                    1. Responde ÚNICAMENTE con un JSON Array válido. Sin markdown, sin explicaciones previas.
                     2. Cada pregunta debe tener EXACTAMENTE 4 opciones.
                     3. El campo "respuestaCorrecta" debe ser la letra: "A", "B", "C" o "D".
-                    4. Formato JSON esperado:
+                    4. NUNCA incluyas "a)", "b)", "c)" o "d)" en la respuesta, solo el texto de la respuesta.
+                    5. Estructura JSON exacta:
                     [
                       {
-                        "pregunta": "¿Pregunta?",
+                        "pregunta": "¿Enunciado de la pregunta?",
                         "opciones": ["Opción A", "Opción B", "Opción C", "Opción D"],
                         "respuestaCorrecta": "A",
-                        "explicacion": "Breve explicación de por qué es la correcta."
+                        "explicacion": "Breve explicación de la respuesta."
                       }
                     ]
-                """.trimIndent() // Para eliminar espacios en blanco innecesarios
+                """.trimIndent()
 
                 val response = generativeModel.generateContent(prompt)
 
-                // Obtención segura del texto: tomamos la primera version de la respuesta de la IA (puede haber varias)
-                // Entramos al contenido que puede estar dividido por partes (texto, imagenes, etc...)
-                // Si no hay texto, devuelve una lista vacía
                 val parte = response.candidates.firstOrNull()?.content?.parts?.firstOrNull()
                 val textoRespuesta = if (parte is com.google.ai.client.generativeai.type.TextPart) {
                     parte.text
                 } else {
-                    "" // Si la respuesta no es de texto, devuelve una cadena vacía
+                    ""
                 }
 
-                // Para ver la respuesta primal por la terminal (logcat)
                 Log.d("KyroAI_RAW", "Respuesta cruda:\n$textoRespuesta")
 
-                // Antes de intentar parsear a preguntas tipo test, verificamos que no sea una cadena vacía
-                if (textoRespuesta.isBlank()) {
-                    return@withContext emptyList()
-                }
+                if (textoRespuesta.isBlank()) return@withContext emptyList()
 
-                // Limpieza de Markdown (```json ... ```)
-                // Basicamente es por si la IA devuelve algo que no debe: Aqui tienes tu json: / Claro!, estas son tus preguntas:
+                // Limpieza robusta del JSON
                 val jsonLimpio = textoRespuesta
                     .replace("```json", "")
                     .replace("```", "")
                     .trim()
 
-                val gson = Gson() // Creando una instancia Gson
+                val gson = Gson()
                 val tipoLista = object : TypeToken<List<PreguntaGenerada>>() {}.type
-
-                // Convertimos cada objeto del JSON a un objeto Kotlin con la herramienta Gson
                 return@withContext gson.fromJson(jsonLimpio, tipoLista)
 
             } catch (e: Exception) {
                 Log.e("KyroAI", "❌ Error al conectar o parsear: ${e.message}")
                 return@withContext emptyList()
+            }
+        }
+    }
+
+    // Para la vista del Asistente KyroAI
+    suspend fun consultarAsistente(texto: String, tipo: String): String {
+        return withContext(Dispatchers.IO) {
+            try {
+                val promptInstruccion = when (tipo) {
+                    "RESUMIR" -> "Eres un experto tomando notas. Haz un resumen conciso y esquemático con los puntos clave del siguiente texto:"
+                    "EXPLICAR" -> "Eres un profesor didáctico. Explica el siguiente concepto de forma sencilla y clara para un estudiante, usando analogías si ayuda:"
+                    "ESQUEMA" -> "Genera un esquema estructurado (con guiones y subguiones) que organice lógicamente el siguiente contenido:"
+                    else -> "Ayuda con este texto:"
+                }
+
+                val promptFinal = "$promptInstruccion\n\nTEXTO:\n\"$texto\""
+
+                val response = generativeModel.generateContent(promptFinal)
+
+                // Devuelve solo el texto limpio
+                return@withContext response.text ?: "No pude generar una respuesta."
+            } catch (e: Exception) {
+                return@withContext "Error de conexión: ${e.message}"
             }
         }
     }
