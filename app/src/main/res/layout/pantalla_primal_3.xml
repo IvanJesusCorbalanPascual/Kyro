@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="24dp"
-    android:background="@drawable/img_fondo_primal">
+    android:background="@drawable/img_fondo_primal"
+    android:fitsSystemWindows="true">
 
     <ImageView
         android:id="@+id/imgKyroLogo"

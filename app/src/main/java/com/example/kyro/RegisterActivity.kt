@@ -2,10 +2,13 @@ package com.example.kyro
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
@@ -16,17 +19,20 @@ import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import io.github.jan.supabase.gotrue.auth
 import io.github.jan.supabase.gotrue.providers.Google
 import io.github.jan.supabase.gotrue.providers.builtin.Email
+import io.github.jan.supabase.gotrue.providers.builtin.IDToken
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
-import io.github.jan.supabase.gotrue.providers.builtin.IDToken
 
 class RegisterActivity : AppCompatActivity() {
 
-    // ID DE CLIENTE WEB" DE GOOGLE CLOUD
+    // ID DE CLIENTE WEB DE GOOGLE CLOUD
     private val WEB_CLIENT_ID = "500842940773-ea8mcvvn13uqe773t99ql0p91ct41oj2.apps.googleusercontent.com"
+
+    private lateinit var progressBar: ProgressBar
+    private lateinit var btnRegister: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,9 +43,10 @@ class RegisterActivity : AppCompatActivity() {
         val etEmail = findViewById<EditText>(R.id.etEmail)
         val etPassword = findViewById<EditText>(R.id.etPassword)
         val etConfirmPassword = findViewById<EditText>(R.id.etConfirmPassword)
-        val btnRegister = findViewById<Button>(R.id.btnRegister)
+        btnRegister = findViewById(R.id.btnRegister)
         val tvGoToLogin = findViewById<TextView>(R.id.tvGoToLogin)
-        val btnGoogle = findViewById<Button>(R.id.btnGoogle) // El botón nuevo
+        val btnGoogle = findViewById<Button>(R.id.btnGoogle)
+        progressBar = findViewById(R.id.progressBarRegistro)
 
         // Logica Google
         btnGoogle.setOnClickListener {
@@ -69,11 +76,14 @@ class RegisterActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
+            // UI Carga
+            setLoading(true)
+
             // REGISTRO EN SUPABASE
             lifecycleScope.launch(Dispatchers.IO) {
                 try {
-                    // Creando el usuario en Auth (Authentication).
-                    // Un trigger en la base de datos de Supabase debería encargarse de crear el perfil.
+                    // Creando el usuario en Auth
+                    // Esto envía el correo de confirmación automáticamente (si activaste el paso 1)
                     SupabaseClient.client.auth.signUpWith(Email) {
                         this.email = email
                         this.password = password
@@ -83,21 +93,14 @@ class RegisterActivity : AppCompatActivity() {
                         }
                     }
 
-                    // Volver al hilo principal para cambiar de pantalla
                     withContext(Dispatchers.Main) {
-                        Toast.makeText(
-                            applicationContext,
-                            "¡Registro exitoso! Por favor confirma tu email.",
-                            Toast.LENGTH_LONG
-                        ).show()
-
-                        // Navegar al Login
-                        val intent = Intent(this@RegisterActivity, LoginActivity::class.java)
-                        startActivity(intent)
-                        finish()
+                        setLoading(false)
+                        // Mostramos el aviso de éxito
+                        mostrarDialogoCorreoEnviado()
                     }
                 } catch (e: Exception) {
                     withContext(Dispatchers.Main) {
+                        setLoading(false)
                         val errorMsg = if (e.message?.contains("already registered") == true)
                             "Este correo ya está en uso"
                         else "Error: ${e.message}"
@@ -115,14 +118,40 @@ class RegisterActivity : AppCompatActivity() {
         }
     }
 
+    private fun setLoading(loading: Boolean) {
+        if (loading) {
+            progressBar.visibility = View.VISIBLE
+            btnRegister.isEnabled = false
+        } else {
+            progressBar.visibility = View.GONE
+            btnRegister.isEnabled = true
+        }
+    }
+
+    private fun mostrarDialogoCorreoEnviado() {
+        AlertDialog.Builder(this)
+            .setTitle("¡Casi listo!")
+            .setMessage("Hemos enviado un correo de confirmación a tu email. Por favor, verifica tu cuenta antes de iniciar sesión.")
+            .setPositiveButton("Ir al Login") { _, _ ->
+                val intent = Intent(this@RegisterActivity, LoginActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
+            .setCancelable(false)
+            .show()
+    }
+
+    private fun showKyroToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+    }
+
     // --- FUNCIÓN PRIVADA PARA GOOGLE ---
     private fun registrarseConGoogle() {
-        print("hola")
         lifecycleScope.launch {
             try {
                 // 1. Configurar la petición a Google
                 val googleIdOption = GetGoogleIdOption.Builder()
-                    .setFilterByAuthorizedAccounts(false) // false = mostrar todas las cuentas
+                    .setFilterByAuthorizedAccounts(false)
                     .setServerClientId(WEB_CLIENT_ID)
                     .setAutoSelectEnabled(false)
                     .build()
@@ -149,8 +178,7 @@ class RegisterActivity : AppCompatActivity() {
                 }
 
             } catch (e: Exception) {
-                // Si el usuario cierra la ventana sin elegir cuenta, entra aquí.
-                // No mostramos error para no molestar.
+                // Cancelado por el usuario
             }
         }
     }
@@ -160,12 +188,11 @@ class RegisterActivity : AppCompatActivity() {
             try {
                 SupabaseClient.client.auth.signInWith(IDToken) {
                     this.idToken = googleToken
-                    this.provider = Google // Especificamos que el token viene de Google
+                    this.provider = Google
                 }
 
                 withContext(Dispatchers.Main) {
                     showKyroToast("¡Bienvenido!")
-                    // Al ser Google, vamos directo al Home
                     val intent = Intent(this@RegisterActivity, HomeActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)

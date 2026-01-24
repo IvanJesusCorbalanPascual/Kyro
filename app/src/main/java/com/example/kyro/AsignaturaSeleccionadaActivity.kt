@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
@@ -68,9 +69,15 @@ class AsignaturaSeleccionadaActivity : AppCompatActivity() {
 
         // Configurar RecyclerView de Ejercicios
         rvEjercicios.layoutManager = LinearLayoutManager(this)
-        adaptadorEjercicios = EjerciciosAdapter(emptyList()) { ejercicio ->
-            abrirQuiz(ejercicio)
-        }
+        adaptadorEjercicios = EjerciciosAdapter(
+            emptyList(),
+            onClick = { ejercicio ->
+                abrirQuiz(ejercicio)
+            },
+            onDelete = { ejercicio ->
+                confirmarBorrado(ejercicio) // Llamamos a la función de confirmar
+            }
+        )
         rvEjercicios.adapter = adaptadorEjercicios
 
         // Recibir Datos del Intent
@@ -206,6 +213,40 @@ class AsignaturaSeleccionadaActivity : AppCompatActivity() {
                 }
             } catch (e: Exception) {
                 // Error silencioso
+            }
+        }
+    }
+
+    private fun confirmarBorrado(ejercicio: EjercicioIA) {
+        AlertDialog.Builder(this)
+            .setTitle("Eliminar Test")
+            .setMessage("¿Estás seguro de que quieres eliminar '${ejercicio.nombre}'? No podrás recuperarlo.")
+            .setPositiveButton("Eliminar") { _, _ ->
+                borrarEjercicioEnSupabase(ejercicio)
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
+    }
+
+    private fun borrarEjercicioEnSupabase(ejercicio: EjercicioIA) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                // Borrar de Supabase
+                SupabaseClient.client.from("ejercicios").delete {
+                    filter {
+                        eq("id", ejercicio.id)
+                    }
+                }
+
+                // Actualizar la lista en el hilo principal
+                withContext(Dispatchers.Main) {
+                    showKyroToast("Test eliminado correctamente")
+                    cargarEjerciciosDeLaAsignatura() // Recargamos la lista
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    showKyroToast("Error al eliminar: ${e.message}")
+                }
             }
         }
     }

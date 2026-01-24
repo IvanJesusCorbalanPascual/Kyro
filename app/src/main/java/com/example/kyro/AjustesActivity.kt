@@ -25,7 +25,6 @@ class AjustesActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ajustes)
-
         initListeners()
         setupFocusSwitch()
     }
@@ -50,18 +49,12 @@ class AjustesActivity : AppCompatActivity() {
                     }
                 }
             } catch (e: Exception) {
-                // Handle error
+                // Manejo de errores silencioso
             }
         }
     }
 
     private fun initListeners() {
-        // Lógica de la flecha para volver atrás
-        val btnAtras = findViewById<ImageView>(R.id.btnAtras)
-        btnAtras.setOnClickListener {
-            finish() // Cierra la pantalla, volviendo a la anterior
-        }
-
         // Lógica de configuración de cuenta (Se profundizara en el futuro)
         val cardCuenta = findViewById<MaterialCardView>(R.id.cardCuenta)
         cardCuenta.setOnClickListener {

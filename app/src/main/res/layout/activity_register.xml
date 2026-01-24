@@ -172,6 +172,7 @@
             app:layout_constraintEnd_toEndOf="parent"/>
 
         <LinearLayout
+            android:id="@+id/layoutLoginLink"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -197,6 +198,17 @@
                 android:textColor="@color/b400"
                 android:layout_marginStart="4dp"/>
         </LinearLayout>
+
+        <ProgressBar
+            android:id="@+id/progressBarRegistro"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:visibility="gone"
+            android:indeterminateTint="#00A8E8"
+            app:layout_constraintTop_toBottomOf="@+id/layoutLoginLink"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

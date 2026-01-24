@@ -4,23 +4,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:paddingLeft="24dp"
-    android:paddingRight="24dp"
-    android:paddingBottom="24dp"
     android:layout_height="match_parent"
-    android:background="@drawable/img_fondo_primal">
-
-    <ImageView
-        android:id="@+id/imgKyroLogo"
-        android:layout_width="123dp"
-        android:layout_height="110dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="260dp"
-        android:contentDescription="Logo Kyro Pequeño"
-        android:scaleType="fitCenter"
-        android:src="@drawable/logo_green_tonic"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    android:paddingStart="24dp"
+    android:paddingEnd="24dp"
+    android:paddingBottom="24dp"
+    android:background="@drawable/img_fondo_primal"
+    android:fitsSystemWindows="true">
 
     <View
         android:id="@+id/viewBackgroundDeco"
@@ -40,10 +29,10 @@
         android:contentDescription="Ilustración Principal"
         android:scaleType="fitCenter"
         android:src="@drawable/portrait_kyro_no_bg"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="48dp"
         android:layout_marginBottom="16dp"
-        app:layout_constraintHeight_percent="0.35"
-        app:layout_constraintTop_toBottomOf="@+id/imgKyroLogo"
+        app:layout_constraintHeight_percent="0.45"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/tvTitulo"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -115,7 +104,7 @@
         android:src="@drawable/ic_flecha_derecha"
         android:scaleType="centerInside"
         android:padding="12dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="32dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent" />

@@ -2,6 +2,7 @@ package com.example.kyro
 
 import android.os.Bundle
 import android.widget.CheckBox
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -71,9 +72,14 @@ class GenerarTestActivity : AppCompatActivity() {
             tvLabelPreguntas.text = "Número de preguntas: ${value.toInt()}"
         }
 
+        val btnVolver = findViewById<ImageButton>(R.id.btnVolver)
+        btnVolver.setOnClickListener {
+            finish() // Cierra la actividad y vuelve atrás
+        }
         btnGenerar.setOnClickListener {
             validarYGenerar()
         }
+
     }
 
     private fun cargarArchivosDeAsignatura() {
