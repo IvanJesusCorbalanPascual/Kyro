@@ -8,7 +8,6 @@
     android:fitsSystemWindows="true"
     tools:context=".AddItemActivity">
 
-    <!-- Toolbar -->
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/topAppBar"
         android:layout_width="match_parent"
@@ -41,7 +40,7 @@
                     android:id="@+id/etNombre"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Nombre de la tarea/examen"
+                    android:hint="@string/add_item_hint_nombre"
                     android:fontFamily="@font/poppins"
                     android:minLines="1" />
             </com.google.android.material.textfield.TextInputLayout>

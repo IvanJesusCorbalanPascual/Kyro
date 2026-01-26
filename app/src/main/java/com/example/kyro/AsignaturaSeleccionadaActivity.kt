@@ -163,10 +163,10 @@ class AsignaturaSeleccionadaActivity : AppCompatActivity() {
                 intent.putExtra("EXTRA_PREGUNTAS", ArrayList(preguntas))
                 startActivity(intent)
             } else {
-                showKyroToast("Este ejercicio parece estar vacío")
+                showKyroToast(getString(R.string.error_ejercicio_vacio))
             }
         } catch (e: Exception) {
-            showKyroToast("Error al abrir el test")
+            showKyroToast(getString(R.string.error_abrir_test))
             e.printStackTrace()
         }
     }
@@ -219,12 +219,12 @@ class AsignaturaSeleccionadaActivity : AppCompatActivity() {
 
     private fun confirmarBorrado(ejercicio: EjercicioIA) {
         AlertDialog.Builder(this)
-            .setTitle("Eliminar Test")
-            .setMessage("¿Estás seguro de que quieres eliminar '${ejercicio.nombre}'? No podrás recuperarlo.")
-            .setPositiveButton("Eliminar") { _, _ ->
+            .setTitle(getString(R.string.dialog_eliminar_titulo))
+            .setMessage(getString(R.string.dialog_eliminar_mensaje, ejercicio.nombre))
+            .setPositiveButton(getString(R.string.btn_eliminar)) { _, _ ->
                 borrarEjercicioEnSupabase(ejercicio)
             }
-            .setNegativeButton("Cancelar", null)
+            .setNegativeButton(getString(R.string.btn_cancelar), null)
             .show()
     }
 
@@ -240,12 +240,12 @@ class AsignaturaSeleccionadaActivity : AppCompatActivity() {
 
                 // Actualizar la lista en el hilo principal
                 withContext(Dispatchers.Main) {
-                    showKyroToast("Test eliminado correctamente")
+                    showKyroToast(getString(R.string.toast_test_eliminado))
                     cargarEjerciciosDeLaAsignatura() // Recargamos la lista
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    showKyroToast("Error al eliminar: ${e.message}")
+                    showKyroToast(getString(R.string.error_eliminar_generico, e.message))
                 }
             }
         }

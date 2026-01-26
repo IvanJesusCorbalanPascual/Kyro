@@ -87,7 +87,7 @@ class HomeActivity : AppCompatActivity() {
                 withContext(Dispatchers.Main) {
                     userProfile?.let {
                         val tvGreeting = findViewById<TextView>(R.id.tvGreeting)
-                        tvGreeting.text = "Hola, ${it.username}! 👋"
+                        tvGreeting.text = getString(R.string.home_saludo_usuario, it.username)
                     }
                 }
             } catch (e: Exception) {
@@ -131,8 +131,8 @@ class HomeActivity : AppCompatActivity() {
                         val daysUntil = ChronoUnit.DAYS.between(today, eventDate)
                         val formatter = DateTimeFormatter.ofPattern("EEE, dd MMM")
 
-                        val timeText = "${eventDate.format(formatter)} • Faltan $daysUntil días"
-                        tvEventTime.text = timeText
+                        val fechaStr = eventDate.format(formatter)
+                        tvEventTime.text = getString(R.string.home_evento_tiempo, fechaStr, daysUntil)
 
                         cardNextEvent.setOnClickListener {
                             val intent = Intent(this@HomeActivity, EventDetailActivity::class.java).apply {
@@ -155,15 +155,15 @@ class HomeActivity : AppCompatActivity() {
                         }
 
                     } else {
-                        tvEventName.text = "No hay eventos próximos"
+                        tvEventName.text = getString(R.string.home_sin_eventos)
                         tvEventTime.text = ""
                         cardNextEvent.setOnClickListener(null)
                     }
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    tvEventName.text = "Error al cargar evento"
-                    tvEventTime.text = e.message // Muestra el error para depurar
+                    tvEventName.text = getString(R.string.home_error_evento)
+                    tvEventTime.text = e.message
                 }
             }
         }
@@ -195,7 +195,7 @@ class HomeActivity : AppCompatActivity() {
                     .filter { LocalDate.parse(it.fecha_entrega).isAfter(today.minusDays(1)) }
 
                 // Tareas en los próximos 3 días
-                val tasksInNext3Days = allUpcomingTasks.filter { 
+                val tasksInNext3Days = allUpcomingTasks.filter {
                     val taskDate = LocalDate.parse(it.fecha_entrega)
                     !taskDate.isBefore(today) && !taskDate.isAfter(threeDaysLater)
                 }
@@ -213,9 +213,9 @@ class HomeActivity : AppCompatActivity() {
                     tvTasksPercentage.text = "$percentage3Days%"
                     pbTasks.progress = percentage3Days
                     if (totalTasks3Days > 0) {
-                        tvTasksCompleted.text = "Has completado $completedTasks3Days de $totalTasks3Days tareas"
+                        tvTasksCompleted.text = getString(R.string.home_status_progreso, completedTasks3Days, totalTasks3Days)
                     } else {
-                        tvTasksCompleted.text = "No tienes tareas en los próximos 3 días"
+                        tvTasksCompleted.text = getString(R.string.home_sin_tareas_3dias)
                     }
                 }
 
@@ -233,9 +233,9 @@ class HomeActivity : AppCompatActivity() {
                     tvAllTasksPercentage.text = "$percentageAll%"
                     pbAllTasks.progress = percentageAll
                     if (totalAllTasks > 0) {
-                        tvAllTasksCompleted.text = "Has completado $completedAllTasks de $totalAllTasks tareas"
+                        tvAllTasksCompleted.text = getString(R.string.home_status_progreso, completedAllTasks, totalAllTasks)
                     } else {
-                        tvAllTasksCompleted.text = "No tienes tareas próximas"
+                        tvAllTasksCompleted.text = getString(R.string.home_sin_tareas_proximas)
                     }
                 }
 
@@ -277,14 +277,14 @@ class HomeActivity : AppCompatActivity() {
                     tvPercentage.text = "$percentage%"
                     pb.progress = percentage
                     if (totalRelevantTasks > 0) {
-                        tvCompleted.text = "$deliveredCount de $totalRelevantTasks tareas finalizadas"
+                        tvCompleted.text = getString(R.string.home_status_entregadas, deliveredCount, totalRelevantTasks)
                     } else {
-                        tvCompleted.text = "No hay tareas entregadas o caducadas."
+                        tvCompleted.text = getString(R.string.home_sin_entregadas)
                     }
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    tvCompleted.text = "Error al cargar las tareas."
+                    tvCompleted.text = getString(R.string.home_error_tareas)
                     tvPercentage.visibility = View.GONE
                     pb.visibility = View.GONE
                 }
@@ -348,11 +348,11 @@ class HomeActivity : AppCompatActivity() {
         if (!comprobarPermisoDeUso()) {
             // Crea una alerta visual para avisar al usuario de porque necesita la app dichos permisos, obligatorio por Google Play
             val builder = AlertDialog.Builder(this)
-            builder.setTitle("Activar Modo Focus")
-            builder.setMessage("Para que Kyro te pueda ayudar a concentrarte y evitar distracciones, necesita permiso para detectar qué apps usas.\n\nBusca 'Kyro' en la siguiente lista y activa el permiso si estás de acuerdo.")
+            builder.setTitle(getString(R.string.dialog_focus_titulo))
+            builder.setMessage(getString(R.string.dialog_focus_mensaje))
 
             // Lleva al usuario a la configuración de Android si selecciona esta opción
-            builder.setPositiveButton("Ir a Ajustes") { dialog, _ ->
+            builder.setPositiveButton(getString(R.string.btn_ir_ajustes)) { dialog, _ ->
                 // Abre la lista de "Acceso a datos de uso" del sistema
                 startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))
                 // Cierra el dialogo
@@ -360,7 +360,7 @@ class HomeActivity : AppCompatActivity() {
             }
 
             // En caso de ser negativo, cierra el diálogo
-            builder.setNegativeButton("Más tarde") { dialog, _ ->
+            builder.setNegativeButton(getString(R.string.btn_mas_tarde)) { dialog, _ ->
                 dialog.dismiss()
             }
 

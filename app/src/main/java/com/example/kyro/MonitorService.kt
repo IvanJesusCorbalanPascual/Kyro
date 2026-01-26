@@ -126,7 +126,7 @@ class MonitorService : Service() {
     }
 
     private fun checkAndSendNotification(event: Any, notificationTime: String?, notifType: String) {
-        if (notificationTime == null || notificationTime == "No notificar") return
+        if (notificationTime == null || notificationTime == "No notificar" || notificationTime == "Do not notify") return
 
         val eventId: Long
         val eventDateTime: LocalDateTime
@@ -162,15 +162,18 @@ class MonitorService : Service() {
         }
     }
 
-    private fun getNotificationTime(taskDateTime: LocalDateTime, notificationTime: String): LocalDateTime {
-        return when (notificationTime) {
-            "En el momento del evento" -> taskDateTime
-            "5 minutos antes" -> taskDateTime.minusMinutes(5)
-            "10 minutos antes" -> taskDateTime.minusMinutes(10)
-            "30 minutos antes" -> taskDateTime.minusMinutes(30)
-            "1 hora antes" -> taskDateTime.minusHours(1)
-            "1 día antes" -> taskDateTime.minusDays(1)
-            else -> taskDateTime
+    private fun getNotificationTime(eventDateTime: LocalDateTime, notificationTime: String): LocalDateTime {
+        // Convierte a minúsculas para comparar fácilmente inglés y español
+        val timeString = notificationTime.lowercase()
+
+        return when {
+            timeString.contains("momento") || timeString.contains("time of event") -> eventDateTime
+            timeString.contains("5 min") -> eventDateTime.minusMinutes(5)
+            timeString.contains("10 min") -> eventDateTime.minusMinutes(10)
+            timeString.contains("30 min") -> eventDateTime.minusMinutes(30)
+            timeString.contains("1 hora") || timeString.contains("1 hour") -> eventDateTime.minusHours(1)
+            timeString.contains("1 día") || timeString.contains("1 dia") || timeString.contains("1 day") -> eventDateTime.minusDays(1)
+            else -> eventDateTime
         }
     }
 
@@ -188,7 +191,9 @@ class MonitorService : Service() {
             putExtra("completada", task.completada)
         }
         val pendingIntent = PendingIntent.getActivity(this, task.id!!.toInt(), intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-        sendNotification("Recordatorio de Tarea: ${task.nombre_tarea}", task.descripcion, pendingIntent, task.id.toInt())
+
+        val titulo = getString(R.string.notif_prefix_tarea, task.nombre_tarea)
+        sendNotification(titulo, task.descripcion, pendingIntent, task.id.toInt())
     }
 
     private fun sendExamNotification(exam: Examen) {
@@ -205,7 +210,9 @@ class MonitorService : Service() {
             putExtra("completada", exam.completada)
         }
         val pendingIntent = PendingIntent.getActivity(this, exam.id!!.toInt(), intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-        sendNotification("Recordatorio de Examen: ${exam.nombre_examen}", exam.descripcion, pendingIntent, exam.id.toInt())
+
+        val titulo = getString(R.string.notif_prefix_examen, exam.nombre_examen)
+        sendNotification(titulo, exam.descripcion, pendingIntent, exam.id.toInt())
     }
 
     private fun sendNotification(title: String, content: String, pendingIntent: PendingIntent, notificationId: Int) {
@@ -213,8 +220,10 @@ class MonitorService : Service() {
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(channelId, "Recordatorios", NotificationManager.IMPORTANCE_HIGH).apply {
-                description = "Recordatorios de tareas y exámenes"
+            val channelName = getString(R.string.channel_reminders_name)
+            val channelDesc = getString(R.string.channel_reminders_desc)
+            val channel = NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH).apply {
+                description = channelDesc
             }
             notificationManager.createNotificationChannel(channel)
         }
@@ -284,8 +293,11 @@ class MonitorService : Service() {
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(channelId, "Alertas de Modo Focus", NotificationManager.IMPORTANCE_HIGH).apply {
-                description = "Notificaciones para volver a estudiar"
+            val channelName = getString(R.string.channel_focus_name)
+            val channelDesc = getString(R.string.channel_focus_desc)
+
+            val channel = NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH).apply {
+                description = channelDesc
             }
             notificationManager.createNotificationChannel(channel)
         }
@@ -297,8 +309,8 @@ class MonitorService : Service() {
 
         val notification = NotificationCompat.Builder(this, channelId)
             .setSmallIcon(R.drawable.ic_stat_kyro)
-            .setContentTitle("¡Ey! Un pequeño recordatorio")
-            .setContentText("Cada minuto de estudio cuenta. ¡Vuelve a la tarea y acércate a tus metas!")
+            .setContentTitle(getString(R.string.notif_focus_titulo))
+            .setContentText(getString(R.string.notif_focus_msg))
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)

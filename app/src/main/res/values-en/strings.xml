@@ -29,6 +29,27 @@
     <string name="eliminar_cuenta">Delete Account</string>
     <string name="gestionar_cuenta">Manage account</string>
 
+    <string name="ajustes_idioma_dialogo">Select Language</string>
+
+    <string name="dialog_borrar_datos_titulo">Clear all data?</string>
+    <string name="dialog_borrar_datos_msg">This will delete your subjects, tasks, exams, and files. Your account will still exist. \n\nThis action cannot be undone.</string>
+    <string name="btn_borrar_todo">Clear All</string>
+    <string name="error_no_autenticado">Error: Not authenticated</string>
+    <string name="toast_datos_borrados">Data cleared successfully</string>
+    <string name="error_borrar_datos_generico">Error clearing data: %1$s</string>
+
+    <string name="dialog_cerrar_sesion_msg">Are you sure you want to log out?</string>
+    <string name="btn_si_salir">Yes, log out</string>
+    <string name="error_cerrar_sesion">Error logging out</string>
+
+    <string name="dialog_eliminar_cuenta_msg">This action is permanent and will delete all your data. Are you sure?</string>
+    <string name="toast_cuenta_eliminada">Account deleted successfully</string>
+    <string name="error_eliminar_cuenta">Connection error: Could not delete account</string>
+
+    <string name="toast_focus_estado">Focus Mode %1$s</string>
+    <string name="estado_activado">Enabled</string>
+    <string name="estado_desactivado">Disabled</string>
+
     <!-- HOME / INICIO-->
     <string name="home_saludo">Hello, Student! 👋</string>
     <string name="home_subtitulo">What are we learning today?</string>
@@ -48,6 +69,16 @@
     <string name="home_sin_tareas_3dias">No tasks in the next 3 days</string>
     <string name="home_sin_tareas_proximas">No upcoming tasks</string>
 
+    <string name="home_saludo_usuario">Hello, %1$s! 👋</string>
+    <string name="home_sin_eventos">No upcoming events</string>
+    <string name="home_error_evento">Error loading event</string>
+    <string name="home_evento_tiempo">%1$s • %2$d days left</string>
+
+    <string name="home_progreso_entregadas">Delivered Tasks</string>
+    <string name="home_status_entregadas">%1$d of %2$d tasks finished</string>
+    <string name="home_sin_entregadas">No delivered or expired tasks.</string>
+    <string name="home_error_tareas">Error loading tasks.</string>
+
     <!-- CALENDARIO Y TAREAS -->
     <string name="calendar_titulo">Calendar &amp; Tasks</string>
     <string name="calendar_btn_add_exam">+ Exam</string>
@@ -58,6 +89,8 @@
     <string name="tipo_tarea">TASK</string>
     <string name="tipo_examen">EXAM</string>
     <string name="btn_completar">COMPLETE</string>
+    <string name="calendar_mes_anterior">Previous month</string>
+    <string name="calendar_mes_siguiente">Next month</string>
 
     <!-- AÑADIR EXAMEN -->
     <string name="add_exam_titulo">Add Exam</string>
@@ -108,6 +141,9 @@
     <string name="mod_asignatura_placeholder_asignatura">Java OOP Advanced</string>
     <string name="mod_asignatura_placeholder_ejercicios">12 exercises</string>
 
+    <string name="btn_estado_guardando">Saving...</string>
+
+
     <!-- REGISTRO -->
     <string name="register_titulo">Welcome to Kyro!</string>
     <string name="register_subtitulo">Create your Blue Owl account</string>
@@ -120,15 +156,29 @@
     <string name="register_link_login">Log In</string>
 
     <!-- ASIGNATURA -->
-    <string name="asignatura_titulo">Subjects &amp; Content</string>
-    <string name="asignatura_subtitulo_lista">Subjects</string>
-    <string name="asignatura_lista_vacia">No saved subjects.</string>
-    <string name="asignatura_subtitulo_nuevo">Upload New Subject</string>
-    <string name="asignatura_desc_ia">Upload your notes, PDFs, or links to your subject.</string>
-    <string name="asignatura_hint_titulo_nuevo">Title (e.g. Java OOP Topic 1)</string>
-    <string name="asignatura_btn_adjuntar">Tap here to attach files</string>
-    <string name="asignatura_hint_contenido">You can also paste the subject text here...</string>
-    <string name="asignatura_btn_generar">Generate Exercises</string>
+    <string name="asignatura_titulo_mis_asignaturas">My Subjects</string>
+    <string name="asignatura_lista_titulo">Subject List</string>
+    <string name="asignatura_lista_vacia_texto">You haven\'t created any subjects yet.</string>
+    <string name="asignatura_crear_titulo">Create New Subject</string>
+    <string name="asignatura_crear_desc">Add your notes here to keep them organized. Later you can ask AI to create tests from them.</string>
+    <string name="asignatura_hint_nombre_ejemplo">Subject Name (e.g., History)</string>
+    <string name="asignatura_btn_adjuntar_pdf">📎 Attach PDF (Optional)</string>
+    <string name="asignatura_hint_pegar_apuntes">Or paste your notes here...</string>
+    <string name="asignatura_btn_guardar_accion">Save Subject</string>
+
+    <string name="archivo_adjunto_default">Attached file</string>
+    <string name="btn_archivo_con_nombre">📄 %1$s</string>
+    <string name="error_conexion_texto">Connection error.</string>
+    <string name="error_conexion_toast">Connection error</string>
+    <string name="error_titulo_obligatorio">Title is required</string>
+    <string name="error_contenido_obligatorio">Write content or attach a PDF</string>
+    <string name="toast_falta_contenido_guardar">You must add content to save the subject</string>
+    <string name="btn_guardando">Saving...</string>
+    <string name="error_sesion_invalida">Error: Invalid session</string>
+    <string name="formato_archivo_adjunto">📁 Attached file: %1$s</string>
+    <string name="toast_asignatura_exito">Subject saved successfully!</string>
+    <string name="error_guardar_asignatura">Error saving the subject</string>
+    <string name="btn_guardar_asignatura_texto">Save Subject</string>
 
     <!-- ASIGNATURA SELECCIONADA -->
     <string name="asignatura_sel_titulo">Selected Subject</string>
@@ -137,6 +187,34 @@
 
     <string name="asignatura_sel_placeholder_asignatura">Java OOP Advanced</string>
     <string name="asignatura_sel_placeholder_ejercicios">12 exercises</string>
+
+    <string name="asignatura_sel_header_examenes">Exams</string>
+    <string name="asignatura_sel_header_tareas">Tasks</string>
+    <string name="asignatura_sel_sin_ejercicios">No exercises generated yet.</string>
+    <string name="asignatura_sel_btn_generar_mas">Generate new AI test ✨</string>
+
+    <string name="error_ejercicio_vacio">This exercise seems empty</string>
+    <string name="error_abrir_test">Error opening test</string>
+    <string name="dialog_eliminar_titulo">Delete Test</string>
+    <string name="dialog_eliminar_mensaje">Are you sure you want to delete \'%1$s\'? You won\'t be able to recover it.</string>
+    <string name="btn_eliminar">Delete</string>
+    <string name="btn_cancelar">Cancel</string>
+    <string name="toast_test_eliminado">Test deleted successfully</string>
+    <string name="error_eliminar_generico">Error deleting: %1$s</string>
+
+    <string name="toast_feature_pdf">PDF upload feature is still under development</string>
+    <string name="error_titulo_vacio">Title is required</string>
+    <string name="toast_falta_titulo">Title is missing</string>
+    <string name="error_contenido_vacio_ui">You must paste the subject text here</string>
+    <string name="toast_contenido_vacio">The text field is empty</string>
+    <string name="toast_actualizando_nube">Updating notes in the cloud...</string>
+    <string name="toast_asignatura_actualizada">Subject updated!</string>
+    <string name="error_actualizar_msg">Error updating: %1$s</string>
+
+    <string name="dialog_eliminar_asignatura_titulo">Delete Subject?</string>
+    <string name="dialog_eliminar_asignatura_msg">This action will permanently delete the subject. Are you sure?</string>
+    <string name="btn_estado_borrando">Deleting...</string>
+    <string name="toast_asignatura_eliminada">Subject deleted</string>
 
     <!-- USUARIO -->
     <string name="user_titulo">My Profile</string>
@@ -174,5 +252,118 @@
     <string name="btn_ir_ajustes">Go to Settings</string>
     <string name="btn_mas_tarde">Later</string>
     <string name="toast_abriendo_ia">Opening Kyro AI...</string>
+
+    <!-- KYRO IA -->
+    <string name="kyro_ai_titulo">Kyro Assistant</string>
+    <string name="kyro_ai_desc_logo">Kyro Logo</string>
+    <string name="kyro_ai_subtitulo">Paste your notes and choose what you need:</string>
+    <string name="kyro_ai_hint_input">Type or paste text here...</string>
+    <string name="kyro_ai_label_acciones">What do you want to do?</string>
+    <string name="kyro_ai_chip_resumir">📝 Summarize</string>
+    <string name="kyro_ai_chip_explicar">💡 Explain</string>
+    <string name="kyro_ai_chip_esquema">🌳 Outline</string>
+    <string name="kyro_ai_btn_consultar">Ask Kyro</string>
+    <string name="kyro_ai_label_resultado">Result:</string>
+    <string name="kyro_ai_toast_vacio">Please write or paste some text</string>
+    <string name="kyro_ai_error_conexion">Error connecting to Kyro AI</string>
+
+    <!-- GENERAR TEST -->
+    <string name="gen_test_titulo">Create Test with KyroAI</string>
+    <string name="gen_test_hint_nombre">Test Name (e.g. Topic 1 Review)</string>
+    <string name="gen_test_label_preguntas">Number of questions: %1$d</string>
+    <string name="gen_test_label_dificultad">Difficulty:</string>
+    <string name="gen_test_chip_facil">Easy</string>
+    <string name="gen_test_chip_medio">Medium</string>
+    <string name="gen_test_chip_dificil">Hard</string>
+    <string name="gen_test_label_fuentes">Information sources:</string>
+    <string name="gen_test_check_descripcion">Include subject description</string>
+    <string name="gen_test_sin_archivos">No uploaded files.</string>
+    <string name="gen_test_btn_generar">Generate Test ✨</string>
+
+    <string name="gen_test_error_fuentes">Select at least one source (notes or files)</string>
+    <string name="gen_test_error_nombre_vacio">Enter a name for the test</string>
+    <string name="gen_test_btn_verificando">Verifying name...</string>
+    <string name="gen_test_error_nombre_duplicado">A test with this name already exists in this subject</string>
+    <string name="gen_test_btn_pensando">KyroAI is thinking... 🤖</string>
+    <string name="gen_test_exito">Test created!</string>
+    <string name="gen_test_error_ia">AI did not generate valid questions</string>
+    <string name="gen_test_error_generico">Error: %1$s</string>
+
+    <!-- QUIZ -->
+    <string name="quiz_titulo">Quiz</string>
+    <string name="quiz_contador">Question %1$d of %2$d</string>
+    <string name="quiz_cargando">Loading question...</string>
+    <string name="quiz_explicacion_default">Explanation will appear here...</string>
+    <string name="quiz_explicacion_prefix">Explanation: %1$s</string>
+    <string name="quiz_opcion_a">Option A</string>
+    <string name="quiz_opcion_b">Option B</string>
+    <string name="quiz_opcion_c">Option C</string>
+    <string name="quiz_opcion_d">Option D</string>
+
+    <string name="quiz_btn_comprobar">Check Answer</string>
+    <string name="quiz_btn_siguiente">Next Question</string>
+    <string name="quiz_btn_finalizar">Finish</string>
+    <string name="quiz_btn_volver">Go Back</string>
+
+    <string name="quiz_msg_seleccionar">Please select an answer</string>
+    <string name="quiz_msg_correcto">Correct!</string>
+    <string name="quiz_dialog_titulo">Quiz Finished!</string>
+    <string name="quiz_dialog_msg">Score: %1$d out of %2$d</string>
+
+    <!-- ITEM EJERCICIO -->
+    <string name="item_ejercicio_card_titulo">Generated Test</string>
+    <string name="item_ejercicio_card_desc">Tap to take this test</string>
+    <string name="desc_eliminar_ejercicio">Delete exercise</string>
+
+    <!-- AÑADIR EXAMEN/TAREA -->
+    <string name="add_item_hint_nombre">Task/Exam Name</string>
+
+    <string name="add_item_editar_examen">Edit Exam</string>
+    <string name="add_item_editar_tarea">Edit Task</string>
+    <string name="add_item_anadir_examen">Add Exam</string>
+    <string name="add_item_anadir_tarea">Add Task</string>
+    <string name="add_item_hint_nombre_examen">Exam Name</string>
+    <string name="add_item_hint_nombre_tarea">Task Name</string>
+    <string name="add_item_btn_guardar_cambios">Save Changes</string>
+    <string name="add_item_spinner_elige_asignatura">Choose a subject</string>
+
+    <string name="error_selecciona_asignatura">Please select a subject</string>
+    <string name="error_rellena_nombre">Please fill in the name</string>
+    <string name="error_sesion_no_valida">Error: Invalid session. Please log in again.</string>
+    <string name="msg_item_actualizado">%1$s updated</string>
+    <string name="msg_item_guardado">%1$s saved</string>
+    <string name="error_cargar_asignaturas">Error loading subjects: %1$s</string>
+
+    <string name="texto_examen">Exam</string>
+    <string name="texto_tarea">Task</string>
+
+    <string-array name="notificacion_opciones">
+        <item>Do not notify</item>
+        <item>At the time of event</item>
+        <item>5 minutes before</item>
+        <item>10 minutes before</item>
+        <item>30 minutes before</item>
+        <item>1 hour before</item>
+        <item>1 day before</item>
+    </string-array>
+
+    <!-- DETALLES EVENTO -->
+    <string name="event_detail_recordatorio_1">Reminder 1: %1$s</string>
+    <string name="event_detail_recordatorio_2">Reminder 2: %1$s</string>
+    <string name="event_detail_no_establecido">Not set</string>
+
+    <string name="dialog_confirmar_eliminar_titulo">Confirm Deletion</string>
+    <string name="dialog_confirmar_eliminar_msg">Are you sure you want to delete this event?</string>
+
+    <!-- SERVICIO MONITOREO -->
+    <string name="channel_focus_name">Focus Mode Alerts</string>
+    <string name="channel_focus_desc">Notifications to get back to studying</string>
+    <string name="notif_focus_titulo">Hey! A gentle reminder</string>
+    <string name="notif_focus_msg">Every minute of study counts. Get back to work and reach your goals!</string>
+
+    <string name="channel_reminders_name">Reminders</string>
+    <string name="channel_reminders_desc">Task and exam reminders</string>
+    <string name="notif_prefix_tarea">Task Reminder: %1$s</string>
+    <string name="notif_prefix_examen">Exam Reminder: %1$s</string>
 
 </resources>

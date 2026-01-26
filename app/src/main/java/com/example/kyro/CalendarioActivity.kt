@@ -40,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -74,7 +75,7 @@ class CalendarioActivity : AppCompatActivity() {
     private var selectedDate: LocalDate = LocalDate.now()
     private var allEvents: List<Event> = listOf()
     private var showAllTasks = false
-    
+
     // Funcion que se ejecuta al crear la actividad
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,7 +92,7 @@ class CalendarioActivity : AppCompatActivity() {
         NavigationHelper.setupBottomNavigation(this, R.id.nav_calendar)
 
         // Listener para el boton de mostrar todas las tareas o solo las del dia
-        btnToggleTasks.setOnClickListener { 
+        btnToggleTasks.setOnClickListener {
             showAllTasks = !showAllTasks
             displayEvents(allEvents)
             if (showAllTasks) {
@@ -109,7 +110,7 @@ class CalendarioActivity : AppCompatActivity() {
             }
             startActivity(intent)
         }
-        
+
         // Listener para el boton de anadir tarea
         btnAddTask.setOnClickListener {
             val intent = Intent(this, AddItemActivity::class.java).apply {
@@ -137,7 +138,7 @@ class CalendarioActivity : AppCompatActivity() {
                 val examenes = SupabaseClient.client.postgrest["examenes"].select { filter { eq("id_usuario", userId) } }.decodeList<Examen>()
                 val asignaturas = SupabaseClient.client.from("asignaturas").select { filter { eq("user_id", userId) } }.decodeList<Asignatura>()
                 val asignaturaMap = asignaturas.associateBy { it.id }
-                
+
                 // Convierte las tareas y examenes en una lista de eventos
                 val events = mutableListOf<Event>()
                 tareas.forEach { event -> event.id?.let { events.add(Event(it, "tarea", event.nombre_tarea, event.descripcion, event.fecha_entrega, event.hora_entrega, event.completada, event.notificacion1, event.notificacion2, asignaturaMap[event.asignatura_id]?.titulo ?: "")) } }
@@ -199,7 +200,7 @@ class CalendarioActivity : AppCompatActivity() {
             } else {
                 dateHeader.visibility = View.GONE
             }
-            
+
             // Establece el titulo y la descripcion del evento
             title.text = event.title
             description.text = event.description
@@ -220,7 +221,7 @@ class CalendarioActivity : AppCompatActivity() {
                 eventType.text = "${getString(R.string.tipo_tarea)}$timeText"
                 eventType.setTextColor(ContextCompat.getColor(this, R.color.b500))
                 icon.setImageResource(R.drawable.ic_task)
-                
+
                 // Comprueba si la tarea ha expirado
                 var isExpired = false
                 if (event.time != null) {
@@ -233,7 +234,7 @@ class CalendarioActivity : AppCompatActivity() {
                         isExpired = false
                     }
                 }
-                
+
                 // Configura la apariencia de la tarea segun su estado
                 if (event.completada) {
                     cardView.setCardBackgroundColor(ContextCompat.getColor(this, R.color.verde_completado))
@@ -254,7 +255,7 @@ class CalendarioActivity : AppCompatActivity() {
                     completeButton.backgroundTintList = ContextCompat.getColorStateList(this, R.color.b500)
                     completeButton.setTextColor(ContextCompat.getColor(this, R.color.white))
                 }
-                
+
                 // Listener para marcar la tarea como completada
                 completeButton.setOnClickListener {
                     if (!event.completada && !isExpired) {
@@ -269,7 +270,7 @@ class CalendarioActivity : AppCompatActivity() {
 
                 val examDate = LocalDate.parse(event.date)
                 val isPastExam = LocalDate.now().isAfter(examDate)
-                
+
                 // Configura la apariencia del examen segun su estado
                 if (isPastExam) {
                     cardView.setCardBackgroundColor(ContextCompat.getColor(this, R.color.verde_completado))
@@ -277,7 +278,7 @@ class CalendarioActivity : AppCompatActivity() {
                     cardView.setCardBackgroundColor(ContextCompat.getColor(this, R.color.verde_completado))
                 }
             }
-            
+
             // Listener para abrir los detalles del evento
             cardView.setOnClickListener {
                 val intent = Intent(this, EventDetailActivity::class.java).apply {
@@ -321,7 +322,7 @@ class CalendarioActivity : AppCompatActivity() {
             }
         }
     }
-    
+
     // Clase de datos para representar un evento
     data class Event(
         val id: Long,
@@ -353,7 +354,7 @@ fun Calendar(events: List<CalendarioActivity.Event>, onDateSelected: (LocalDate)
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             IconButton(onClick = { currentMonth = currentMonth.minusMonths(1) }) {
-                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Mes anterior")
+                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.calendar_mes_anterior))
             }
             Text(
                 text = "${currentMonth.month.getDisplayName(TextStyle.FULL, Locale.getDefault())} ${currentMonth.year}",
@@ -362,7 +363,7 @@ fun Calendar(events: List<CalendarioActivity.Event>, onDateSelected: (LocalDate)
                 textAlign = TextAlign.Center
             )
             IconButton(onClick = { currentMonth = currentMonth.plusMonths(1) }) {
-                Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "Mes siguiente")
+                Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = stringResource(R.string.calendar_mes_siguiente))
             }
         }
         Spacer(modifier = Modifier.height(6.dp)) // Espaciador reducido
@@ -389,7 +390,7 @@ fun Calendar(events: List<CalendarioActivity.Event>, onDateSelected: (LocalDate)
         val days = (1..daysInMonth).toList()
         val allDays = emptyDays + days
         val chunkedDays = allDays.chunked(7)
-        
+
         // Muestra las semanas del mes
         for (week in chunkedDays) {
             Row(modifier = Modifier.fillMaxWidth()) {

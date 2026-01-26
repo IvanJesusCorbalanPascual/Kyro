@@ -62,7 +62,7 @@ class KyroAiActivity : AppCompatActivity() {
             val textoUsuario = etInput.text.toString().trim()
 
             if (textoUsuario.isEmpty()) {
-                showKyroToast("Por favor, escribe o pega un texto")
+                showKyroToast(getString(R.string.kyro_ai_toast_vacio))
                 return@setOnClickListener
             }
 
@@ -100,12 +100,16 @@ class KyroAiActivity : AppCompatActivity() {
                 tvLabelResultado.visibility = View.VISIBLE
 
             } catch (e: Exception) {
-                showKyroToast("Error al conectar con Kyro AI")
+                showKyroToast(getString(R.string.kyro_ai_error_conexion))
             } finally {
                 // Restaurar estado original
                 progressBar.visibility = View.GONE
                 btnProcesar.isEnabled = true
             }
         }
+    }
+
+    private fun showKyroToast(message: String) {
+        android.widget.Toast.makeText(this, message, android.widget.Toast.LENGTH_SHORT).show()
     }
 }

@@ -45,8 +45,10 @@ class EventDetailActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.tvDetailAsignatura).text = asignaturaNombre
         findViewById<TextView>(R.id.tvDetailDate).text = if (time != null) "$date a las $time" else date
         findViewById<TextView>(R.id.tvDetailDescription).text = description
-        findViewById<TextView>(R.id.tvDetailNotif1).text = "Recordatorio 1: ${notif1 ?: "No establecido"}"
-        findViewById<TextView>(R.id.tvDetailNotif2).text = "Recordatorio 2: ${notif2 ?: "No establecido"}"
+
+        val noEstablecido = getString(R.string.event_detail_no_establecido)
+        findViewById<TextView>(R.id.tvDetailNotif1).text = getString(R.string.event_detail_recordatorio_1, notif1 ?: noEstablecido)
+        findViewById<TextView>(R.id.tvDetailNotif2).text = getString(R.string.event_detail_recordatorio_2, notif2 ?: noEstablecido)
 
         // --- Logica del boton de Editar ---
         val btnEdit: Button = findViewById(R.id.btnEditEvent)
@@ -78,15 +80,16 @@ class EventDetailActivity : AppCompatActivity() {
         val btnDelete: Button = findViewById(R.id.btnDeleteEvent)
         btnDelete.setOnClickListener {
             AlertDialog.Builder(this)
-                .setTitle("Confirmar Eliminación")
-                .setMessage("¿Estás seguro de que deseas eliminar este evento?")
-                .setPositiveButton("Eliminar") { _, _ ->
+
+                .setTitle(getString(R.string.dialog_confirmar_eliminar_titulo))
+                .setMessage(getString(R.string.dialog_confirmar_eliminar_msg))
+                .setPositiveButton(getString(R.string.btn_eliminar)) { _, _ ->
                     deleteEvent(id, type ?: "")
                 }
-                .setNegativeButton("Cancelar", null)
+                .setNegativeButton(getString(R.string.btn_cancelar), null)
                 .show()
         }
-        
+
         // Logica del boton para marcar como incompleto
         val btnMarkAsIncomplete: Button = findViewById(R.id.btnMarkAsIncomplete)
         if (type == "tarea" && completada) {

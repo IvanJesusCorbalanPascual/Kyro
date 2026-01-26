@@ -102,7 +102,7 @@ class QuizActivity : AppCompatActivity() {
             } else {
                 // Si no hemos comprobado, verificamos la selección
                 if (opcionSeleccionada == null) {
-                    showKyroToast("Por favor, selecciona una respuesta")
+                    showKyroToast(getString(R.string.quiz_msg_seleccionar))
                 } else {
                     verificarRespuesta()
                 }
@@ -129,14 +129,14 @@ class QuizActivity : AppCompatActivity() {
     private fun mostrarPregunta() {
         revisandoRespuesta = false
         opcionSeleccionada = null
-        btnSubmit.text = "Comprobar Respuesta"
+        btnSubmit.text = getString(R.string.quiz_btn_comprobar)
 
         tvExplanation.visibility = View.GONE
 
         val preguntaActual = listaPreguntas[posicionActual]
 
         // Actualizar Progreso
-        tvContador.text = "Pregunta ${posicionActual + 1} de ${listaPreguntas.size}"
+        tvContador.text = getString(R.string.quiz_contador, posicionActual + 1, listaPreguntas.size)
         val progreso = ((posicionActual + 1).toFloat() / listaPreguntas.size * 100).toInt()
         progressBar.setProgress(progreso, true)
 
@@ -157,19 +157,22 @@ class QuizActivity : AppCompatActivity() {
         if (esCorrecta) {
             aciertos++
             pintarResultado(opcionSeleccionada!!, true)
-            showKyroToast("Correcto!")
+            showKyroToast(getString(R.string.quiz_msg_correcto))
         } else {
             pintarResultado(opcionSeleccionada!!, false) // El que marcó el usuario en rojo
             pintarResultado(preguntaActual.respuestaCorrecta, true) // La correcta en verde
 
             // Mostrando explicación
             if (preguntaActual.explicacion.isNotEmpty()) {
-                tvExplanation.text = "Explicación: ${preguntaActual.explicacion}"
+                tvExplanation.text = getString(R.string.quiz_explicacion_prefix, preguntaActual.explicacion)
                 tvExplanation.visibility = View.VISIBLE
             }
         }
 
-        btnSubmit.text = if (posicionActual + 1 < listaPreguntas.size) "Siguiente Pregunta" else "Finalizar"
+        btnSubmit.text = if (posicionActual + 1 < listaPreguntas.size)
+            getString(R.string.quiz_btn_siguiente)
+        else
+            getString(R.string.quiz_btn_finalizar)
     }
 
 
@@ -232,10 +235,14 @@ class QuizActivity : AppCompatActivity() {
 
     private fun finalizarQuiz() {
         val builder = AlertDialog.Builder(this)
-        builder.setTitle("¡Test finalizado!")
-        builder.setMessage("Resultado: $aciertos de ${listaPreguntas.size}")
+        builder.setTitle(getString(R.string.quiz_dialog_titulo))
+        builder.setMessage(getString(R.string.quiz_dialog_msg, aciertos, listaPreguntas.size))
         builder.setCancelable(false)
-        builder.setPositiveButton("Volver") { _, _ -> finish() }
+        builder.setPositiveButton(getString(R.string.quiz_btn_volver)) { _, _ -> finish() }
         builder.show()
+    }
+
+    private fun showKyroToast(message: String) {
+        android.widget.Toast.makeText(this, message, android.widget.Toast.LENGTH_SHORT).show()
     }
 }

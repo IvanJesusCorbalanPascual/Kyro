@@ -31,14 +31,14 @@
                     android:layout_height="48dp"
                     android:layout_marginEnd="8dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="Volver atrás"
+                    android:contentDescription="@string/btn_cancelar"
                     android:padding="12dp"
                     android:scaleType="centerInside"
                     android:src="@drawable/ic_cross"
                     app:tint="#000000" />
 
                 <TextView
-                    android:text="Crear Test con KyroIA"
+                    android:text="@string/gen_test_titulo"
                     android:fontFamily="@font/poppins"
                     android:textSize="22sp"
                     android:textStyle="bold"
@@ -51,7 +51,7 @@
                 android:id="@+id/tilNombreTest"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Nombre del Test (ej: Repaso Tema 1)"
+                android:hint="@string/gen_test_hint_nombre"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 app:boxBackgroundColor="@android:color/white"
                 app:boxCornerRadiusTopStart="12dp"
@@ -72,7 +72,7 @@
             <TextView
                 android:id="@+id/tvLabelPreguntas"
                 android:fontFamily="@font/poppins"
-                android:text="Número de preguntas:"
+                android:text="@string/gen_test_label_preguntas"
                 android:textStyle="bold"
                 android:layout_marginBottom="4dp"
                 android:layout_width="wrap_content"
@@ -90,7 +90,7 @@
                 app:trackColorActive="#00A8E8"/>
 
             <TextView
-                android:text="Dificultad:"
+                android:text="@string/gen_test_label_dificultad"
                 android:fontFamily="@font/poppins"
                 android:textStyle="bold"
                 android:layout_marginTop="8dp"
@@ -111,7 +111,7 @@
                     style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Fácil"
+                    android:text="@string/gen_test_chip_facil"
                     android:fontFamily="@font/poppins"
                     android:textColor="@color/text_chip_state_list"
                     app:chipBackgroundColor="@color/bg_chip_state_list"/>
@@ -121,7 +121,7 @@
                     style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Medio"
+                    android:text="@string/gen_test_chip_medio"
                     android:checked="true"
                     android:fontFamily="@font/poppins"
                     android:textColor="@color/text_chip_state_list"
@@ -132,7 +132,7 @@
                     style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Difícil"
+                    android:text="@string/gen_test_chip_dificil"
                     android:fontFamily="@font/poppins"
                     android:textColor="@color/text_chip_state_list"
                     app:chipBackgroundColor="@color/bg_chip_state_list"/>
@@ -145,7 +145,7 @@
                 android:layout_marginVertical="8dp"/>
 
             <TextView
-                android:text="Fuentes de información:"
+                android:text="@string/gen_test_label_fuentes"
                 android:fontFamily="@font/poppins"
                 android:textStyle="bold"
                 android:layout_marginTop="8dp"
@@ -157,7 +157,7 @@
                 android:id="@+id/cbContenidoBase"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Incluir descripción de asignatura"
+                android:text="@string/gen_test_check_descripcion"
                 android:fontFamily="@font/poppins"
                 android:checked="true"/>
 
@@ -171,7 +171,7 @@
                 android:id="@+id/tvSinArchivos"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="No hay archivos subidos."
+                android:text="@string/gen_test_sin_archivos"
                 android:visibility="gone"
                 android:padding="10dp"/>
 
@@ -179,7 +179,7 @@
                 android:id="@+id/btnGenerarTestFinal"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:text="Generar Test ✨"
+                android:text="@string/gen_test_btn_generar"
                 android:fontFamily="@font/poppins"
                 android:textColor="#FFFFFF"
                 android:textStyle="bold"

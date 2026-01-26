@@ -21,7 +21,8 @@
             android:padding="4dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:contentDescription="@null" />
 
         <TextView
             android:id="@+id/tvTituloEjercicio"
@@ -30,7 +31,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="8dp"
             android:fontFamily="@font/poppins"
-            android:text="Test Generado"
+            android:text="@string/item_ejercicio_card_titulo"
             android:textColor="#333333"
             android:textSize="16sp"
             android:textStyle="bold"
@@ -45,7 +46,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="8dp"
             android:fontFamily="@font/poppins"
-            android:text="Toca para realizar este test"
+            android:text="@string/item_ejercicio_card_desc"
             android:textColor="#757575"
             android:textSize="12sp"
             app:layout_constraintEnd_toStartOf="@+id/btnEliminar"
@@ -57,7 +58,7 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Eliminar ejercicio"
+            android:contentDescription="@string/desc_eliminar_ejercicio"
             android:src="@drawable/ic_trash"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

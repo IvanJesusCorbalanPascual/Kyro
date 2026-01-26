@@ -45,7 +45,7 @@ class ModificarAsignaturaActivity : AppCompatActivity() {
 
         // Lógica de los botones
         btnAdjuntar.setOnClickListener {
-            mostrarMensaje("Funcionalidad para subir el PDF aún esta desarrollandose")
+            mostrarMensaje(getString(R.string.toast_feature_pdf))
         }
 
         btnAnalizar.setOnClickListener {
@@ -55,20 +55,20 @@ class ModificarAsignaturaActivity : AppCompatActivity() {
 
             // Comprueba si esta vacio el edit text de los apuntes, título y contenido
             if (tituloTexto.isEmpty()) {
-                etTitulo.error = "El título es obligatorio"
-                mostrarMensaje("Falta el título")
+                etTitulo.error = getString(R.string.error_titulo_vacio)
+                mostrarMensaje(getString(R.string.toast_falta_titulo))
             } else if (contenidoTexto.isEmpty()) {
                 // Marca un error visual en la caja si no hay texto y avisa al usuario
-                etContenido.error = "Debes pegar el texto de la asignatura aquí"
-                mostrarMensaje("El campo de texto está vacío")
-            // Ha funcionado correctamente habiendo detectado que había texto
+                etContenido.error = getString(R.string.error_contenido_vacio_ui)
+                mostrarMensaje(getString(R.string.toast_contenido_vacio))
+                // Ha funcionado correctamente habiendo detectado que había texto
             } else {
-                mostrarMensaje("Actualizando apuntes en la nube...")
+                mostrarMensaje(getString(R.string.toast_actualizando_nube))
 
                 // Bloquea el botón para evitar ser pulsado mientras carga
                 btnAnalizar.isEnabled = false
                 // Indica visualmente al usuario que se esta guardando
-                btnAnalizar.text = "Guardando..."
+                btnAnalizar.text = getString(R.string.btn_estado_guardando)
 
                 lifecycleScope.launch {
                     try {
@@ -88,19 +88,19 @@ class ModificarAsignaturaActivity : AppCompatActivity() {
                                 }
                             }
 
-                        mostrarMensaje("¡Asignatura actualizada!")
+                        mostrarMensaje(getString(R.string.toast_asignatura_actualizada))
 
                         volverALaLista()
 
                     } catch (e: Exception) {
                         // Si falla el internet, muestra el error y permite al usuario reintentarlo
                         e.printStackTrace()
-                        mostrarMensaje("Error al actualizar: ${e.message}")
+                        mostrarMensaje(getString(R.string.error_actualizar_msg, e.message))
 
                         // Vuelve a activar el botón
                         btnAnalizar.isEnabled = true
                         // Restaura el texto original del botón
-                        btnAnalizar.text = "Guardar Cambios"
+                        btnAnalizar.text = getString(R.string.mod_asignatura_btn_guardar)
                     }
                 }
             }
@@ -119,17 +119,17 @@ class ModificarAsignaturaActivity : AppCompatActivity() {
     // Abre una ventana de confirmación para que el usuario afirme si esta seguro
     private fun confirmarEliminacion(id: Long) {
         val builder = AlertDialog.Builder(this)
-        builder.setTitle("¿Eliminar asignatura?")
-        builder.setMessage("Esta acción borrará la asignatura permanentemente. ¿Estás seguro?")
+        builder.setTitle(getString(R.string.dialog_eliminar_asignatura_titulo))
+        builder.setMessage(getString(R.string.dialog_eliminar_asignatura_msg))
 
         // En caso de elegir eliminar, borra la asignatura de Supabase y se cierra el diálogo
-        builder.setPositiveButton("Eliminar") { dialog, _ ->
+        builder.setPositiveButton(getString(R.string.btn_eliminar)) { dialog, _ ->
             borrarAsignaturaDeSupabase(id)
             dialog.dismiss()
         }
 
         // En caos de elegir cancelar, cierra el diálogo
-        builder.setNegativeButton("Cancelar") { dialog, _ ->
+        builder.setNegativeButton(getString(R.string.btn_cancelar)) { dialog, _ ->
             dialog.dismiss()
         }
 
@@ -146,7 +146,7 @@ class ModificarAsignaturaActivity : AppCompatActivity() {
         // Se desactiva el botón para evitar presionarlo más veces
         btnEliminar.isEnabled = false
         // Establece el texto del botón
-        btnEliminar.text = "Borrando..."
+        btnEliminar.text = getString(R.string.btn_estado_borrando)
 
         lifecycleScope.launch {
             try {
@@ -160,13 +160,13 @@ class ModificarAsignaturaActivity : AppCompatActivity() {
                         }
                     }
 
-                mostrarMensaje("Asignatura eliminada")
+                mostrarMensaje(getString(R.string.toast_asignatura_eliminada))
                 volverALaLista()
 
             } catch (e: Exception) {
-                mostrarMensaje("Error al eliminar: ${e.message}")
+                mostrarMensaje(getString(R.string.error_eliminar_generico, e.message))
                 btnEliminar.isEnabled = true
-                btnEliminar.text = "Eliminar Asignatura"
+                btnEliminar.text = getString(R.string.mod_asignatura_btn_eliminar)
             }
         }
     }

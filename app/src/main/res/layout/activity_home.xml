@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -44,7 +45,7 @@
                 android:ellipsize="end"
                 android:fontFamily="@font/poppins"
                 android:singleLine="true"
-                android:text="Hola, Usuario! 👋"
+                android:text="@string/home_saludo"
                 android:textSize="24sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toStartOf="@+id/cardProfile"
@@ -56,7 +57,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins"
-                android:text="¿Listo para un día productivo?"
+                android:text="@string/home_subtitulo"
                 android:textColor="#757575"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tvGreeting" />
@@ -100,7 +101,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/poppins"
-                        android:text="Próximo evento"
+                        android:text="@string/home_prox_evento"
                         android:textColor="#FFFFFF"
                         android:textSize="12sp"
                         app:layout_constraintStart_toStartOf="parent"
@@ -112,7 +113,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="8dp"
                         android:fontFamily="@font/poppins"
-                        android:text="Examen de historia"
+                        tools:text="Examen de historia"
                         android:textColor="#FFFFFF"
                         android:textSize="18sp"
                         android:textStyle="bold"
@@ -126,7 +127,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
                         android:fontFamily="@font/poppins"
-                        android:text="Lun, 25 Dic • Faltan 2 días"
+                        tools:text="Lun, 25 Dic • Faltan 2 días"
                         android:textColor="#B3FFFFFF"
                         android:textSize="12sp"
                         app:layout_constraintStart_toStartOf="parent"
@@ -181,7 +182,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="12dp"
                             android:fontFamily="@font/poppins"
-                            android:text="KyroIA"
+                            android:text="@string/home_btn_ia"
                             android:textColor="@color/b900"
                             android:textSize="15sp"
                             android:textStyle="bold" />
@@ -216,7 +217,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="12dp"
                             android:fontFamily="@font/poppins"
-                            android:text="Asignaturas"
+                            android:text="@string/home_btn_asignaturas"
                             android:textColor="#FFFFFF"
                             android:textSize="15sp"
                             android:textStyle="bold" />
@@ -230,7 +231,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:fontFamily="@font/poppins"
-                android:text="Tu Progreso"
+                android:text="@string/home_progreso_titulo"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
@@ -268,7 +269,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:fontFamily="@font/poppins"
-                                android:text="Tareas en los próximos 3 días"
+                                android:text="@string/home_progreso_3dias"
                                 android:textSize="14sp" />
 
                             <TextView
@@ -296,7 +297,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
-                            android:text="No has completado ninguna tarea"
+                            android:text="@string/home_sin_tareas"
                             android:textColor="#757575"
                             android:textSize="12sp" />
                     </LinearLayout>
@@ -327,7 +328,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:fontFamily="@font/poppins"
-                                android:text="Todas las tareas próximas"
+                                android:text="@string/home_progreso_todas"
                                 android:textSize="14sp" />
 
                             <TextView
@@ -355,7 +356,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
-                            android:text="No has completado ninguna tarea"
+                            android:text="@string/home_sin_tareas"
                             android:textColor="#757575"
                             android:textSize="12sp" />
                     </LinearLayout>
@@ -387,7 +388,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:fontFamily="@font/poppins"
-                                android:text="Tareas entregadas"
+                                android:text="@string/home_progreso_entregadas"
                                 android:textSize="14sp" />
 
                             <TextView
@@ -415,7 +416,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="8dp"
-                            android:text="No tienes tareas pasadas."
+                            android:text="@string/home_sin_entregadas"
                             android:textColor="#757575"
                             android:textSize="12sp" />
                     </LinearLayout>

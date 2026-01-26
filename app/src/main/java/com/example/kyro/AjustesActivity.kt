@@ -67,7 +67,7 @@ class AjustesActivity : AppCompatActivity() {
         btnIdioma.setOnClickListener {
             val idiomas = arrayOf("Español", "English")
             AlertDialog.Builder(this)
-                .setTitle("Selecciona Idioma / Select Language")
+                .setTitle(getString(R.string.ajustes_idioma_dialogo))
                 .setItems(idiomas) { _, which ->
                     // 0 es Español, 1 es Ingles
                     val languageTag = if (which == 1) "en" else "es"
@@ -88,8 +88,8 @@ class AjustesActivity : AppCompatActivity() {
             // Si esta en modo oscuro, pone el modo claro
             val newMode = if (currentModeIsNight == android.content.res.Configuration.UI_MODE_NIGHT_YES) {
                 androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
-            // Si esta en modo claro, pone el modo oscuro
-        } else {
+                // Si esta en modo claro, pone el modo oscuro
+            } else {
                 androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
             }
             // Aplica los cambios y cambia el tema
@@ -119,15 +119,15 @@ class AjustesActivity : AppCompatActivity() {
 
     private fun mostrarDialogoBorrarDatos() {
         val builder = AlertDialog.Builder(this)
-        builder.setTitle("¿Borrar todos los datos?")
-        builder.setMessage("Esto eliminará tus asignaturas, tareas, exámenes y archivos. Tu cuenta seguirá existiendo. \n\nEsta acción no se puede deshacer.")
+        builder.setTitle(getString(R.string.dialog_borrar_datos_titulo))
+        builder.setMessage(getString(R.string.dialog_borrar_datos_msg))
 
-        builder.setPositiveButton("Borrar Todo") { _, _ ->
+        builder.setPositiveButton(getString(R.string.btn_borrar_todo)) { _, _ ->
             lifecycleScope.launch {
                 try {
                     val userId = SupabaseClient.client.auth.currentUserOrNull()?.id
                     if (userId == null) {
-                        showKyroToast("Error: No estás autenticado")
+                        showKyroToast(getString(R.string.error_no_autenticado))
                         return@launch
                     }
 
@@ -158,17 +158,17 @@ class AjustesActivity : AppCompatActivity() {
                     sharedPref.edit().clear().apply()
 
                     // Feedback visual y reiniciar interruptores visuales
-                    showKyroToast("Datos borrados correctamente")
+                    showKyroToast(getString(R.string.toast_datos_borrados))
                     setupFocusSwitch() // Reiniciamos el switch visualmente
 
                 } catch (e: Exception) {
                     e.printStackTrace()
-                    showKyroToast("Error al borrar datos: ${e.message}")
+                    showKyroToast(getString(R.string.error_borrar_datos_generico, e.message))
                 }
             }
         }
 
-        builder.setNegativeButton("Cancelar") { dialog, _ ->
+        builder.setNegativeButton(getString(R.string.btn_cancelar)) { dialog, _ ->
             dialog.dismiss()
         }
 
@@ -180,11 +180,11 @@ class AjustesActivity : AppCompatActivity() {
 
     private fun mostrarDialogoCerrarSesion() {
         val builder = AlertDialog.Builder(this)
-        builder.setTitle("Cerrar Sesión")
-        builder.setMessage("¿Estás seguro de que quieres salir?")
+        builder.setTitle(getString(R.string.cerrar_sesion))
+        builder.setMessage(getString(R.string.dialog_cerrar_sesion_msg))
 
         // Si el usuario presiona que sí
-        builder.setPositiveButton("Sí, salir") { dialog, _ ->
+        builder.setPositiveButton(getString(R.string.btn_si_salir)) { dialog, _ ->
             // Usamos lifecycleScope porque el cierre de sesión es una operación de red (suspendida)
             lifecycleScope.launch {
                 try {
@@ -202,13 +202,13 @@ class AjustesActivity : AppCompatActivity() {
                     finish() // Destruye la actividad de Ajustes
 
                 } catch (e: Exception) {
-                    Toast.makeText(this@AjustesActivity, "Error al cerrar sesión", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@AjustesActivity, getString(R.string.error_cerrar_sesion), Toast.LENGTH_SHORT).show()
                 }
             }
         }
 
         // Si el usuario presiona que no, cierra el diálogo
-        builder.setNegativeButton("Cancelar") { dialog, _ ->
+        builder.setNegativeButton(getString(R.string.btn_cancelar)) { dialog, _ ->
             dialog.dismiss()
         }
 
@@ -217,10 +217,10 @@ class AjustesActivity : AppCompatActivity() {
 
     private fun mostrarDialogoEliminarCuenta() {
         val builder = AlertDialog.Builder(this)
-        builder.setTitle("Eliminar Cuenta")
-        builder.setMessage("Esta acción es permanente y borrará todos tus datos. ¿Estás seguro?")
+        builder.setTitle(getString(R.string.eliminar_cuenta))
+        builder.setMessage(getString(R.string.dialog_eliminar_cuenta_msg))
 
-        builder.setPositiveButton("Eliminar") { dialog, _ ->
+        builder.setPositiveButton(getString(R.string.btn_eliminar)) { dialog, _ ->
             lifecycleScope.launch {
                 try {
                     // Borramos al usuario en la nube
@@ -244,21 +244,21 @@ class AjustesActivity : AppCompatActivity() {
                     startActivity(intent)
                     finish()
 
-                    Toast.makeText(applicationContext, "Cuenta eliminada correctamente", Toast.LENGTH_LONG).show()
+                    Toast.makeText(applicationContext, getString(R.string.toast_cuenta_eliminada), Toast.LENGTH_LONG).show()
 
                 } catch (e: Exception) {
                     // Este catch captura si falla el RPC (Paso 1), por ejemplo, por falta de internet.
                     e.printStackTrace()
                     Toast.makeText(
                         this@AjustesActivity,
-                        "Error de conexión: No se pudo eliminar la cuenta",
+                        getString(R.string.error_eliminar_cuenta),
                         Toast.LENGTH_LONG
                     ).show()
                 }
             }
         }
 
-        builder.setNegativeButton("Cancelar") { dialog, _ ->
+        builder.setNegativeButton(getString(R.string.btn_cancelar)) { dialog, _ ->
             dialog.dismiss()
         }
 
@@ -283,8 +283,13 @@ class AjustesActivity : AppCompatActivity() {
             sharedPref.edit().putBoolean("FOCUS_ENABLED", isChecked).apply()
 
             // Muestra al usuario visualmente si esta activado o desactivado
-            val estado = if(isChecked) "Activado" else "Desactivado"
-            showKyroToast("Modo Focus $estado")
+            val estado = if(isChecked) getString(R.string.estado_activado) else getString(R.string.estado_desactivado)
+            showKyroToast(getString(R.string.toast_focus_estado, estado))
         }
+    }
+
+    // Helper para no escribir el toast largo
+    private fun showKyroToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 }

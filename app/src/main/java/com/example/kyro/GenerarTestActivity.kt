@@ -67,9 +67,11 @@ class GenerarTestActivity : AppCompatActivity() {
     }
 
     private fun setupListeners() {
-        // Actualizar etiqueta del slider al moverlo
+        val valorInicial = sliderPreguntas.value.toInt()
+        tvLabelPreguntas.text = getString(R.string.gen_test_label_preguntas, valorInicial)
+
         sliderPreguntas.addOnChangeListener { _, value, _ ->
-            tvLabelPreguntas.text = "Número de preguntas: ${value.toInt()}"
+            tvLabelPreguntas.text = getString(R.string.gen_test_label_preguntas, value.toInt())
         }
 
         val btnVolver = findViewById<ImageButton>(R.id.btnVolver)
@@ -114,19 +116,19 @@ class GenerarTestActivity : AppCompatActivity() {
 
         // Validar campos vacíos
         if (nombreTest.isEmpty()) {
-            tilNombreTest.error = "Escribe un nombre para el test"
+            tilNombreTest.error = getString(R.string.gen_test_error_nombre_vacio)
             return
         } else {
             tilNombreTest.error = null
         }
 
         if (!usarBase && archivosSeleccionados.isEmpty()) {
-            showKyroToast("Selecciona al menos una fuente (apuntes o archivos)")
+            showKyroToast(getString(R.string.gen_test_error_fuentes))
             return
         }
 
         btnGenerar.isEnabled = false
-        btnGenerar.text = "Verificando nombre..."
+        btnGenerar.text = getString(R.string.gen_test_btn_verificando)
 
         // Validar nombre duplicado en BD
         lifecycleScope.launch(Dispatchers.IO) {
@@ -134,9 +136,9 @@ class GenerarTestActivity : AppCompatActivity() {
 
             withContext(Dispatchers.Main) {
                 if (existe) {
-                    tilNombreTest.error = "Ya existe un test con este nombre en esta asignatura"
+                    tilNombreTest.error = getString(R.string.gen_test_error_nombre_duplicado)
                     btnGenerar.isEnabled = true
-                    btnGenerar.text = "Generar Test ✨"
+                    btnGenerar.text = getString(R.string.gen_test_btn_generar)
                 } else {
                     // Si el nombre está libre, procedemos a generar
                     generarTestConIA(nombreTest, archivosSeleccionados, usarBase)
@@ -167,6 +169,8 @@ class GenerarTestActivity : AppCompatActivity() {
     private fun generarTestConIA(nombreTest: String, archivos: List<Archivo>, usarBase: Boolean) {
         val numPreguntas = sliderPreguntas.value.toInt()
 
+        // Estos valores se envían a la IA, por lo que pueden quedarse en español si el prompt es en español.
+        // Pero la UI visual se maneja en el XML con los Chips.
         val dificultad = when (chipGroupDificultad.checkedChipId) {
             R.id.chipFacil -> "Fácil (principiante)"
             R.id.chipMedio -> "Media (estándar universitario)"
@@ -174,7 +178,7 @@ class GenerarTestActivity : AppCompatActivity() {
             else -> "Media"
         }
 
-        runOnUiThread { btnGenerar.text = "KyroIA está pensando... 🤖" }
+        runOnUiThread { btnGenerar.text = getString(R.string.gen_test_btn_pensando) }
 
         lifecycleScope.launch(Dispatchers.IO) {
             try {
@@ -217,26 +221,30 @@ class GenerarTestActivity : AppCompatActivity() {
                     SupabaseClient.client.from("ejercicios").insert(nuevoEjercicio)
 
                     withContext(Dispatchers.Main) {
-                        showKyroToast("¡Test creado!")
+                        showKyroToast(getString(R.string.gen_test_exito))
                         finish()
                     }
                 } else {
                     withContext(Dispatchers.Main) {
-                        showKyroToast("La IA no generó preguntas válidas")
+                        showKyroToast(getString(R.string.gen_test_error_ia))
                     }
                 }
 
             } catch (e: Exception) {
                 e.printStackTrace()
                 withContext(Dispatchers.Main) {
-                    showKyroToast("Error: ${e.message}")
+                    showKyroToast(getString(R.string.gen_test_error_generico, e.message))
                 }
             } finally {
                 withContext(Dispatchers.Main) {
                     btnGenerar.isEnabled = true
-                    btnGenerar.text = "Generar Test ✨"
+                    btnGenerar.text = getString(R.string.gen_test_btn_generar)
                 }
             }
         }
+    }
+
+    private fun showKyroToast(message: String) {
+        android.widget.Toast.makeText(this, message, android.widget.Toast.LENGTH_SHORT).show()
     }
 }

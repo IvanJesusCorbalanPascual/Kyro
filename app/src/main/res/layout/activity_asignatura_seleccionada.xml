@@ -122,7 +122,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
-                    android:text="Exámenes"
+                    android:text="@string/asignatura_sel_header_examenes"
                     android:textColor="#000000"
                     android:textSize="20sp"
                     android:textStyle="bold" />
@@ -149,7 +149,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
-                    android:text="Tareas"
+                    android:text="@string/asignatura_sel_header_tareas"
                     android:textColor="#000000"
                     android:textSize="20sp"
                     android:textStyle="bold" />
@@ -194,7 +194,7 @@
                     android:id="@+id/tvSinEjercicios"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="No hay ejercicios generados aún."
+                    android:text="@string/asignatura_sel_sin_ejercicios"
                     android:gravity="center"
                     android:padding="10dp"
                     android:visibility="gone"/>
@@ -204,7 +204,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:layout_marginTop="16dp"
-                    android:text="Generar nuevo test con IA ✨"
+                    android:text="@string/asignatura_sel_btn_generar_mas"
                     android:fontFamily="@font/poppins"
                     android:textStyle="bold"
                     android:textColor="#FFFFFF"

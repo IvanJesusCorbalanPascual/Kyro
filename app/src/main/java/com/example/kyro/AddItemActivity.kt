@@ -24,6 +24,7 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 import android.widget.CalendarView
+import android.widget.Toast
 
 class AddItemActivity : AppCompatActivity() {
 
@@ -55,7 +56,7 @@ class AddItemActivity : AppCompatActivity() {
         val toolbar: MaterialToolbar = findViewById(R.id.topAppBar)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        toolbar.title = if (type.equals("Examen", ignoreCase = true)) "Añadir Examen" else "Añadir Tarea"
+        toolbar.title = if (type.equals("Examen", ignoreCase = true)) getString(R.string.add_item_anadir_examen) else getString(R.string.add_item_anadir_tarea)
         toolbar.setNavigationOnClickListener {
             onBackPressedDispatcher.onBackPressed()
         }
@@ -74,23 +75,23 @@ class AddItemActivity : AppCompatActivity() {
         val btnToggleCalendar: ImageButton = findViewById(R.id.btnToggleCalendar)
 
         // Ajuste 1: Pista dinámica para el nombre
-        tilNombre.hint = if (type.equals("Examen", ignoreCase = true)) "Nombre del examen" else "Nombre de la tarea"
+        tilNombre.hint = if (type.equals("Examen", ignoreCase = true)) getString(R.string.add_item_hint_nombre_examen) else getString(R.string.add_item_hint_nombre_tarea)
         toolbar.title = if (isEditMode) {
-            if (type.equals("Examen", ignoreCase = true)) "Editar Examen" else "Editar Tarea"
+            if (type.equals("Examen", ignoreCase = true)) getString(R.string.add_item_editar_examen) else getString(R.string.add_item_editar_tarea)
         } else {
-            if (type.equals("Examen", ignoreCase = true)) "Añadir Examen" else "Añadir Tarea"
+            if (type.equals("Examen", ignoreCase = true)) getString(R.string.add_item_anadir_examen) else getString(R.string.add_item_anadir_tarea)
         }
 
         btnGuardar.text = if (isEditMode) {
-            "Guardar Cambios"
+            getString(R.string.add_item_btn_guardar_cambios)
         } else {
-            if (type.equals("Examen", ignoreCase = true)) "Añadir Examen" else "Añadir Tarea"
+            if (type.equals("Examen", ignoreCase = true)) getString(R.string.add_item_anadir_examen) else getString(R.string.add_item_anadir_tarea)
         }
 
         setupAsignaturasSpinner()
         loadAsignaturas()
 
-        val notificationOptions = listOf("No notificar", "En el momento del evento", "5 minutos antes", "10 minutos antes", "30 minutos antes", "1 hora antes", "1 día antes")
+        val notificationOptions = resources.getStringArray(R.array.notificacion_opciones).toList()
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, notificationOptions)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerNotificacion1.adapter = adapter
@@ -202,7 +203,7 @@ class AddItemActivity : AppCompatActivity() {
         btnGuardar.setOnClickListener {
             val selectedAsignaturaPosition = spinnerAsignaturas.selectedItemPosition
             if (selectedAsignaturaPosition == 0) { // Asumiendo que la posición 0 es "Elige una asignatura"
-               showKyroToast("Por favor, selecciona una asignatura")
+                showKyroToast(getString(R.string.error_selecciona_asignatura))
                 return@setOnClickListener
             }
             val selectedAsignatura = asignaturasList[selectedAsignaturaPosition - 1]
@@ -212,7 +213,7 @@ class AddItemActivity : AppCompatActivity() {
             val notificacion2 = spinnerNotificacion2.selectedItem.toString()
 
             if (nombre.isEmpty()) {
-               showKyroToast("Por favor, rellena el nombre")
+                showKyroToast(getString(R.string.error_rellena_nombre))
                 return@setOnClickListener
             }
 
@@ -221,7 +222,7 @@ class AddItemActivity : AppCompatActivity() {
                     val idUsuarioActual = SupabaseClient.client.auth.currentUserOrNull()?.id
                     if (idUsuarioActual == null) {
                         withContext(Dispatchers.Main) {
-                           showKyroToast("Error: Sesion no valida. Por favor, inicie sesion de nuevo.")
+                            showKyroToast(getString(R.string.error_sesion_no_valida))
                         }
                         return@launch
                     }
@@ -277,7 +278,9 @@ class AddItemActivity : AppCompatActivity() {
                     }
 
                     withContext(Dispatchers.Main) {
-                        val message = if (isEditMode) "$type actualizado" else "$type guardado"
+                        // Traducir el tipo para el mensaje
+                        val typeName = if (type.equals("Examen", ignoreCase = true)) getString(R.string.texto_examen) else getString(R.string.texto_tarea)
+                        val message = if (isEditMode) getString(R.string.msg_item_actualizado, typeName) else getString(R.string.msg_item_guardado, typeName)
                         showKyroToast(message)
                         finish()
                     }
@@ -291,7 +294,7 @@ class AddItemActivity : AppCompatActivity() {
     }
 
     private fun setupAsignaturasSpinner() {
-        asignaturasAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, mutableListOf("Elige una asignatura"))
+        asignaturasAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, mutableListOf(getString(R.string.add_item_spinner_elige_asignatura)))
         asignaturasAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerAsignaturas.adapter = asignaturasAdapter
     }
@@ -305,7 +308,7 @@ class AddItemActivity : AppCompatActivity() {
                     withContext(Dispatchers.Main) {
                         asignaturasList.clear()
                         asignaturasList.addAll(asignaturas)
-                        val asignaturaNombres = mutableListOf("Elige una asignatura")
+                        val asignaturaNombres = mutableListOf(getString(R.string.add_item_spinner_elige_asignatura))
                         asignaturaNombres.addAll(asignaturas.map { it.titulo })
                         asignaturasAdapter.clear()
                         asignaturasAdapter.addAll(asignaturaNombres)
@@ -324,9 +327,13 @@ class AddItemActivity : AppCompatActivity() {
                 }
             } catch (e: Exception) {
                 withContext(Dispatchers.Main) {
-                    showKyroToast("Error al cargar asignaturas: ${e.message}")
+                    showKyroToast(getString(R.string.error_cargar_asignaturas, e.message))
                 }
             }
         }
+    }
+
+    private fun showKyroToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 }

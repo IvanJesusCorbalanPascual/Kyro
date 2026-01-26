@@ -52,7 +52,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Añadir Tarea"
+                    android:text="@string/add_task_titulo"
                     app:cornerRadius="20dp"
                     android:layout_marginEnd="8dp"/>
 
@@ -63,7 +63,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     app:cornerRadius="20dp"
-                    android:text="Añadir Examen"
+                    android:text="@string/add_exam_titulo"
                     android:layout_marginStart="8dp"/>
 
             </LinearLayout>
