@@ -1,17 +1,22 @@
-package com.example.kyro
+package com.example.kyro.activities
 
 import android.os.Bundle
 import android.view.View
-import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.card.MaterialCardView
 import android.content.Intent
-import android.content.Context
+import android.content.res.Configuration
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SwitchCompat
+import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.lifecycleScope // Para lanzar tareas en segundo plano
+import com.example.kyro.NavigationHelper
+import com.example.kyro.R
+import com.example.kyro.SupabaseClient
+import com.example.kyro.UserProfile
 import io.github.jan.supabase.postgrest.from
 import kotlinx.coroutines.launch // Para usar corrutinas
 import io.github.jan.supabase.gotrue.auth// Para acceder a la autenticación
@@ -73,8 +78,8 @@ class AjustesActivity : AppCompatActivity() {
                     val languageTag = if (which == 1) "en" else "es"
 
                     // Esta función cambia el idioma  sin reiniciar la app de forma bruta
-                    val appLocale = androidx.core.os.LocaleListCompat.forLanguageTags(languageTag)
-                    androidx.appcompat.app.AppCompatDelegate.setApplicationLocales(appLocale)
+                    val appLocale = LocaleListCompat.forLanguageTags(languageTag)
+                    AppCompatDelegate.setApplicationLocales(appLocale)
                 }
                 .show()
         }
@@ -83,17 +88,17 @@ class AjustesActivity : AppCompatActivity() {
         val btnTema = findViewById<View>(R.id.btnTema)
         btnTema.setOnClickListener {
             // Comprueba si esta activado el modo oscuro
-            val currentModeIsNight = resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK
+            val currentModeIsNight = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
 
             // Si esta en modo oscuro, pone el modo claro
-            val newMode = if (currentModeIsNight == android.content.res.Configuration.UI_MODE_NIGHT_YES) {
-                androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
+            val newMode = if (currentModeIsNight == Configuration.UI_MODE_NIGHT_YES) {
+                AppCompatDelegate.MODE_NIGHT_NO
                 // Si esta en modo claro, pone el modo oscuro
             } else {
-                androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
+                AppCompatDelegate.MODE_NIGHT_YES
             }
             // Aplica los cambios y cambia el tema
-            androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(newMode)
+            AppCompatDelegate.setDefaultNightMode(newMode)
         }
 
         // Muestra un diálogo de advertencia para confirmar si el usuario quiere eliminar todos los datos de su cuenta
@@ -154,8 +159,13 @@ class AjustesActivity : AppCompatActivity() {
                     }
 
                     // Limpiar preferencias locales (Modo focus, etc)
-                    val sharedPref = getSharedPreferences("KyroPrefs", Context.MODE_PRIVATE)
+                    val sharedPref = getSharedPreferences("KyroPrefs", MODE_PRIVATE)
                     sharedPref.edit().clear().apply()
+
+                    val intent = Intent(this@AjustesActivity, LoginActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    startActivity(intent)
+                    finish()
 
                     // Feedback visual y reiniciar interruptores visuales
                     showKyroToast(getString(R.string.toast_datos_borrados))
@@ -232,7 +242,7 @@ class AjustesActivity : AppCompatActivity() {
                     } catch (e: Exception) {}
 
                     // Limpiando la preferencia de "Mantener sesión iniciada"
-                    val sharedPref = getSharedPreferences("PreferenciasKyro", android.content.Context.MODE_PRIVATE)
+                    val sharedPref = getSharedPreferences("PreferenciasKyro", MODE_PRIVATE)
                     with(sharedPref.edit()) {
                         clear() // Borra todas las preferencias
                         apply()
@@ -272,7 +282,7 @@ class AjustesActivity : AppCompatActivity() {
         val switchFocus = findViewById<SwitchCompat>(R.id.switchModoFocus)
 
         // Abre la memoria del móvil
-        val sharedPref = getSharedPreferences("KyroPrefs", Context.MODE_PRIVATE)
+        val sharedPref = getSharedPreferences("KyroPrefs", MODE_PRIVATE)
 
         // Lee como estaba antes, por defecto estará activado
         val isFocusEnabled = sharedPref.getBoolean("FOCUS_ENABLED", true)

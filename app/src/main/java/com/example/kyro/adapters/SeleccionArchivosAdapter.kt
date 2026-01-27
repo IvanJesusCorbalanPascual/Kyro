@@ -1,4 +1,4 @@
-package com.example.kyro
+package com.example.kyro.adapters
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,6 +6,8 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.kyro.Archivo
+import com.example.kyro.R
 
 /**
  * Clase que maneja la seleccion de archivos subidos por el usuario para hacer preguntas con IA con esos archivos

@@ -1,8 +1,7 @@
-package com.example.kyro
+package com.example.kyro.activities
 
 import android.Manifest
 import android.app.AppOpsManager
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
@@ -17,6 +16,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
+import com.example.kyro.Examen
+import com.example.kyro.MonitorService
+import com.example.kyro.NavigationHelper
+import com.example.kyro.R
+import com.example.kyro.SupabaseClient
+import com.example.kyro.Tarea
+import com.example.kyro.UserProfile
 import com.google.android.material.card.MaterialCardView
 import io.github.jan.supabase.gotrue.auth
 import io.github.jan.supabase.postgrest.from
@@ -310,7 +316,7 @@ class HomeActivity : AppCompatActivity() {
     // Logica del modo Focus, pregunta al sistema si tiene permisos para ver el historial de uso de apps
     private fun comprobarPermisoDeUso(): Boolean {
         // Obtiene el gestor de operaciones de apps del sistema
-        val appOps = getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
+        val appOps = getSystemService(APP_OPS_SERVICE) as AppOpsManager
 
         // Comprueba el estado del permiso de uso de apps
         val mode = appOps.checkOpNoThrow(

@@ -1,14 +1,16 @@
-package com.example.kyro
+package com.example.kyro.activities
 
-import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.example.kyro.GeminiService
+import com.example.kyro.NavigationHelper
+import com.example.kyro.R
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.chip.ChipGroup
@@ -67,7 +69,7 @@ class KyroAiActivity : AppCompatActivity() {
             }
 
             // Ocultar teclado para ver el resultado mejor
-            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(etInput.windowToken, 0)
 
             // Detectar qué chip está seleccionado para saber qué pedirle a Gemini
@@ -110,6 +112,6 @@ class KyroAiActivity : AppCompatActivity() {
     }
 
     private fun showKyroToast(message: String) {
-        android.widget.Toast.makeText(this, message, android.widget.Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 }

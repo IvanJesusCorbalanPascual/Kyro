@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="#F4F6F8"
     android:fitsSystemWindows="true"
-    tools:context=".EventDetailActivity">
+    tools:context=".activities.EventDetailActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"

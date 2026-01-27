@@ -1,6 +1,5 @@
-package com.example.kyro
+package com.example.kyro.activities
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
@@ -15,6 +14,9 @@ import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
 import androidx.lifecycle.lifecycleScope
+import com.example.kyro.R
+import com.example.kyro.SupabaseClient
+import com.example.kyro.showKyroToast
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import io.github.jan.supabase.gotrue.auth
@@ -165,7 +167,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun guardarPreferenciaSesion(mantener: Boolean) {
-        val sharedPref = getSharedPreferences("PreferenciasKyro", Context.MODE_PRIVATE)
+        val sharedPref = getSharedPreferences("PreferenciasKyro", MODE_PRIVATE)
         with(sharedPref.edit()) {
             putBoolean("mantener_sesion_activa", mantener)
             apply()
@@ -173,7 +175,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun verificarSesionExistente() {
-        val sharedPref = getSharedPreferences("PreferenciasKyro", Context.MODE_PRIVATE)
+        val sharedPref = getSharedPreferences("PreferenciasKyro", MODE_PRIVATE)
         val quiereMantenerSesion = sharedPref.getBoolean("mantener_sesion_activa", false)
 
         lifecycleScope.launch {

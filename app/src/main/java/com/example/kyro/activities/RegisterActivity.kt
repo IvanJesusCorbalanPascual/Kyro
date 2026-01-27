@@ -1,7 +1,8 @@
-package com.example.kyro
+package com.example.kyro.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -13,7 +14,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
+import androidx.credentials.exceptions.GetCredentialException
 import androidx.lifecycle.lifecycleScope
+import com.example.kyro.R
+import com.example.kyro.SupabaseClient
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import io.github.jan.supabase.gotrue.auth
@@ -149,36 +153,55 @@ class RegisterActivity : AppCompatActivity() {
     private fun registrarseConGoogle() {
         lifecycleScope.launch {
             try {
-                // 1. Configurar la petición a Google
+                // Configurar la petición a Google
                 val googleIdOption = GetGoogleIdOption.Builder()
-                    .setFilterByAuthorizedAccounts(false)
+                    .setFilterByAuthorizedAccounts(false) // Cambiado a TRUE
                     .setServerClientId(WEB_CLIENT_ID)
-                    .setAutoSelectEnabled(false)
+                    .setAutoSelectEnabled(false) // Cambiado a TRUE para mejor UX
                     .build()
 
                 val request = GetCredentialRequest.Builder()
                     .addCredentialOption(googleIdOption)
                     .build()
 
-                // 2. Abrir la ventanita de selección de cuentas
+                // Abrir la ventanita de selección de cuentas
                 val credentialManager = CredentialManager.create(this@RegisterActivity)
-                val result = credentialManager.getCredential(this@RegisterActivity, request)
+                val result = credentialManager.getCredential(
+                    this@RegisterActivity,
+                    request
+                )
 
-                // 3. Procesar la respuesta
+                // Procesar la respuesta
                 val credential = result.credential
                 if (credential is CustomCredential && credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
-
                     val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
                     val googleToken = googleIdTokenCredential.idToken
 
-                    // 4. Enviar el token a Supabase
+                    // Enviar el token a Supabase
                     loginEnSupabaseConGoogle(googleToken)
                 } else {
                     showKyroToast("Error: No se pudo obtener la credencial.")
                 }
 
+            } catch (e: GetCredentialException) {
+                // Manejar específicamente "No credentials available"
+                when {
+                    e.message?.contains("No credentials available") == true -> {
+                        showKyroToast("No hay cuentas de Google disponibles. " +
+                                "Por favor, agrega una cuenta en Configuración del dispositivo.")
+                    }
+                    e.message?.contains("cancelled", ignoreCase = true) == true -> {
+                        // Usuario canceló, no mostrar error
+                        Log.d("GoogleAuth", "Cancelado por el usuario")
+                    }
+                    else -> {
+                        showKyroToast("Error al autenticar con Google: ${e.message}")
+                    }
+                }
+                Log.e("GoogleAuth", "GetCredentialException", e)
             } catch (e: Exception) {
-                // Cancelado por el usuario
+                showKyroToast("Error inesperado: ${e.message}")
+                Log.e("GoogleAuth", "Exception inesperada", e)
             }
         }
     }

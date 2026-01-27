@@ -1,4 +1,4 @@
-package com.example.kyro
+package com.example.kyro.activities
 
 import android.content.Intent
 import android.os.Bundle
@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -47,6 +46,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
+import com.example.kyro.Asignatura
+import com.example.kyro.Examen
+import com.example.kyro.NavigationHelper
+import com.example.kyro.R
+import com.example.kyro.SupabaseClient
+import com.example.kyro.Tarea
 import com.google.android.material.button.MaterialButton
 import io.github.jan.supabase.gotrue.auth
 import io.github.jan.supabase.postgrest.from
@@ -60,6 +65,7 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
 import java.time.format.TextStyle
 import java.util.Locale
 
@@ -104,7 +110,7 @@ class CalendarioActivity : AppCompatActivity() {
 
         // Listener para el boton de anadir examen
         btnAddExam.setOnClickListener {
-            val intent = Intent(this, AddItemActivity::class.java).apply {
+            val intent = Intent(this, AddTaskActivity::class.java).apply {
                 putExtra("type", "Examen")
                 putExtra("selectedDate", selectedDate.toString())
             }
@@ -113,7 +119,7 @@ class CalendarioActivity : AppCompatActivity() {
 
         // Listener para el boton de anadir tarea
         btnAddTask.setOnClickListener {
-            val intent = Intent(this, AddItemActivity::class.java).apply {
+            val intent = Intent(this, AddTaskActivity::class.java).apply {
                 putExtra("type", "Tarea")
                 putExtra("selectedDate", selectedDate.toString())
             }
@@ -230,7 +236,7 @@ class CalendarioActivity : AppCompatActivity() {
                         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
                         val expirationDateTime = LocalDateTime.parse(dateTimeString, formatter)
                         isExpired = LocalDateTime.now().isAfter(expirationDateTime)
-                    } catch (e: java.time.format.DateTimeParseException) {
+                    } catch (e: DateTimeParseException) {
                         isExpired = false
                     }
                 }

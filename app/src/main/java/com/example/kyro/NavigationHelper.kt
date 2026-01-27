@@ -2,7 +2,11 @@ package com.example.kyro
 
 import android.app.Activity
 import android.content.Intent
-import android.widget.Toast
+import com.example.kyro.activities.AjustesActivity
+import com.example.kyro.activities.AsignaturaActivity
+import com.example.kyro.activities.CalendarioActivity
+import com.example.kyro.activities.HomeActivity
+import com.example.kyro.activities.KyroAiActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 object NavigationHelper {

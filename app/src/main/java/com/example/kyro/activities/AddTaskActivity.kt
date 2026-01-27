@@ -1,4 +1,4 @@
-package com.example.kyro
+package com.example.kyro.activities
 
 import android.os.Bundle
 import android.view.View
@@ -25,8 +25,13 @@ import java.util.Calendar
 import java.util.Locale
 import android.widget.CalendarView
 import android.widget.Toast
+import com.example.kyro.Asignatura
+import com.example.kyro.Examen
+import com.example.kyro.R
+import com.example.kyro.SupabaseClient
+import com.example.kyro.Tarea
 
-class AddItemActivity : AppCompatActivity() {
+class AddTaskActivity : AppCompatActivity() {
 
     private var selectedDate: String = ""
     private var selectedTime: String = ""
@@ -45,7 +50,7 @@ class AddItemActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_add_item)
+        setContentView(R.layout.activity_add_task)
 
         calendar = Calendar.getInstance()
         eventId = intent.getLongExtra("id", -1)
@@ -56,7 +61,8 @@ class AddItemActivity : AppCompatActivity() {
         val toolbar: MaterialToolbar = findViewById(R.id.topAppBar)
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        toolbar.title = if (type.equals("Examen", ignoreCase = true)) getString(R.string.add_item_anadir_examen) else getString(R.string.add_item_anadir_tarea)
+        toolbar.title = if (type.equals("Examen", ignoreCase = true)) getString(R.string.add_item_anadir_examen) else getString(
+            R.string.add_item_anadir_tarea)
         toolbar.setNavigationOnClickListener {
             onBackPressedDispatcher.onBackPressed()
         }
@@ -75,17 +81,21 @@ class AddItemActivity : AppCompatActivity() {
         val btnToggleCalendar: ImageButton = findViewById(R.id.btnToggleCalendar)
 
         // Ajuste 1: Pista dinámica para el nombre
-        tilNombre.hint = if (type.equals("Examen", ignoreCase = true)) getString(R.string.add_item_hint_nombre_examen) else getString(R.string.add_item_hint_nombre_tarea)
+        tilNombre.hint = if (type.equals("Examen", ignoreCase = true)) getString(R.string.add_item_hint_nombre_examen) else getString(
+            R.string.add_item_hint_nombre_tarea)
         toolbar.title = if (isEditMode) {
-            if (type.equals("Examen", ignoreCase = true)) getString(R.string.add_item_editar_examen) else getString(R.string.add_item_editar_tarea)
+            if (type.equals("Examen", ignoreCase = true)) getString(R.string.add_item_editar_examen) else getString(
+                R.string.add_item_editar_tarea)
         } else {
-            if (type.equals("Examen", ignoreCase = true)) getString(R.string.add_item_anadir_examen) else getString(R.string.add_item_anadir_tarea)
+            if (type.equals("Examen", ignoreCase = true)) getString(R.string.add_item_anadir_examen) else getString(
+                R.string.add_item_anadir_tarea)
         }
 
         btnGuardar.text = if (isEditMode) {
             getString(R.string.add_item_btn_guardar_cambios)
         } else {
-            if (type.equals("Examen", ignoreCase = true)) getString(R.string.add_item_anadir_examen) else getString(R.string.add_item_anadir_tarea)
+            if (type.equals("Examen", ignoreCase = true)) getString(R.string.add_item_anadir_examen) else getString(
+                R.string.add_item_anadir_tarea)
         }
 
         setupAsignaturasSpinner()
@@ -279,8 +289,10 @@ class AddItemActivity : AppCompatActivity() {
 
                     withContext(Dispatchers.Main) {
                         // Traducir el tipo para el mensaje
-                        val typeName = if (type.equals("Examen", ignoreCase = true)) getString(R.string.texto_examen) else getString(R.string.texto_tarea)
-                        val message = if (isEditMode) getString(R.string.msg_item_actualizado, typeName) else getString(R.string.msg_item_guardado, typeName)
+                        val typeName = if (type.equals("Examen", ignoreCase = true)) getString(R.string.texto_examen) else getString(
+                            R.string.texto_tarea)
+                        val message = if (isEditMode) getString(R.string.msg_item_actualizado, typeName) else getString(
+                            R.string.msg_item_guardado, typeName)
                         showKyroToast(message)
                         finish()
                     }
@@ -294,7 +306,8 @@ class AddItemActivity : AppCompatActivity() {
     }
 
     private fun setupAsignaturasSpinner() {
-        asignaturasAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, mutableListOf(getString(R.string.add_item_spinner_elige_asignatura)))
+        asignaturasAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, mutableListOf(getString(
+            R.string.add_item_spinner_elige_asignatura)))
         asignaturasAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerAsignaturas.adapter = asignaturasAdapter
     }

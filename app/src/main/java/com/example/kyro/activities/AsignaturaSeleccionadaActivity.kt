@@ -1,4 +1,4 @@
-package com.example.kyro
+package com.example.kyro.activities
 
 import android.content.Intent
 import android.os.Bundle
@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
@@ -14,6 +15,14 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.kyro.EjercicioIA
+import com.example.kyro.adapters.EjerciciosAdapter
+import com.example.kyro.Examen
+import com.example.kyro.NavigationHelper
+import com.example.kyro.PreguntaGenerada
+import com.example.kyro.R
+import com.example.kyro.SupabaseClient
+import com.example.kyro.Tarea
 import com.google.android.material.button.MaterialButton
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -26,6 +35,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
 
 /**
  * Maneja la funcionalidad de la vista de asignatura seleccionada.
@@ -289,7 +299,7 @@ class AsignaturaSeleccionadaActivity : AppCompatActivity() {
             val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
             val expirationDateTime = LocalDateTime.parse(dateTimeString, formatter)
             LocalDateTime.now().isAfter(expirationDateTime)
-        } catch (e: java.time.format.DateTimeParseException) {
+        } catch (e: DateTimeParseException) {
             false
         }
     }
@@ -405,7 +415,7 @@ class AsignaturaSeleccionadaActivity : AppCompatActivity() {
     }
 
     private fun showKyroToast(message: String) {
-        android.widget.Toast.makeText(this, message, android.widget.Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
     // Definición de Event interna para evitar conflictos de clases si no usas Models.kt

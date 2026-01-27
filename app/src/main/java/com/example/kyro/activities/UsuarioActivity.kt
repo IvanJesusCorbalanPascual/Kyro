@@ -1,9 +1,12 @@
-package com.example.kyro
+package com.example.kyro.activities
 
 import android.os.Bundle
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.example.kyro.R
+import com.example.kyro.SupabaseClient
+import com.example.kyro.showKyroToast
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import io.github.jan.supabase.gotrue.auth

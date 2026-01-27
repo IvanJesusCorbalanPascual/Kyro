@@ -18,7 +18,7 @@
         android:theme="@style/Theme.Kyro">
 
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.Kyro">
@@ -29,73 +29,73 @@
         </activity>
 
         <activity
-            android:name=".Primal1Activity"
+            android:name=".activities.Primal1Activity"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
 
         <activity
-            android:name=".Primal2Activity"
+            android:name=".activities.Primal2Activity"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
 
         <activity
-            android:name=".Primal3Activity"
+            android:name=".activities.Primal3Activity"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
 
         <activity
-            android:name=".RegisterActivity"
+            android:name=".activities.RegisterActivity"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
 
         <activity
-            android:name=".LoginActivity"
+            android:name=".activities.LoginActivity"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
 
         <activity
-            android:name=".HomeActivity"
+            android:name=".activities.HomeActivity"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
 
         <activity
-            android:name=".AsignaturaActivity"
+            android:name=".activities.AsignaturaActivity"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
 
         <activity
-            android:name=".AsignaturaSeleccionadaActivity"
+            android:name=".activities.AsignaturaSeleccionadaActivity"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
 
         <activity
-            android:name=".ModificarAsignaturaActivity"
+            android:name=".activities.ModificarAsignaturaActivity"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
 
         <activity
-            android:name=".CalendarioActivity"
+            android:name=".activities.CalendarioActivity"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
 
         <activity
-            android:name=".AjustesActivity"
+            android:name=".activities.AjustesActivity"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
 
         <activity
-            android:name=".AddItemActivity"
+            android:name=".activities.AddTaskActivity"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
 
         <activity
-            android:name=".EventDetailActivity"
+            android:name=".activities.EventDetailActivity"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
 
         <activity
-            android:name=".UsuarioActivity"
+            android:name=".activities.UsuarioActivity"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
 
         <activity
-            android:name=".QuizActivity"
+            android:name=".activities.QuizActivity"
             android:exported="false"
             android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
 
         <activity
-            android:name=".GenerarTestActivity"
+            android:name=".activities.GenerarTestActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".KyroAiActivity"
+            android:name=".activities.KyroAiActivity"
             android:screenOrientation="fullSensor"
             android:windowSoftInputMode="adjustResize" />
 

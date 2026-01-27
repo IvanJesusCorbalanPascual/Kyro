@@ -1,10 +1,11 @@
-package com.example.kyro
+package com.example.kyro.activities
 
 import android.content.Intent
 import android.os.Bundle
 import android.widget.ImageButton
 import android.widget.LinearLayout // Importante importar esto
 import androidx.appcompat.app.AppCompatActivity
+import com.example.kyro.R
 
 class Primal1Activity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

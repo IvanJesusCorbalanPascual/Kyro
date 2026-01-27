@@ -14,4 +14,8 @@
 
         <item name="android:colorControlHighlight">@color/b200</item>
     </style>
+    <style name="BottomNavTextStyle" parent="TextAppearance.MaterialComponents.Caption">
+        <item name="android:fontFamily">@font/poppins</item>
+        <item name="fontFamily">@font/poppins</item>
+    </style>
 </resources>

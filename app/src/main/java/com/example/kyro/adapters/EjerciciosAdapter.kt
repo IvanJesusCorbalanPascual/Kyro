@@ -1,4 +1,4 @@
-package com.example.kyro
+package com.example.kyro.adapters
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,6 +6,8 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.kyro.EjercicioIA
+import com.example.kyro.R
 
 class EjerciciosAdapter(
     private var listaEjercicios: List<EjercicioIA>,

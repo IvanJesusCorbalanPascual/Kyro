@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F4F6F8"
-    tools:context=".CalendarioActivity"
+    tools:context=".activities.CalendarioActivity"
     android:fitsSystemWindows="true">
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -20,7 +20,9 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/bottom_nav_menu" />
+        app:menu="@menu/bottom_nav_menu"
+        app:itemTextAppearanceActive="@style/BottomNavTextStyle"
+        app:itemTextAppearanceInactive="@style/BottomNavTextStyle"/>
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -53,6 +55,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/add_task_titulo"
+                    android:textColor="#00A8E8"
+                    app:strokeColor="#00A8E8"
                     app:cornerRadius="20dp"
                     android:layout_marginEnd="8dp"/>
 
@@ -63,6 +67,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     app:cornerRadius="20dp"
+                    android:textColor="#00A8E8"
+                    app:strokeColor="#00A8E8"
                     android:text="@string/add_exam_titulo"
                     android:layout_marginStart="8dp"/>
 
@@ -74,6 +80,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 app:cornerRadius="20dp"
+                android:textColor="#FFFFFF"
+                app:backgroundTint="#00A8E8"
                 android:text="@string/calendar_btn_view_all" />
 
             <LinearLayout

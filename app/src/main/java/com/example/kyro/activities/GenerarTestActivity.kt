@@ -1,13 +1,21 @@
-package com.example.kyro
+package com.example.kyro.activities
 
 import android.os.Bundle
+import android.view.View
 import android.widget.CheckBox
 import android.widget.ImageButton
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.kyro.Archivo
+import com.example.kyro.EjercicioIA
+import com.example.kyro.GeminiService
+import com.example.kyro.R
+import com.example.kyro.adapters.SeleccionArchivosAdapter
+import com.example.kyro.SupabaseClient
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.slider.Slider
@@ -15,6 +23,7 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.google.gson.Gson
 import io.github.jan.supabase.postgrest.from
+import io.github.jan.supabase.postgrest.query.Count
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -98,8 +107,8 @@ class GenerarTestActivity : AppCompatActivity() {
                         rvArchivos.adapter = adapter
                     } else {
                         findViewById<TextView>(R.id.tvSinArchivos).visibility =
-                            android.view.View.VISIBLE
-                        rvArchivos.visibility = android.view.View.GONE
+                            View.VISIBLE
+                        rvArchivos.visibility = View.GONE
                         adapter = SeleccionArchivosAdapter(emptyList())
                     }
                 }
@@ -153,7 +162,7 @@ class GenerarTestActivity : AppCompatActivity() {
             val count = SupabaseClient.client
                 .from("ejercicios")
                 .select {
-                    count(io.github.jan.supabase.postgrest.query.Count.EXACT)
+                    count(Count.EXACT)
                     filter {
                         eq("asignatura_id", asignaturaId)
                         eq("nombre", nombre) // Asumiendo que la columna en BD es 'nombre'
@@ -245,6 +254,6 @@ class GenerarTestActivity : AppCompatActivity() {
     }
 
     private fun showKyroToast(message: String) {
-        android.widget.Toast.makeText(this, message, android.widget.Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 }

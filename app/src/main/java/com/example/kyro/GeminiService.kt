@@ -41,7 +41,7 @@ class GeminiService {
                 // CONSTRUIMOS EL PROMPT AQUÍ, USANDO LOS PARÁMETROS
                 val prompt = """
                     TU ROL:
-                    Eres un profesor veterano, bueno, inteligente y experto creando test.
+                    Eres un profesor veterano, multilenguaje, bueno, inteligente y experto creando test.
                     Llevas muchos años en el mundo de la enseñanza, sabes lo que necesitas los alumnos y 
                     eres capaz de crear estos test de manera tan eficiente que los estudiantes pueden aprender de ellos.
                     Ademas te gusta optimizar tanto tus preguntas como tus respuestas basándote en la dificultad que se te exige:
@@ -52,6 +52,7 @@ class GeminiService {
                     
                     TU TAREA:
                     Genera un examen tipo test de $cantidad preguntas.
+                    En el mismo lenguaje del prompt (Español, Ingles, el que sea)
                     Nivel de dificultad: $dificultad.
                     Basado estrictamente en el tema del siguiente contenido el cual ha sido escrito por un estudiante 
                     (OJO, no cogas literalmente este texto y hagas preguntas de el, sino que cogas el contenido, lo analices en profundidad
@@ -112,10 +113,10 @@ class GeminiService {
         return withContext(Dispatchers.IO) {
             try {
                 val promptInstruccion = when (tipo) {
-                    "RESUMIR" -> "Eres un experto tomando notas. Haz un resumen conciso y esquemático con los puntos clave del siguiente texto:"
-                    "EXPLICAR" -> "Eres un profesor didáctico. Explica el siguiente concepto de forma sencilla y clara para un estudiante, usando analogías si ayuda:"
-                    "ESQUEMA" -> "Genera un esquema estructurado (con guiones y subguiones) que organice lógicamente el siguiente contenido:"
-                    else -> "Ayuda con este texto:"
+                    "RESUMIR" -> "(En el mismo idioma que el texto) Eres un experto tomando notas. Haz un resumen conciso y esquemático con los puntos clave del siguiente texto:"
+                    "EXPLICAR" -> "(En el mismo idioma que el texto) Eres un profesor didáctico. Explica el siguiente concepto de forma sencilla y clara para un estudiante, usando analogías si ayuda:"
+                    "ESQUEMA" -> "(En el mismo idioma que el texto) Genera un esquema estructurado (con guiones y subguiones) que organice lógicamente el siguiente contenido:"
+                    else -> "(En el mismo idioma que el texto) Ayuda con este texto:"
                 }
 
                 val promptFinal = "$promptInstruccion\n\nTEXTO:\n\"$texto\""

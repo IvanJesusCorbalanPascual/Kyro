@@ -1,4 +1,4 @@
-package com.example.kyro
+package com.example.kyro.activities
 
 import android.content.Intent
 import android.net.Uri
@@ -9,19 +9,25 @@ import android.view.View
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.kyro.Archivo
+import com.example.kyro.Asignatura
+import com.example.kyro.adapters.AsignaturaAdapter
+import com.example.kyro.NavigationHelper
+import com.example.kyro.R
+import com.example.kyro.SupabaseClient
 import com.google.android.material.button.MaterialButton
+import com.tom_roush.pdfbox.android.PDFBoxResourceLoader
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.gotrue.auth
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import io.github.jan.supabase.storage.storage
-import io.github.jan.supabase.storage.upload
-import java.util.ArrayList
 
 class AsignaturaActivity : AppCompatActivity() {
 
@@ -52,7 +58,7 @@ class AsignaturaActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_asignatura)
 
-        com.tom_roush.pdfbox.android.PDFBoxResourceLoader.init(applicationContext)
+        PDFBoxResourceLoader.init(applicationContext)
 
         // Variables vinculadas
         etTituloNuevo = findViewById(R.id.etTituloNuevoAsignatura)
@@ -178,7 +184,11 @@ class AsignaturaActivity : AppCompatActivity() {
                 }
 
                 // Guardar la Asignatura en Supabase
-                val nuevaAsignatura = Asignatura(titulo = titulo, contenido = contenidoParaGuardar, user_id = usuarioActual.id)
+                val nuevaAsignatura = Asignatura(
+                    titulo = titulo,
+                    contenido = contenidoParaGuardar,
+                    user_id = usuarioActual.id
+                )
 
                 val asignaturaGuardada = SupabaseClient.client
                     .from("asignaturas")
@@ -244,7 +254,7 @@ class AsignaturaActivity : AppCompatActivity() {
     }
 
     private fun showKyroToast(message: String) {
-        android.widget.Toast.makeText(this, message, android.widget.Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
     private fun abrirDetalle(asignatura: Asignatura) {

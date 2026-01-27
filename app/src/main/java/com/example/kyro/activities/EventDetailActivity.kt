@@ -1,4 +1,4 @@
-package com.example.kyro
+package com.example.kyro.activities
 
 import android.content.Intent
 import android.os.Bundle
@@ -8,6 +8,9 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.example.kyro.NavigationHelper
+import com.example.kyro.R
+import com.example.kyro.SupabaseClient
 import com.google.android.material.appbar.MaterialToolbar
 import io.github.jan.supabase.postgrest.postgrest
 import kotlinx.coroutines.launch
@@ -53,7 +56,7 @@ class EventDetailActivity : AppCompatActivity() {
         // --- Logica del boton de Editar ---
         val btnEdit: Button = findViewById(R.id.btnEditEvent)
         btnEdit.setOnClickListener {
-            val editIntent = Intent(this, AddItemActivity::class.java)
+            val editIntent = Intent(this, AddTaskActivity::class.java)
 
             editIntent.apply {
                 putExtra("id", id)
