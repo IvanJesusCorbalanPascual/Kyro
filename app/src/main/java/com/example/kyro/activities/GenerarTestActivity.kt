@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.kyro.Archivo
 import com.example.kyro.EjercicioIA
+import com.example.kyro.FileTextExtractor
 import com.example.kyro.GeminiService
 import com.example.kyro.R
 import com.example.kyro.adapters.SeleccionArchivosAdapter
@@ -52,6 +53,7 @@ class GenerarTestActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_generar_test)
 
         asignaturaId = intent.getLongExtra("ASIGNATURA_ID", -1)
@@ -201,10 +203,23 @@ class GenerarTestActivity : AppCompatActivity() {
                 if (archivos.isNotEmpty()) {
                     contenidoBuilder.append("TEMAS ADICIONALES:\n")
                     archivos.forEach { archivo ->
-                        // --- POR ARREGLAR ---
-                        // OJO: Aquí solo estamos pasando el nombre del archivo.
-                        // Si no tienes OCR o lectura de PDF, la IA inventará preguntas basándose solo en el título.
                         contenidoBuilder.append("- TEMA/ARCHIVO: ${archivo.nombre}\n")
+
+                        try {
+                            // Lee el contenido real del PDF
+                            val textoContenido = FileTextExtractor.leerDesdeUrl(archivo.url)
+
+                            if (textoContenido.isNotBlank()) {
+                                contenidoBuilder.append(textoContenido)
+                            } else {
+                                contenidoBuilder.append("(No se pudo extraer texto de este archivo, posible PDF escaneado o vacío)")
+                            }
+
+                        } catch (e: Exception) {
+                            contenidoBuilder.append("(Error leyendo el archivo: ${e.message})")
+                            e.printStackTrace()
+                        }
+                        contenidoBuilder.append("\n\n")
                     }
                 }
 

@@ -97,9 +97,9 @@ dependencies {
     implementation("androidx.credentials:credentials-play-services-auth:1.3.0")
     implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
 
-    // Para leer texto de PDFs
-    implementation("com.tom-roush:pdfbox-android:2.0.27.0")
-
     // Subir PDF a Supabase
     implementation("io.github.jan-tennert.supabase:storage-kt:2.5.0")
+
+    // Leer PDF
+    implementation("com.tom-roush:pdfbox-android:2.0.27.0")
 }
