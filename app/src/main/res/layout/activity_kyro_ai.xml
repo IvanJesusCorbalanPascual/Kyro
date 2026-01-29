@@ -75,8 +75,9 @@
                 app:boxCornerRadiusTopEnd="12dp"
                 app:boxCornerRadiusBottomStart="12dp"
                 app:boxCornerRadiusBottomEnd="12dp"
-                app:boxStrokeColor="@color/borde_input"
-                app:hintTextColor="@color/borde_input"
+                app:boxStrokeColor="@color/select_input_border"
+                app:hintTextColor="@color/b500"
+                android:textColorHint="@color/texto_secundario"
                 android:layout_marginBottom="16dp">
 
                 <com.google.android.material.textfield.TextInputEditText

@@ -61,4 +61,6 @@
     <color name="bg_calendario_fondo">#F4F6F8</color>
     <color name="bg_calendario_interno">#FFFFFF</color>
 
+    <color name="quiz_opcion_seleccionada">#4D00A8E8</color>
+
 </resources>

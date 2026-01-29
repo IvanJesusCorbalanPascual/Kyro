@@ -351,7 +351,7 @@ class AsignaturaSeleccionadaActivity : AppCompatActivity() {
                 completeButton.backgroundTintList = ContextCompat.getColorStateList(this, R.color.rojo_expirado)
                 completeButton.setTextColor(ContextCompat.getColor(this, R.color.white))
             } else {
-                cardView.setCardBackgroundColor(ContextCompat.getColor(this, R.color.white))
+                cardView.setCardBackgroundColor(ContextCompat.getColor(this, R.color.tarjeta_fondo))
                 completeButton.isEnabled = true
                 completeButton.text = getString(R.string.btn_completar)
                 completeButton.backgroundTintList = ContextCompat.getColorStateList(this, R.color.b500)
@@ -373,6 +373,8 @@ class AsignaturaSeleccionadaActivity : AppCompatActivity() {
                 cardView.setCardBackgroundColor(ContextCompat.getColor(this, R.color.verde_completado))
             } else if (event.completada) {
                 cardView.setCardBackgroundColor(ContextCompat.getColor(this, R.color.verde_completado))
+            } else {
+                cardView.setCardBackgroundColor(ContextCompat.getColor(this, R.color.tarjeta_fondo))
             }
         }
 

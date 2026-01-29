@@ -199,6 +199,8 @@ class QuizActivity : AppCompatActivity() {
         // Fondo Redondeado
         layout?.setBackgroundResource(drawableResId)
 
+        layout?.backgroundTintList = null
+
         // Si el fondo es oscuro, forzamos el texto a blanco para que se lea bien
         if (layout != null) {
             setOptionsTextColor(layout, Color.WHITE)
@@ -223,6 +225,8 @@ class QuizActivity : AppCompatActivity() {
             // Quitamos selección y ponemos fondo blanco
             layout.isSelected = false
             layout.setBackgroundResource(R.drawable.bg_blanco_redondeado)
+
+            layout.backgroundTintList = ContextCompat.getColorStateList(this, R.color.selector_quiz_tint)
 
             // Bucle que recorre todos los elementos dentro de la tarjeta (Para el texto y las letras A, B, C y D)
             for (i in 0 until layout.childCount) {

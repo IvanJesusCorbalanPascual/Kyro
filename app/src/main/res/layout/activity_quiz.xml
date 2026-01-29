@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F5F5"
+    android:background="@color/bg_pantalla_asignatura"
     android:padding="24dp"
     android:fitsSystemWindows="true">
 
@@ -14,7 +14,7 @@
         android:layout_height="48dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:src="@drawable/ic_cross"
-        app:tint="#757575"
+        app:tint="@color/texto_principal"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:contentDescription="@string/btn_cancelar"
@@ -26,7 +26,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/poppins"
         android:text="@string/quiz_titulo"
-        android:textColor="@color/black"
+        android:textColor="@color/texto_principal"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/btnCloseQuiz"
@@ -56,7 +56,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins"
                 tools:text="Pregunta 1 de 5"
-                android:textColor="#757575"
+                android:textColor="@color/texto_principal"
                 android:textSize="14sp" />
 
             <com.google.android.material.progressindicator.LinearProgressIndicator
@@ -66,7 +66,7 @@
                 android:layout_marginTop="8dp"
                 android:progress="20"
                 app:indicatorColor="#00A8E8"
-                app:trackColor="#E0E0E0"
+                app:trackColor="@color/tarjeta_fondo"
                 app:trackCornerRadius="4dp" />
 
             <com.google.android.material.card.MaterialCardView
@@ -74,7 +74,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                app:cardBackgroundColor="@android:color/white"
+                app:cardBackgroundColor="@color/tarjeta_fondo"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="4dp"
                 app:strokeWidth="0dp">
@@ -86,7 +86,7 @@
                     android:fontFamily="@font/poppins"
                     android:padding="24dp"
                     android:text="@string/quiz_cargando"
-                    android:textColor="#212121"
+                    android:textColor="@color/texto_principal"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:gravity="center"
@@ -98,11 +98,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:background="#FFEBEE"
+                android:background="@drawable/bg_blanco_redondeado"
+                android:backgroundTint="@color/tarjeta_fondo"
                 android:fontFamily="@font/poppins"
                 android:padding="12dp"
                 android:text="@string/quiz_explicacion_default"
-                android:textColor="#D32F2F"
+                android:textColor="#FF5252"
                 android:textSize="14sp"
                 android:visibility="gone"
                 tools:visibility="visible" />
@@ -120,6 +121,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="12dp"
                     android:background="@drawable/bg_blanco_redondeado"
+                    android:backgroundTint="@color/selector_quiz_tint"
                     android:orientation="horizontal"
                     android:padding="16dp"
                     android:clickable="true"
@@ -154,6 +156,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="12dp"
                     android:background="@drawable/bg_blanco_redondeado"
+                    android:backgroundTint="@color/selector_quiz_tint"
                     android:orientation="horizontal"
                     android:padding="16dp"
                     android:clickable="true"
@@ -188,6 +191,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="12dp"
                     android:background="@drawable/bg_blanco_redondeado"
+                    android:backgroundTint="@color/selector_quiz_tint"
                     android:orientation="horizontal"
                     android:padding="16dp"
                     android:clickable="true"
@@ -222,6 +226,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="12dp"
                     android:background="@drawable/bg_blanco_redondeado"
+                    android:backgroundTint="@color/selector_quiz_tint"
                     android:orientation="horizontal"
                     android:padding="16dp"
                     android:clickable="true"
