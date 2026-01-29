@@ -8,7 +8,7 @@
     app:cardCornerRadius="12dp"
     app:cardElevation="0dp"
     app:strokeWidth="0dp"
-    app:cardBackgroundColor="#FFFFFF">
+    app:cardBackgroundColor="@color/tarjeta_fondo">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -37,7 +37,7 @@
             android:maxLines="2"
             android:text="@string/item_asignatura_titulo"
             android:fontFamily="@font/poppins"
-            android:textColor="#000000"
+            android:textColor="@color/texto_principal"
             android:textSize="14sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"

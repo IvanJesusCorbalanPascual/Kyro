@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#F5F5F5"
+    android:background="@color/bg_pantalla_asignatura"
     android:fitsSystemWindows="true">
 
     <androidx.core.widget.NestedScrollView
@@ -35,63 +35,70 @@
                     android:padding="12dp"
                     android:scaleType="centerInside"
                     android:src="@drawable/ic_cross"
-                    app:tint="#000000" />
+                    app:tint="@color/texto_principal" />
 
                 <TextView
-                    android:text="@string/gen_test_titulo"
-                    android:fontFamily="@font/poppins"
-                    android:textSize="22sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/black"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                android:text="@string/gen_test_titulo"
+                android:fontFamily="@font/poppins"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="@color/texto_principal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
 
             </LinearLayout>
+
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tilNombreTest"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/gen_test_hint_nombre"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                app:boxBackgroundColor="@android:color/white"
+                app:boxBackgroundColor="@color/tarjeta_fondo"
+                app:boxStrokeColor="@color/borde_input"
+                app:hintTextColor="@color/texto_principal"
+                android:textColorHint="@color/texto_hint"
                 app:boxCornerRadiusTopStart="12dp"
                 app:boxCornerRadiusTopEnd="12dp"
                 app:boxCornerRadiusBottomStart="12dp"
                 app:boxCornerRadiusBottomEnd="12dp"
                 android:layout_marginBottom="16dp">
-
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etNombreTest"
                     android:fontFamily="@font/poppins"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/texto_principal"
                     android:inputType="textCapSentences"
                     android:maxLength="30"/>
+
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
                 android:id="@+id/tvLabelPreguntas"
                 android:fontFamily="@font/poppins"
                 android:text="@string/gen_test_label_preguntas"
+                android:textColor="@color/texto_principal"
                 android:textStyle="bold"
                 android:layout_marginBottom="4dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
             <com.google.android.material.slider.Slider
-                android:id="@+id/sliderPreguntas"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:valueFrom="5"
-                android:valueTo="20"
-                android:stepSize="1"
-                android:value="5"
-                app:thumbColor="#00A8E8"
-                app:trackColorActive="#00A8E8"/>
+            android:id="@+id/sliderPreguntas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:valueFrom="5"
+            android:valueTo="20"
+            android:stepSize="1"
+            android:value="5"
+            app:thumbColor="#00A8E8"
+            app:trackColorActive="#00A8E8"/>
 
             <TextView
                 android:text="@string/gen_test_label_dificultad"
                 android:fontFamily="@font/poppins"
+                android:textColor="@color/texto_principal"
                 android:textStyle="bold"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
@@ -99,94 +106,97 @@
                 android:layout_height="wrap_content"/>
 
             <com.google.android.material.chip.ChipGroup
-                android:id="@+id/chipGroupDificultad"
-                android:layout_width="match_parent"
+            android:id="@+id/chipGroupDificultad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:singleSelection="true"
+            app:selectionRequired="true"
+            android:layout_marginBottom="16dp">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipFacil"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:singleSelection="true"
-                app:selectionRequired="true"
-                android:layout_marginBottom="16dp">
+                android:text="@string/gen_test_chip_facil"
+                android:fontFamily="@font/poppins"
+                android:textColor="@color/text_chip_state_list"
+                app:chipBackgroundColor="@color/bg_chip_state_list"/>
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chipFacil"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/gen_test_chip_facil"
-                    android:fontFamily="@font/poppins"
-                    android:textColor="@color/text_chip_state_list"
-                    app:chipBackgroundColor="@color/bg_chip_state_list"/>
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipMedio"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/gen_test_chip_medio"
+                android:checked="true"
+                android:fontFamily="@font/poppins"
+                android:textColor="@color/text_chip_state_list"
+                app:chipBackgroundColor="@color/bg_chip_state_list"/>
 
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chipMedio"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/gen_test_chip_medio"
-                    android:checked="true"
-                    android:fontFamily="@font/poppins"
-                    android:textColor="@color/text_chip_state_list"
-                    app:chipBackgroundColor="@color/bg_chip_state_list"/>
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/chipDificil"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/gen_test_chip_dificil"
-                    android:fontFamily="@font/poppins"
-                    android:textColor="@color/text_chip_state_list"
-                    app:chipBackgroundColor="@color/bg_chip_state_list"/>
-            </com.google.android.material.chip.ChipGroup>
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipDificil"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/gen_test_chip_dificil"
+                android:fontFamily="@font/poppins"
+                android:textColor="@color/text_chip_state_list"
+                app:chipBackgroundColor="@color/bg_chip_state_list"/>
+        </com.google.android.material.chip.ChipGroup>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#E0E0E0"
+                android:background="@color/borde_adjuntar"
                 android:layout_marginVertical="8dp"/>
 
             <TextView
-                android:text="@string/gen_test_label_fuentes"
-                android:fontFamily="@font/poppins"
-                android:textStyle="bold"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+            android:text="@string/gen_test_label_fuentes"
+            android:fontFamily="@font/poppins"
+            android:textColor="@color/texto_principal"
+            android:textStyle="bold"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
             <CheckBox
-                android:id="@+id/cbContenidoBase"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/gen_test_check_descripcion"
-                android:fontFamily="@font/poppins"
-                android:checked="true"/>
+            android:id="@+id/cbContenidoBase"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/gen_test_check_descripcion"
+            android:fontFamily="@font/poppins"
+            android:textColor="@color/texto_principal"
+            android:checked="true"/>
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvSeleccionArchivos"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="false"/>
+            android:id="@+id/rvSeleccionArchivos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"/>
 
             <TextView
                 android:id="@+id/tvSinArchivos"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/gen_test_sin_archivos"
+                android:textColor="@color/texto_secundario"
                 android:visibility="gone"
                 android:padding="10dp"/>
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnGenerarTestFinal"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:text="@string/gen_test_btn_generar"
-                android:fontFamily="@font/poppins"
-                android:textColor="#FFFFFF"
-                android:textStyle="bold"
-                app:backgroundTint="#00A8E8"
-                app:cornerRadius="12dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="24dp"/>
+            android:id="@+id/btnGenerarTestFinal"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="@string/gen_test_btn_generar"
+            android:fontFamily="@font/poppins"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            app:backgroundTint="#00A8E8"
+            app:cornerRadius="12dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp"/>
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

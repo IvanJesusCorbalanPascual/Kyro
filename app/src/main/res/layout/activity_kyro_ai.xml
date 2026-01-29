@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F5F5"
+    android:background="@color/fondo_pantalla"
     android:fitsSystemWindows="true">
 
     <TextView
@@ -15,7 +15,7 @@
         android:layout_marginStart="24dp"
         android:fontFamily="@font/poppins"
         android:text="@string/kyro_ai_titulo"
-        android:textColor="@color/black"
+        android:textColor="@color/texto_principal"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
@@ -41,7 +41,7 @@
         android:layout_marginTop="4dp"
         android:fontFamily="@font/poppins"
         android:text="@string/kyro_ai_subtitulo"
-        android:textColor="#757575"
+        android:textColor="@color/texto_secundario"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -70,21 +70,25 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:theme="@style/InputKyroTheme"
                 app:boxCornerRadiusTopStart="12dp"
                 app:boxCornerRadiusTopEnd="12dp"
                 app:boxCornerRadiusBottomStart="12dp"
                 app:boxCornerRadiusBottomEnd="12dp"
+                app:boxStrokeColor="@color/borde_input"
+                app:hintTextColor="@color/borde_input"
                 android:layout_marginBottom="16dp">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etInputKyro"
                     android:layout_width="match_parent"
                     android:layout_height="140dp"
-                    android:hint="@string/kyro_ai_hint_input"
-                    android:gravity="top|start"
                     android:fontFamily="@font/poppins"
+                    android:gravity="top|start"
+                    android:hint="@string/kyro_ai_hint_input"
                     android:inputType="textMultiLine"
-                    android:textSize="14sp"/>
+                    android:textColor="@color/texto_principal"
+                    android:textSize="14sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
@@ -92,7 +96,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/kyro_ai_label_acciones"
                 android:fontFamily="@font/poppins"
-                android:textColor="#333333"
+                android:textColor="@color/texto_principal"
                 android:textStyle="bold"
                 android:layout_marginBottom="8dp"/>
 
@@ -140,13 +144,13 @@
                 android:id="@+id/btnProcesarIA"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:text="@string/kyro_ai_btn_consultar"
+                android:layout_marginBottom="24dp"
                 android:fontFamily="@font/poppins"
+                android:text="@string/kyro_ai_btn_consultar"
+                android:textColor="#FFFFFF"
                 android:textStyle="bold"
-                android:textColor="@color/white"
-                app:backgroundTint="#00A8E8"
-                app:cornerRadius="12dp"
-                android:layout_marginBottom="24dp"/>
+                app:backgroundTint="@color/bg_card_ia"
+                app:cornerRadius="12dp" />
 
             <TextView
                 android:id="@+id/tvLabelResultado"
@@ -154,7 +158,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/kyro_ai_label_resultado"
                 android:fontFamily="@font/poppins"
-                android:textColor="#333333"
+                android:textColor="@color/texto_principal"
                 android:textStyle="bold"
                 android:visibility="gone"
                 android:layout_marginBottom="8dp"/>
@@ -163,7 +167,7 @@
                 android:id="@+id/cardResultado"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardBackgroundColor="@android:color/white"
+                app:cardBackgroundColor="@color/tarjeta_fondo"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="2dp"
                 app:strokeWidth="0dp"
@@ -174,7 +178,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins"
-                    android:textColor="#333333"
+                    android:textColor="@color/texto_principal"
                     android:text="..."
                     android:padding="16dp"
                     android:lineSpacingExtra="4dp"/>
@@ -185,7 +189,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:indeterminateTint="#00A8E8"
+                android:indeterminateTint="@color/bg_card_ia"
                 android:visibility="gone"/>
 
         </LinearLayout>
@@ -195,7 +199,7 @@
         android:id="@+id/bottomNavigation"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@android:color/white"
+        android:background="@color/tarjeta_fondo"
         app:elevation="8dp"
         app:labelVisibilityMode="labeled"
         app:menu="@menu/bottom_nav_menu"

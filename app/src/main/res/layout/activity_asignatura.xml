@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F5F5"
+    android:background="@color/bg_pantalla_asignatura"
     android:fitsSystemWindows="true">
 
     <androidx.core.widget.NestedScrollView
@@ -28,7 +28,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/asignatura_titulo_mis_asignaturas"
                 android:fontFamily="@font/poppins"
-                android:textColor="#000000"
+                android:textColor="@color/texto_principal"
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:layout_marginTop="16dp"
@@ -43,7 +43,7 @@
                 app:cardCornerRadius="20dp"
                 app:cardElevation="0dp"
                 app:strokeWidth="0dp"
-                app:cardBackgroundColor="#BDE0F0"
+                app:cardBackgroundColor="@color/bg_lista_azul"
                 app:layout_constraintTop_toBottomOf="@id/tvTitulo">
 
                 <LinearLayout
@@ -57,7 +57,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/asignatura_lista_titulo"
                         android:fontFamily="@font/poppins"
-                        android:textColor="#000000"
+                        android:textColor="@color/texto_principal"
                         android:textSize="18sp"
                         android:textStyle="bold"
                         android:layout_marginBottom="12dp"/>
@@ -81,7 +81,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/asignatura_lista_vacia_texto"
                         android:gravity="center"
-                        android:textColor="#555555"
+                        android:textColor="@color/texto_vacio"
                         android:padding="20dp"
                         android:visibility="gone" />
 
@@ -97,7 +97,7 @@
                 app:cardCornerRadius="20dp"
                 app:cardElevation="0dp"
                 app:strokeWidth="0dp"
-                app:cardBackgroundColor="#FFFFFF"
+                app:cardBackgroundColor="@color/tarjeta_fondo"
                 app:layout_constraintTop_toBottomOf="@id/contenedorAsignaturas"
                 app:layout_constraintBottom_toBottomOf="parent">
 
@@ -112,7 +112,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/asignatura_crear_titulo"
                         android:fontFamily="@font/poppins"
-                        android:textColor="#000000"
+                        android:textColor="@color/texto_principal"
                         android:textSize="18sp"
                         android:textStyle="bold" />
 
@@ -122,7 +122,7 @@
                         android:layout_marginTop="8dp"
                         android:text="@string/asignatura_crear_desc"
                         android:fontFamily="@font/poppins"
-                        android:textColor="#666666"
+                        android:textColor="@color/texto_desc"
                         android:textSize="13sp"
                         android:lineSpacingExtra="2dp"/>
 
@@ -132,14 +132,14 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
                         android:background="@drawable/bg_blanco_redondeado"
-                        android:backgroundTint="#F5F5F5"
+                        android:backgroundTint="@color/bg_input_gris"
                         android:padding="12dp"
                         android:hint="@string/asignatura_hint_nombre_ejemplo"
                         android:fontFamily="@font/poppins"
                         android:inputType="textCapSentences"
                         android:maxLines="1"
-                        android:textColorHint="#808080"
-                        android:textColor="#1A1A1A"
+                        android:textColorHint="@color/texto_hint"
+                        android:textColor="@color/texto_input"
                         android:textSize="14sp" />
 
                     <com.google.android.material.card.MaterialCardView
@@ -149,8 +149,8 @@
                         app:cardCornerRadius="12dp"
                         app:cardElevation="0dp"
                         app:strokeWidth="1dp"
-                        app:strokeColor="#E0E0E0"
-                        app:cardBackgroundColor="#F9F9F9">
+                        app:strokeColor="@color/borde_adjuntar"
+                        app:cardBackgroundColor="@color/bg_card_adjuntar">
 
                         <TextView
                             android:id="@+id/btnAdjuntarArchivo"
@@ -159,7 +159,7 @@
                             android:gravity="center"
                             android:text="@string/asignatura_btn_adjuntar_pdf"
                             android:fontFamily="@font/poppins"
-                            android:textColor="#1A1A1A"
+                            android:textColor="@color/texto_input"
                             android:textSize="13sp"
                             android:textStyle="bold"
                             android:padding="8dp"/>
@@ -171,13 +171,13 @@
                         android:layout_height="100dp"
                         android:layout_marginTop="12dp"
                         android:background="@drawable/bg_blanco_redondeado"
-                        android:backgroundTint="#F5F5F5"
+                        android:backgroundTint="@color/bg_input_gris"
                         android:gravity="top|start"
                         android:padding="16dp"
                         android:hint="@string/asignatura_hint_pegar_apuntes"
                         android:fontFamily="@font/poppins"
-                        android:textColorHint="#808080"
-                        android:textColor="#1A1A1A"
+                        android:textColorHint="@color/texto_hint"
+                        android:textColor="@color/texto_input"
                         android:textSize="13sp" />
 
                     <com.google.android.material.button.MaterialButton
@@ -203,7 +203,7 @@
         android:id="@+id/bottomNavigation"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@android:color/white"
+        android:background="@color/tarjeta_fondo"
         app:elevation="8dp"
         app:labelVisibilityMode="labeled"
         app:menu="@menu/bottom_nav_menu"
@@ -213,6 +213,6 @@
         app:itemIconTint="@color/nav_item_colors"
         app:itemTextColor="@color/nav_item_colors"
         app:itemTextAppearanceActive="@style/BottomNavTextStyle"
-        app:itemTextAppearanceInactive="@style/BottomNavTextStyle"/>/>
+        app:itemTextAppearanceInactive="@style/BottomNavTextStyle"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

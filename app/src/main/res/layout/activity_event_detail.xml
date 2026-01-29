@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F4F6F8"
+    android:background="@color/bg_pantalla_asignatura"
     android:fitsSystemWindows="true"
     tools:context=".activities.EventDetailActivity">
 
@@ -19,10 +19,12 @@
             android:id="@+id/topAppBar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@android:color/white"
+            android:background="@color/tarjeta_fondo"
             android:elevation="4dp"
             app:navigationIcon="@drawable/ic_back_arrow"
-            app:title="Detalles del Evento" />
+            app:navigationIconTint="@color/texto_principal"
+            app:title="Detalles del Evento"
+            app:titleTextColor="@color/texto_principal"/>
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -45,44 +47,50 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="12dp"
-                app:cardElevation="2dp">
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="@color/tarjeta_fondo">
                 <LinearLayout
-                    android:layout_width="match_parent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <TextView
+                    android:id="@+id/tvDetailTitle"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="20dp">
+                    android:textSize="26sp"
+                    android:textStyle="bold"
+                    tools:text="Nombre de la Asignatura"
+                    android:fontFamily="@font/poppins"
+                    android:textColor="@color/texto_principal"/>
 
                     <TextView
-                        android:id="@+id/tvDetailTitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="26sp"
-                        android:textStyle="bold"
-                        tools:text="Nombre de la Asignatura"
-                        android:fontFamily="@font/poppins"/>
+                android:id="@+id/tvDetailAsignatura"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:drawablePadding="8dp"
+                android:gravity="center_vertical"
+                android:textSize="16sp"
+                app:drawableStartCompat="@drawable/ic_book"
+                app:drawableTint="@color/texto_principal"
+                tools:text="Asignatura"
+                android:fontFamily="@font/poppins"
+                android:textColor="@color/texto_principal"/>
 
                     <TextView
-                        android:id="@+id/tvDetailAsignatura"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:drawablePadding="8dp"
-                        android:gravity="center_vertical"
-                        android:textSize="16sp"
-                        app:drawableStartCompat="@drawable/ic_book"
-                        tools:text="Asignatura"
-                        android:fontFamily="@font/poppins"/>
-
-                    <TextView
-                        android:id="@+id/tvDetailDate"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:drawablePadding="8dp"
-                        android:gravity="center_vertical"
-                        android:textSize="16sp"
-                        app:drawableStartCompat="@drawable/ic_calendar"
-                        tools:text="YYYY-MM-DD" />
+                android:id="@+id/tvDetailDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:drawablePadding="8dp"
+                android:gravity="center_vertical"
+                android:textSize="16sp"
+                app:drawableStartCompat="@drawable/ic_calendar"
+                app:drawableTint="@color/texto_principal"
+                tools:text="YYYY-MM-DD"
+                android:textColor="@color/texto_principal"/>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -92,74 +100,79 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 app:cardCornerRadius="12dp"
-                app:cardElevation="2dp">
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="@color/tarjeta_fondo">
                 <LinearLayout
-                    android:layout_width="match_parent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="20dp">
-
+                    android:layout_marginBottom="8dp"
+                    android:drawablePadding="8dp"
+                    android:gravity="center_vertical"
+                    android:text="@string/event_detail_label_desc"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:drawableStartCompat="@drawable/ic_task"
+                    app:drawableTint="@color/texto_principal"
+                    android:fontFamily="@font/poppins"
+                    android:textColor="@color/texto_principal"/>
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        android:drawablePadding="8dp"
-                        android:gravity="center_vertical"
-                        android:text="@string/event_detail_label_desc"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        app:drawableStartCompat="@drawable/ic_task"
-                        android:fontFamily="@font/poppins"/>
-
-                    <TextView
-                        android:id="@+id/tvDetailDescription"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:lineSpacingExtra="4dp"
-                        tools:text="Descripción detallada del evento..."
-                        android:fontFamily="@font/poppins"/>
+                android:id="@+id/tvDetailDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:lineSpacingExtra="4dp"
+                tools:text="Descripción detallada del evento..."
+                android:fontFamily="@font/poppins"
+                android:textColor="@color/texto_principal"/>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Card para los Recordatorios -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 app:cardCornerRadius="12dp"
-                app:cardElevation="2dp">
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="@color/tarjeta_fondo">
                 <LinearLayout
-                    android:layout_width="match_parent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="20dp">
-
+                    android:layout_marginBottom="8dp"
+                    android:drawablePadding="8dp"
+                    android:gravity="center_vertical"
+                    android:text="@string/event_detail_label_recordatorios"
+                    android:fontFamily="@font/poppins"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:drawableStartCompat="@drawable/ic_notifications"
+                    app:drawableTint="@color/texto_principal"
+                    android:textColor="@color/texto_principal"/>
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="8dp"
-                        android:drawablePadding="8dp"
-                        android:gravity="center_vertical"
-                        android:text="@string/event_detail_label_recordatorios"
-                        android:fontFamily="@font/poppins"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        app:drawableStartCompat="@drawable/ic_notifications" />
-
+                android:id="@+id/tvDetailNotif1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                tools:text="Recordatorio 1: ..."
+                android:fontFamily="@font/poppins"
+                android:textColor="@color/texto_principal"/>
                     <TextView
-                        android:id="@+id/tvDetailNotif1"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="4dp"
-                        tools:text="Recordatorio 1: ..."
-                        android:fontFamily="@font/poppins"/>
-
-                    <TextView
-                        android:id="@+id/tvDetailNotif2"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        tools:text="Recordatorio 2: ..."
-                        android:fontFamily="@font/poppins"/>
+                android:id="@+id/tvDetailNotif2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="Recordatorio 2: ..."
+                android:fontFamily="@font/poppins"
+                android:textColor="@color/texto_principal"/>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -178,7 +191,6 @@
                 android:visibility="gone"
                 app:icon="@drawable/ic_restore" />
 
-            <!-- Botones de Acción -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -227,10 +239,14 @@
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/white"
+        android:background="@color/tarjeta_fondo"
         app:elevation="8dp"
+        app:itemIconTint="@color/nav_item_colors"
+        app:itemTextColor="@color/nav_item_colors"
         app:labelVisibilityMode="labeled"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/bottom_nav_menu"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:itemTextAppearanceActive="@style/BottomNavTextStyle"
+        app:itemTextAppearanceInactive="@style/BottomNavTextStyle"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -13,7 +13,7 @@
         android:id="@+id/cbArchivoItem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:buttonTint="@color/b400"
+        android:buttonTint="@color/texto_principal"
         android:minWidth="0dp"
         android:minHeight="0dp" />
 
@@ -25,7 +25,7 @@
         android:layout_marginStart="12dp"
         android:fontFamily="@font/poppins"
         android:text="Nombre del archivo.pdf"
-        android:textColor="#000000"
+        android:textColor="@color/texto_principal"
         android:textSize="14sp" />
 
 </LinearLayout>
