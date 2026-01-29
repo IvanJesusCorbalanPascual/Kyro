@@ -68,6 +68,11 @@ import java.time.format.DateTimeFormatter
 import java.time.format.DateTimeParseException
 import java.time.format.TextStyle
 import java.util.Locale
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 
 // Esta clase gestiona la pantalla del calendario de tareas y examenes
 class CalendarioActivity : AppCompatActivity() {
@@ -154,11 +159,13 @@ class CalendarioActivity : AppCompatActivity() {
                 withContext(Dispatchers.Main) {
                     // Configura el calendario de Jetpack Compose
                     calendarComposeView.setContent {
-                        Calendar(events = allEvents, onDateSelected = {
-                            selectedDate = it
-                            displayEvents(allEvents)
-                        })
-                    }
+                        KyroCalendarTheme {
+                            Calendar(events = allEvents, onDateSelected = {
+                                selectedDate = it
+                                displayEvents(allEvents)
+                            })
+                        }
+                        }
                     // Muestra los eventos
                     displayEvents(allEvents)
                 }
@@ -255,7 +262,7 @@ class CalendarioActivity : AppCompatActivity() {
                     completeButton.backgroundTintList = ContextCompat.getColorStateList(this, R.color.rojo_expirado)
                     completeButton.setTextColor(ContextCompat.getColor(this, R.color.white))
                 } else {
-                    cardView.setCardBackgroundColor(ContextCompat.getColor(this, R.color.white))
+                    cardView.setCardBackgroundColor(ContextCompat.getColor(this, R.color.tarjeta_fondo))
                     completeButton.isEnabled = true
                     completeButton.text = getString(R.string.btn_completar)
                     completeButton.backgroundTintList = ContextCompat.getColorStateList(this, R.color.b500)
@@ -282,6 +289,8 @@ class CalendarioActivity : AppCompatActivity() {
                     cardView.setCardBackgroundColor(ContextCompat.getColor(this, R.color.verde_completado))
                 } else if (event.completada) {
                     cardView.setCardBackgroundColor(ContextCompat.getColor(this, R.color.verde_completado))
+                } else {
+                    cardView.setCardBackgroundColor(ContextCompat.getColor(this, R.color.tarjeta_fondo))
                 }
             }
 
@@ -427,6 +436,8 @@ fun RowScope.DayCell(
     eventMap: Map<String, List<CalendarioActivity.Event>>,
     onDateSelected: (LocalDate) -> Unit
 ) {
+    val isDarkTheme = isSystemInDarkTheme()
+
     if (day != null) {
         val date = currentMonth.atDay(day)
         val isSelected = date == selectedDate
@@ -439,7 +450,15 @@ fun RowScope.DayCell(
                 .aspectRatio(1f)
                 .padding(1.dp) // Padding reducido
                 .clip(CircleShape)
-                .background(if (isSelected) Color.LightGray else Color.Transparent)
+                .background(
+                    color = when {
+                        // Azul al seleccionar
+                        isSelected -> Color(0xFF409EFF)
+                        // Gris oscuro en modo noche para que resalte el texto blanco
+                        isToday -> if (isDarkTheme) Color(0xFF666666) else Color(0xFFE0E0E0)
+                        else -> Color.Transparent
+                    }
+                )
                 .clickable { onDateSelected(date) },
             contentAlignment = Alignment.Center
         ) {
@@ -452,8 +471,9 @@ fun RowScope.DayCell(
                     fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
                     fontSize = 13.sp, // Tamano de fuente reducido
                     color = when {
+                        isSelected -> Color.White
                         isToday -> Color(0xFF409EFF)
-                        date.month == currentMonth.month -> Color.Black
+                        date.month == currentMonth.month -> MaterialTheme.colorScheme.onSurface
                         else -> Color.Gray
                     }
                 )
@@ -497,5 +517,35 @@ fun RowScope.DayCell(
         }
     } else {
         Box(modifier = Modifier.weight(1f).aspectRatio(1f))
+    }
+}
+
+private val KyroCalendarLight = lightColorScheme(
+    surface = Color(0xFFF4F6F8),
+    onSurface = Color.Black
+)
+
+private val KyroCalendarDark = darkColorScheme(
+    surface = Color(0xFF121212),
+    onSurface = Color.White
+)
+
+@Composable
+fun KyroCalendarTheme(
+    darkTheme: Boolean = isSystemInDarkTheme(), // Detecta automáticamente el modo del móvil
+    content: @Composable () -> Unit
+) {
+    val colors = if (darkTheme) KyroCalendarDark else KyroCalendarLight
+
+    MaterialTheme(
+        colorScheme = colors
+    ) {
+        // Surface pinta el fondo y prepara el color del texto por defecto
+        Surface(
+            color = MaterialTheme.colorScheme.surface,
+            contentColor = MaterialTheme.colorScheme.onSurface
+        ) {
+            content()
+        }
     }
 }

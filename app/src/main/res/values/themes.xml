@@ -18,4 +18,8 @@
         <item name="android:fontFamily">@font/poppins</item>
         <item name="fontFamily">@font/poppins</item>
     </style>
+    <style name="InputKyroTheme">
+        <item name="colorOnSurface">@color/borde_input</item>
+        <item name="colorPrimary">@color/borde_input</item>
+    </style>
 </resources>

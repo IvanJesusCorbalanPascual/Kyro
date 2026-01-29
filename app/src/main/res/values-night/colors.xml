@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="fondo_pantalla">#121212</color>
+
+    <color name="texto_principal">#FFFFFF</color>
+
+    <color name="texto_secundario">#B0B0B0</color>
+
+    <color name="tarjeta_fondo">#1E1E1E</color>
+
+    <color name="borde_input">#FFFFFF</color> <color name="white">#121212</color> <color name="black">#FFFFFF</color>
+
+    <color name="bg_card_evento">#004D40</color>
+
+    <color name="bg_card_ia">#1A237E</color>
+
+    <color name="bg_card_asignaturas">#BF360C</color>
+
+    <color name="content_card_ia">#FFFFFF</color>
+
+    <color name="bg_lista_azul">#263238</color>
+
+    <color name="bg_pantalla_asignatura">#121212</color>
+    <color name="bg_input_gris">#2D2D2D</color>
+    <color name="bg_card_adjuntar">#252525</color>
+    <color name="borde_adjuntar">#444444</color>
+    <color name="texto_vacio">#B0B0B0</color>
+    <color name="texto_desc">#B0B0B0</color>
+    <color name="texto_hint">#909090</color>
+    <color name="texto_input">#FFFFFF</color>
+
+    <color name="bg_ajustes_fondo">#121212</color>
+    <color name="bg_ajustes_card">#1E1E1E</color>
+    <color name="texto_ajustes_header">#B0B0B0</color>
+    <color name="texto_ajustes_btn">#FFFFFF</color>
+    <color name="divider_ajustes">#2C2C2C</color>
+    <color name="bg_danger_zone">#2C1B1B</color>
+    <color name="text_danger_title">#FF8A80</color>
+    <color name="text_danger_item">#EF5350</color>
+    <color name="divider_danger">#3E2727</color>
+
+    <color name="bg_calendario_fondo">#121212</color>
+    <color name="bg_calendario_interno">#E0E0E0</color>
+
+</resources>

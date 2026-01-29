@@ -55,4 +55,30 @@ object FileTextExtractor {
         return builder.toString().trim()
     }
 
+    fun leerDesdeUrl(urlString: String): String {
+        return try {
+            val inputStream = java.net.URL(urlString).openStream()
+
+            // Detecta si es PDF o Texto por la extensión del enlace
+            if (urlString.contains(".pdf", ignoreCase = true)) {
+                var document: PDDocument? = null
+                try {
+                    document = PDDocument.load(inputStream)
+                    val stripper = PDFTextStripper()
+                    stripper.getText(document).trim()
+                } finally {
+                    document?.close()
+                    inputStream.close()
+                }
+            } else {
+                // Asumimos texto plano
+                val texto = inputStream.bufferedReader().use { it.readText() }
+                inputStream.close()
+                texto
+            }
+        } catch (e: Exception) {
+            Log.e("FileExtractor", "Error descargando archivo: $urlString", e)
+            ""
+        }
+    }
 }

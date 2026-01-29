@@ -102,7 +102,7 @@ class AddTaskActivity : AppCompatActivity() {
         loadAsignaturas()
 
         val notificationOptions = resources.getStringArray(R.array.notificacion_opciones).toList()
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, notificationOptions)
+        val adapter = ArrayAdapter(this, R.layout.item_spinner, notificationOptions)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerNotificacion1.adapter = adapter
         spinnerNotificacion2.adapter = adapter
@@ -306,7 +306,7 @@ class AddTaskActivity : AppCompatActivity() {
     }
 
     private fun setupAsignaturasSpinner() {
-        asignaturasAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, mutableListOf(getString(
+        asignaturasAdapter = ArrayAdapter(this, R.layout.item_spinner, mutableListOf(getString(
             R.string.add_item_spinner_elige_asignatura)))
         asignaturasAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerAsignaturas.adapter = asignaturasAdapter
