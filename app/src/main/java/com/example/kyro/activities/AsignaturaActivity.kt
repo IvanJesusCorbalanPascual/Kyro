@@ -15,8 +15,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.kyro.Archivo
-import com.example.kyro.Asignatura
+import com.example.kyro.entities.Archivo
+import com.example.kyro.entities.Asignatura
 import com.example.kyro.adapters.AsignaturaAdapter
 import com.example.kyro.NavigationHelper
 import com.example.kyro.R
@@ -160,12 +160,11 @@ class AsignaturaActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            // Llamada simplificada: Solo guardar
             guardarNuevaAsignatura(titulo, contenido)
         }
     }
 
-    // RENOMBRADA: Ya no genera, solo guarda
+    // Guardar Asignatura
     private fun guardarNuevaAsignatura(titulo: String, contenido: String) {
         btnGuardar.isEnabled = false
         btnGuardar.text = "Guardando..."

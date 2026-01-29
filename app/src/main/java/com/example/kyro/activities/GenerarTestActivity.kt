@@ -10,8 +10,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.kyro.Archivo
-import com.example.kyro.EjercicioIA
+import com.example.kyro.entities.Archivo
+import com.example.kyro.entities.EjercicioIA
 import com.example.kyro.FileTextExtractor
 import com.example.kyro.GeminiService
 import com.example.kyro.R

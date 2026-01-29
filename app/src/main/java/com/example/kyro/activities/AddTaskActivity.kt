@@ -25,11 +25,11 @@ import java.util.Calendar
 import java.util.Locale
 import android.widget.CalendarView
 import android.widget.Toast
-import com.example.kyro.Asignatura
-import com.example.kyro.Examen
+import com.example.kyro.entities.Asignatura
+import com.example.kyro.entities.Examen
 import com.example.kyro.R
 import com.example.kyro.SupabaseClient
-import com.example.kyro.Tarea
+import com.example.kyro.entities.Tarea
 
 class AddTaskActivity : AppCompatActivity() {
 

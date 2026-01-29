@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.kyro.Archivo
+import com.example.kyro.entities.Archivo
 import com.example.kyro.R
 
 /**

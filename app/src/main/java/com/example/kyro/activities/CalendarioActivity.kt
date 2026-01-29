@@ -46,12 +46,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
-import com.example.kyro.Asignatura
-import com.example.kyro.Examen
+import com.example.kyro.entities.Asignatura
+import com.example.kyro.entities.Examen
 import com.example.kyro.NavigationHelper
 import com.example.kyro.R
 import com.example.kyro.SupabaseClient
-import com.example.kyro.Tarea
+import com.example.kyro.entities.Tarea
 import com.google.android.material.button.MaterialButton
 import io.github.jan.supabase.gotrue.auth
 import io.github.jan.supabase.postgrest.from

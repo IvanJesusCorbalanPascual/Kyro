@@ -10,8 +10,7 @@ import androidx.activity.result.contract.ActivityResultContracts // NUEVO
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.example.kyro.Archivo
-import com.example.kyro.Asignatura
+import com.example.kyro.entities.Archivo
 import com.example.kyro.NavigationHelper
 import com.example.kyro.R
 import com.example.kyro.SupabaseClient

@@ -1,6 +1,7 @@
 package com.example.kyro
 
 import android.util.Log
+import com.example.kyro.entities.PreguntaGenerada
 import com.google.ai.client.generativeai.GenerativeModel
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken

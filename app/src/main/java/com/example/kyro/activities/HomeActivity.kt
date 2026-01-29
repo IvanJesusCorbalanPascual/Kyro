@@ -16,13 +16,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
-import com.example.kyro.Examen
+import com.example.kyro.entities.Examen
 import com.example.kyro.MonitorService
 import com.example.kyro.NavigationHelper
 import com.example.kyro.R
 import com.example.kyro.SupabaseClient
-import com.example.kyro.Tarea
-import com.example.kyro.UserProfile
+import com.example.kyro.entities.Tarea
+import com.example.kyro.entities.UserProfile
 import com.google.android.material.card.MaterialCardView
 import io.github.jan.supabase.gotrue.auth
 import io.github.jan.supabase.postgrest.from

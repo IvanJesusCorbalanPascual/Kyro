@@ -16,6 +16,8 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import com.example.kyro.activities.EventDetailActivity
 import com.example.kyro.activities.MainActivity
+import com.example.kyro.entities.Examen
+import com.example.kyro.entities.Tarea
 import io.github.jan.supabase.postgrest.postgrest
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter

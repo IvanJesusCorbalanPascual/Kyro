@@ -5,7 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.kyro.Asignatura
+import com.example.kyro.entities.Asignatura
 import com.example.kyro.R
 
 // Conecta la lista de datos con el diseño visual en cada fila

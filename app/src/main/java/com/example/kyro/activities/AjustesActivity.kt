@@ -16,7 +16,8 @@ import androidx.lifecycle.lifecycleScope // Para lanzar tareas en segundo plano
 import com.example.kyro.NavigationHelper
 import com.example.kyro.R
 import com.example.kyro.SupabaseClient
-import com.example.kyro.UserProfile
+import com.example.kyro.entities.UserProfile
+import com.example.kyro.showKyroToast
 import io.github.jan.supabase.postgrest.from
 import kotlinx.coroutines.launch // Para usar corrutinas
 import io.github.jan.supabase.gotrue.auth// Para acceder a la autenticación
@@ -212,7 +213,7 @@ class AjustesActivity : AppCompatActivity() {
                     finish() // Destruye la actividad de Ajustes
 
                 } catch (e: Exception) {
-                    Toast.makeText(this@AjustesActivity, getString(R.string.error_cerrar_sesion), Toast.LENGTH_SHORT).show()
+                   showKyroToast(getString(R.string.error_cerrar_sesion))
                 }
             }
         }
@@ -254,16 +255,12 @@ class AjustesActivity : AppCompatActivity() {
                     startActivity(intent)
                     finish()
 
-                    Toast.makeText(applicationContext, getString(R.string.toast_cuenta_eliminada), Toast.LENGTH_LONG).show()
+                 showKyroToast( getString(R.string.toast_cuenta_eliminada))
 
                 } catch (e: Exception) {
                     // Este catch captura si falla el RPC (Paso 1), por ejemplo, por falta de internet.
                     e.printStackTrace()
-                    Toast.makeText(
-                        this@AjustesActivity,
-                        getString(R.string.error_eliminar_cuenta),
-                        Toast.LENGTH_LONG
-                    ).show()
+                    showKyroToast(getString(R.string.error_eliminar_cuenta))
                 }
             }
         }
@@ -296,10 +293,5 @@ class AjustesActivity : AppCompatActivity() {
             val estado = if(isChecked) getString(R.string.estado_activado) else getString(R.string.estado_desactivado)
             showKyroToast(getString(R.string.toast_focus_estado, estado))
         }
-    }
-
-    // Helper para no escribir el toast largo
-    private fun showKyroToast(message: String) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 }

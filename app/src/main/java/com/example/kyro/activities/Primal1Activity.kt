@@ -26,8 +26,7 @@ class Primal1Activity : AppCompatActivity() {
         val punto2 = layoutDots.getChildAt(1)
         val punto3 = layoutDots.getChildAt(2)
 
-        // Activamos el selector para ESTA pantalla (Pantalla 1)
-        // Al poner 'isSelected = true', Android usa el color @color/b400 definido en el XML
+        // Lógica de Puntos
         punto1.isSelected = true
         punto2.isSelected = false
         punto3.isSelected = false

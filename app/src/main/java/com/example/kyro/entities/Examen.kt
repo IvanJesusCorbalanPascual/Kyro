@@ -1,4 +1,4 @@
-package com.example.kyro
+package com.example.kyro.entities
 
 import kotlinx.serialization.Serializable
 

@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.kyro.EjercicioIA
+import com.example.kyro.entities.EjercicioIA
 import com.example.kyro.R
 
 class EjerciciosAdapter(
