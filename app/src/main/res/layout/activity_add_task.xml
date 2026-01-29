@@ -131,11 +131,11 @@
                         android:id="@+id/datePicker"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:theme="@style/PickerKyroTheme"
                         android:calendarViewShown="false"
                         android:datePickerMode="spinner"
                         android:scaleX="0.9"
-                        android:scaleY="0.9"
-                        android:theme="@style/ThemeOverlay.MaterialComponents.Dark"/>
+                        android:scaleY="0.9" />
 
                     <ImageButton
                         android:id="@+id/btnToggleCalendar"
@@ -162,7 +162,9 @@
                     android:id="@+id/calendarView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:theme="@style/ThemeOverlay.MaterialComponents.Dark"/>
+                    android:theme="@style/PickerKyroTheme"
+                    android:visibility="gone"
+                    />
             </com.google.android.material.card.MaterialCardView>
 
 
@@ -191,10 +193,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
+                    android:theme="@style/PickerKyroTheme"
                     android:scaleX="0.9"
                     android:scaleY="0.9"
-                    android:timePickerMode="spinner"
-                    android:theme="@style/ThemeOverlay.MaterialComponents.Dark"/>
+                    android:timePickerMode="spinner" />
             </com.google.android.material.card.MaterialCardView>
 
 

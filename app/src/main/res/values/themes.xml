@@ -22,4 +22,10 @@
         <item name="colorOnSurface">@color/borde_input</item>
         <item name="colorPrimary">@color/borde_input</item>
     </style>
+    <style name="PickerKyroTheme" parent="ThemeOverlay.MaterialComponents.Dialog.Alert">
+        <item name="android:textColorPrimary">@color/texto_principal</item>
+        <item name="android:textColorSecondary">@color/texto_principal</item>
+        <item name="android:textColor">@color/texto_principal</item>
+        <item name="colorOnSurface">@color/texto_principal</item>
+    </style>
 </resources>
