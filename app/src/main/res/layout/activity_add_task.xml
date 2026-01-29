@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="#F4F6F8"
     android:fitsSystemWindows="true"
-    tools:context=".activities.AddItemActivity">
+    tools:context=".activities.AddTaskActivity">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/topAppBar"
